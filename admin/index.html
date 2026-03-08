@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNMED // ADMIN CONTROL PANEL</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#000308;--deep:#020812;--panel:rgba(255,0,170,0.03);
+  --border:rgba(255,0,170,0.15);--cyan:#00ffc8;--blue:#00b4ff;
+  --magenta:#ff00aa;--yellow:#ffdd00;--red:#ff2244;--green:#00ff88;
+  --orange:#ff7700;--text:#c8f0ff;--muted:#4a7a99;
+  --mono:'Share Tech Mono',monospace;--display:'Orbitron',sans-serif;--body:'Rajdhani',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);pointer-events:none;}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,0,170,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,0,170,0.03) 1px,transparent 1px);background-size:40px 40px;}
+
+/* LOGIN SCREEN */
+#loginScreen{position:fixed;inset:0;z-index:500;background:var(--void);display:flex;align-items:center;justify-content:center;}
+.login-box{background:var(--deep);border:1px solid var(--magenta);padding:2.5rem;width:100%;max-width:400px;position:relative;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));box-shadow:0 0 60px rgba(255,0,170,.1);}
+.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),var(--cyan),transparent);}
+.login-logo{font-family:var(--display);font-size:1.1rem;font-weight:900;color:var(--magenta);text-shadow:0 0 20px var(--magenta);letter-spacing:.2em;text-align:center;margin-bottom:.3rem;}
+.login-sub{font-family:var(--mono);font-size:.62rem;color:var(--muted);text-align:center;letter-spacing:.15em;margin-bottom:2rem;}
+.lf-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;display:block;}
+.lf-input{width:100%;background:rgba(255,0,170,.03);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.85rem;padding:.65rem .9rem;outline:none;margin-bottom:1rem;transition:border-color .2s;}
+.lf-input:focus{border-color:var(--magenta);box-shadow:0 0 12px rgba(255,0,170,.1);}
+.lf-btn{width:100%;font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.85rem;cursor:pointer;background:linear-gradient(135deg,rgba(255,0,170,.2),rgba(0,180,255,.1));color:var(--magenta);border:1px solid var(--magenta);transition:all .2s;}
+.lf-btn:hover{box-shadow:0 0 20px rgba(255,0,170,.3);}
+.lf-msg{font-family:var(--mono);font-size:.67rem;margin-top:.8rem;padding:.5rem .8rem;display:none;}
+.lf-msg.err{background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.3);color:var(--red);}
+
+/* MAIN LAYOUT */
+#app{display:none;min-height:100vh;position:relative;z-index:1;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:rgba(2,8,18,.97);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;}
+.sidebar::after{content:'';position:absolute;top:0;right:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--magenta),var(--cyan),transparent);}
+.sb-logo{padding:1.5rem 1.2rem 1rem;border-bottom:1px solid var(--border);}
+.sb-logo-title{font-family:var(--display);font-size:.85rem;font-weight:900;color:var(--magenta);text-shadow:0 0 15px var(--magenta);letter-spacing:.15em;}
+.sb-logo-sub{font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:.2rem;letter-spacing:.1em;}
+.sb-admin{font-family:var(--mono);font-size:.62rem;color:var(--cyan);margin-top:.4rem;}
+.sb-nav{flex:1;padding:.8rem 0;}
+.sb-btn{width:100%;background:none;border:none;color:var(--muted);font-family:var(--body);font-weight:600;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:.7rem 1.2rem;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.7rem;transition:all .2s;position:relative;}
+.sb-btn:hover,.sb-btn.active{color:var(--magenta);background:rgba(255,0,170,.06);}
+.sb-btn.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--magenta);box-shadow:0 0 8px var(--magenta);}
+.sb-icon{font-size:1rem;width:20px;text-align:center;}
+.sb-bottom{padding:1rem 1.2rem;border-top:1px solid var(--border);}
+.sb-logout{width:100%;font-family:var(--display);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.55rem;cursor:pointer;background:transparent;color:var(--red);border:1px solid rgba(255,34,68,.3);transition:all .2s;}
+.sb-logout:hover{background:rgba(255,34,68,.08);border-color:var(--red);}
+
+/* MAIN CONTENT */
+.main{margin-left:220px;padding:2rem;min-height:100vh;}
+.page{display:none;}
+.page.active{display:block;}
+.page-hd{margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
+.page-hd::after{content:'';display:block;width:80px;height:1px;background:linear-gradient(90deg,var(--magenta),transparent);margin-top:.8rem;}
+.page-eyebrow{font-family:var(--mono);font-size:.6rem;color:var(--magenta);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.4rem;opacity:.7;}
+.page-title{font-family:var(--display);font-size:1.6rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text);}
+.page-title span{color:var(--magenta);}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--panel);border:1px solid var(--border);padding:1.4rem;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:all .3s;}
+.stat-card:hover{transform:translateY(-3px);border-color:var(--magenta);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),transparent);animation:scan 3s linear infinite;}
+@keyframes scan{from{top:0;opacity:1}70%{opacity:1}to{top:100%;opacity:0}}
+.sc-icon{font-size:1.8rem;margin-bottom:.6rem;}
+.sc-num{font-family:var(--display);font-size:2rem;font-weight:900;color:var(--magenta);text-shadow:0 0 20px rgba(255,0,170,.4);}
+.sc-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem;}
+.sc-sub{font-family:var(--mono);font-size:.62rem;color:var(--cyan);margin-top:.3rem;}
+
+/* TABLE */
+.tbl-wrap{background:rgba(255,0,170,.02);border:1px solid var(--border);overflow:hidden;}
+.tbl-header{padding:.8rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.tbl-title{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text);}
+.tbl-count{font-family:var(--mono);font-size:.62rem;color:var(--magenta);}
+.tbl-search{background:rgba(255,0,170,.04);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.72rem;padding:.4rem .8rem;outline:none;width:200px;}
+.tbl-search:focus{border-color:var(--magenta);}
+table{width:100%;border-collapse:collapse;}
+thead th{font-family:var(--mono);font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:.6rem 1rem;text-align:left;border-bottom:1px solid var(--border);background:rgba(255,0,170,.03);}
+tbody td{font-family:var(--body);font-size:.83rem;padding:.7rem 1rem;border-bottom:1px solid rgba(255,0,170,.05);transition:background .15s;}
+tbody tr:hover td{background:rgba(255,0,170,.04);}
+tbody tr:last-child td{border-bottom:none;}
+.badge{font-family:var(--mono);font-size:.58rem;padding:.18rem .5rem;text-transform:uppercase;letter-spacing:.06em;display:inline-block;}
+.badge-admin{background:rgba(255,0,170,.12);color:var(--magenta);border:1px solid rgba(255,0,170,.3);}
+.badge-user{background:rgba(0,180,255,.08);color:var(--blue);border:1px solid rgba(0,180,255,.2);}
+.badge-banned{background:rgba(255,34,68,.12);color:var(--red);border:1px solid rgba(255,34,68,.3);}
+.badge-active{background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.2);}
+.act-btn{font-family:var(--mono);font-size:.6rem;padding:.25rem .6rem;cursor:pointer;border:none;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;margin-right:.3rem;}
+.btn-ban{background:rgba(255,221,0,.08);color:var(--yellow);border:1px solid rgba(255,221,0,.3);}
+.btn-ban:hover{background:rgba(255,221,0,.15);}
+.btn-unban{background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.3);}
+.btn-unban:hover{background:rgba(0,255,136,.15);}
+.btn-del{background:rgba(255,34,68,.08);color:var(--red);border:1px solid rgba(255,34,68,.3);}
+.btn-del:hover{background:rgba(255,34,68,.15);}
+.tbl-empty{text-align:center;padding:3rem;font-family:var(--mono);font-size:.72rem;color:var(--muted);opacity:.6;}
+.tbl-loading{text-align:center;padding:3rem;font-family:var(--mono);font-size:.72rem;color:var(--magenta);animation:blink .8s step-end infinite;}
+@keyframes blink{50%{opacity:0}}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:1000;font-family:var(--mono);font-size:.72rem;padding:.7rem 1.2rem;border:1px solid;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));transform:translateY(100px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{background:rgba(0,255,136,.1);border-color:var(--green);color:var(--green);}
+.toast.err{background:rgba(255,34,68,.1);border-color:var(--red);color:var(--red);}
+
+/* CONFIRM MODAL */
+.confirm-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:600;display:none;align-items:center;justify-content:center;}
+.confirm-ov.open{display:flex;}
+.confirm-box{background:var(--deep);border:1px solid var(--red);padding:2rem;max-width:380px;width:100%;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));animation:cIn .2s ease;}
+@keyframes cIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.confirm-title{font-family:var(--display);font-size:.85rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:.6rem;}
+.confirm-msg{font-family:var(--body);font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem;}
+.confirm-btns{display:flex;gap:.8rem;}
+.confirm-yes{flex:1;font-family:var(--display);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.65rem;cursor:pointer;background:rgba(255,34,68,.12);color:var(--red);border:1px solid var(--red);transition:all .2s;}
+.confirm-yes:hover{background:rgba(255,34,68,.2);}
+.confirm-no{flex:1;font-family:var(--display);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.65rem;cursor:pointer;background:transparent;color:var(--muted);border:1px solid var(--border);transition:all .2s;}
+.confirm-no:hover{border-color:var(--muted);color:var(--text);}
+
+@media(max-width:768px){.sidebar{width:60px;}.sb-btn span{display:none;}.sb-logo-title,.sb-logo-sub,.sb-admin{display:none;}.main{margin-left:60px;}}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">⚡ SIGNMED</div>
+    <div class="login-sub">// ADMIN CONTROL PANEL — RESTRICTED ACCESS</div>
+    <label class="lf-label">Admin Email</label>
+    <input class="lf-input" id="adminEmail" type="email" placeholder="admin@signmed.io">
+    <label class="lf-label">Password</label>
+    <input class="lf-input" id="adminPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="lf-btn" onclick="adminLogin()">▶ ACCESS CONTROL PANEL</button>
+    <div class="lf-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-title">⚡ SIGNMED</div>
+      <div class="sb-logo-sub">// ADMIN PANEL v1.0</div>
+      <div class="sb-admin" id="sbAdminName">ADMIN</div>
+    </div>
+    <div class="sb-nav">
+      <button class="sb-btn active" onclick="showPage('dashboard',this)"><span class="sb-icon">📊</span><span>Dashboard</span></button>
+      <button class="sb-btn" onclick="showPage('users',this)"><span class="sb-icon">👥</span><span>Users</span></button>
+      <button class="sb-btn" onclick="showPage('scores',this)"><span class="sb-icon">🏆</span><span>Scores</span></button>
+    </div>
+    <div class="sb-bottom">
+      <button class="sb-logout" onclick="adminLogout()">✕ LOGOUT</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-hd">
+        <div class="page-eyebrow">// OVERVIEW :: SYSTEM_STATUS</div>
+        <div class="page-title">ADMIN <span>DASHBOARD</span></div>
+      </div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="sc-icon">⏳</div><div class="sc-num">—</div><div class="sc-label">Loading...</div></div>
+      </div>
+      <!-- Recent activity -->
+      <div class="tbl-wrap">
+        <div class="tbl-header">
+          <div class="tbl-title">// RECENT SCORES</div>
+          <div class="tbl-count" id="recentCount"></div>
+        </div>
+        <div id="recentScoresTable"><div class="tbl-loading">// LOADING...</div></div>
+      </div>
+    </div>
+
+    <!-- USERS PAGE -->
+    <div class="page" id="page-users">
+      <div class="page-hd">
+        <div class="page-eyebrow">// MODULE :: USER_MANAGEMENT</div>
+        <div class="page-title">ALL <span>USERS</span></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-header">
+          <div class="tbl-title">// USER_DATABASE</div>
+          <div style="display:flex;gap:.5rem;align-items:center">
+            <input class="tbl-search" id="userSearch" placeholder="Search username..." oninput="filterUsers()">
+            <div class="tbl-count" id="userCount"></div>
+          </div>
+        </div>
+        <div id="usersTable"><div class="tbl-loading">// LOADING USERS...</div></div>
+      </div>
+    </div>
+
+    <!-- SCORES PAGE -->
+    <div class="page" id="page-scores">
+      <div class="page-hd">
+        <div class="page-eyebrow">// MODULE :: SCORE_DATABASE</div>
+        <div class="page-title">ALL <span>SCORES</span></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-header">
+          <div class="tbl-title">// SCORE_RECORDS</div>
+          <div class="tbl-count" id="scoreCount"></div>
+        </div>
+        <div id="scoresTable"><div class="tbl-loading">// LOADING SCORES...</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-ov" id="confirmModal">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirmTitle">CONFIRM ACTION</div>
+    <div class="confirm-msg" id="confirmMsg"></div>
+    <div class="confirm-btns">
+      <button class="confirm-yes" id="confirmYes">▶ CONFIRM</button>
+      <button class="confirm-no" onclick="closeConfirm()">✕ CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:5000/api';
+let adminToken = localStorage.getItem('signmed_admin_token');
+let allUsers = [], allScores = [];
+
+/* ═══ AUTH ═══ */
+async function adminLogin() {
+  const email    = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPass').value;
+  const msg      = document.getElementById('loginMsg');
+  if (!email || !password) { showLoginMsg('// Fill in all fields', 'err'); return; }
+  showLoginMsg('// Authenticating...', 'ok');
+  try {
+    const res  = await fetch(`${API}/auth/login`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if (!res.ok) return showLoginMsg('// ERROR: ' + data.error, 'err');
+    if (data.role !== 'admin') return showLoginMsg('// ACCESS DENIED — Not an admin account', 'err');
+    adminToken = data.token;
+    localStorage.setItem('signmed_admin_token', adminToken);
+    document.getElementById('sbAdminName').textContent = data.username.toUpperCase();
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadDashboard();
+    loadUsers();
+    loadScores();
+  } catch(e) { showLoginMsg('// CONNECTION ERROR — Is your server running on :5000?', 'err'); }
+}
+
+function showLoginMsg(text, type) {
+  const el = document.getElementById('loginMsg');
+  el.textContent = text; el.className = 'lf-msg ' + type; el.style.display = 'block';
+}
+
+function adminLogout() {
+  adminToken = null;
+  localStorage.removeItem('signmed_admin_token');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+// Auto-login if token exists
+window.addEventListener('load', async () => {
+  if (adminToken) {
+    try {
+      const res = await fetch(`${API}/admin/stats`, { headers:{'Authorization':'Bearer '+adminToken} });
+      if (res.ok) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        loadDashboard(); loadUsers(); loadScores();
+        return;
+      }
+    } catch(e) {}
+    localStorage.removeItem('signmed_admin_token');
+    adminToken = null;
+  }
+});
+
+/* ═══ NAVIGATION ═══ */
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+/* ═══ TOAST ═══ */
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 2500);
+}
+
+/* ═══ CONFIRM ═══ */
+let confirmCallback = null;
+function confirm(title, msg, cb) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent   = msg;
+  confirmCallback = cb;
+  document.getElementById('confirmModal').classList.add('open');
+  document.getElementById('confirmYes').onclick = () => { closeConfirm(); cb(); };
+}
+function closeConfirm() { document.getElementById('confirmModal').classList.remove('open'); }
+
+/* ═══ DASHBOARD ═══ */
+async function loadDashboard() {
+  try {
+    const res  = await fetch(`${API}/admin/stats`, { headers:{'Authorization':'Bearer '+adminToken} });
+    const data = await res.json();
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="stat-card">
+        <div class="sc-icon">👥</div>
+        <div class="sc-num">${data.totalUsers}</div>
+        <div class="sc-label">Total Users</div>
+        <div class="sc-sub">${data.bannedUsers} banned</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon">🎮</div>
+        <div class="sc-num">${data.totalScores}</div>
+        <div class="sc-label">Games Played</div>
+        <div class="sc-sub">all time</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon">⚡</div>
+        <div class="sc-num">${data.totalXP.toLocaleString()}</div>
+        <div class="sc-label">Total XP Earned</div>
+        <div class="sc-sub">across all players</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon">🏆</div>
+        <div class="sc-num">${data.topScore?.score || 0}</div>
+        <div class="sc-label">Highest Score</div>
+        <div class="sc-sub">${data.topScore?.username || '—'}</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon">🚫</div>
+        <div class="sc-num">${data.bannedUsers}</div>
+        <div class="sc-label">Banned Users</div>
+        <div class="sc-sub">currently restricted</div>
+      </div>`;
+    // Recent scores in dashboard
+    renderRecentScores(allScores.slice(0, 8));
+  } catch(e) {
+    document.getElementById('statsGrid').innerHTML = '<div style="font-family:var(--mono);font-size:.72rem;color:var(--red);padding:1rem">// ERROR LOADING STATS</div>';
+  }
+}
+
+function renderRecentScores(scores) {
+  const el = document.getElementById('recentScoresTable');
+  document.getElementById('recentCount').textContent = `// ${scores.length} RECENT`;
+  if (!scores.length) { el.innerHTML = '<div class="tbl-empty">// NO SCORES YET</div>'; return; }
+  el.innerHTML = `<table>
+    <thead><tr><th>Player</th><th>Score</th><th>Language</th><th>Mode</th><th>Streak</th><th>Date</th></tr></thead>
+    <tbody>${scores.map(s=>`<tr>
+      <td style="font-weight:600">${s.username}</td>
+      <td style="font-family:var(--display);font-weight:700;color:var(--cyan)">${s.score}</td>
+      <td><span class="badge badge-user">${s.language?.toUpperCase()}</span></td>
+      <td style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">${s.mode}</td>
+      <td style="color:var(--orange)">🔥 ${s.streak}</td>
+      <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted)">${new Date(s.playedAt).toLocaleDateString()}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+/* ═══ USERS ═══ */
+async function loadUsers() {
+  try {
+    const res  = await fetch(`${API}/admin/users`, { headers:{'Authorization':'Bearer '+adminToken} });
+    allUsers   = await res.json();
+    renderUsers(allUsers);
+  } catch(e) {
+    document.getElementById('usersTable').innerHTML = '<div class="tbl-empty">// ERROR LOADING USERS</div>';
+  }
+}
+
+function renderUsers(users) {
+  document.getElementById('userCount').textContent = `// ${users.length} USERS`;
+  const el = document.getElementById('usersTable');
+  if (!users.length) { el.innerHTML = '<div class="tbl-empty">// NO USERS FOUND</div>'; return; }
+  el.innerHTML = `<table>
+    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>XP</th><th>Joined</th><th>Actions</th></tr></thead>
+    <tbody>${users.map(u=>`<tr id="urow-${u._id}">
+      <td style="font-weight:700;color:var(--text)">${u.username}</td>
+      <td style="font-family:var(--mono);font-size:.72rem;color:var(--muted)">${u.email}</td>
+      <td><span class="badge ${u.role==='admin'?'badge-admin':'badge-user'}">${u.role}</span></td>
+      <td><span class="badge ${u.banned?'badge-banned':'badge-active'}">${u.banned?'BANNED':'ACTIVE'}</span></td>
+      <td style="font-family:var(--display);font-size:.8rem;color:var(--yellow)">${u.xp||0}</td>
+      <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted)">${new Date(u.createdAt).toLocaleDateString()}</td>
+      <td>
+        ${u.role!=='admin'?`
+          <button class="act-btn ${u.banned?'btn-unban':'btn-ban'}" onclick="toggleBan('${u._id}','${u.username}',${u.banned})">
+            ${u.banned?'UNBAN':'BAN'}
+          </button>
+          <button class="act-btn btn-del" onclick="deleteUser('${u._id}','${u.username}')">DELETE</button>
+        `:'<span style="font-family:var(--mono);font-size:.6rem;color:var(--muted)">PROTECTED</span>'}
+      </td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function filterUsers() {
+  const q = document.getElementById('userSearch').value.toLowerCase();
+  renderUsers(allUsers.filter(u => u.username.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)));
+}
+
+async function toggleBan(id, username, isBanned) {
+  const action = isBanned ? 'UNBAN' : 'BAN';
+  confirm(
+    `${action} USER`,
+    `Are you sure you want to ${action.toLowerCase()} "${username}"?`,
+    async () => {
+      try {
+        const res  = await fetch(`${API}/admin/users/${id}/ban`, {
+          method:'PATCH', headers:{'Authorization':'Bearer '+adminToken}
+        });
+        const data = await res.json();
+        if (!res.ok) return toast('// ERROR: ' + data.error, 'err');
+        toast(`// USER ${data.banned ? 'BANNED' : 'UNBANNED'} SUCCESSFULLY`, 'ok');
+        loadUsers();
+        loadDashboard();
+      } catch(e) { toast('// CONNECTION ERROR', 'err'); }
+    }
+  );
+}
+
+async function deleteUser(id, username) {
+  confirm(
+    'DELETE USER',
+    `Permanently delete "${username}" and all their scores? This cannot be undone.`,
+    async () => {
+      try {
+        const res = await fetch(`${API}/admin/users/${id}`, {
+          method:'DELETE', headers:{'Authorization':'Bearer '+adminToken}
+        });
+        if (!res.ok) return toast('// ERROR deleting user', 'err');
+        toast(`// USER "${username}" DELETED`, 'ok');
+        loadUsers();
+        loadDashboard();
+        loadScores();
+      } catch(e) { toast('// CONNECTION ERROR', 'err'); }
+    }
+  );
+}
+
+/* ═══ SCORES ═══ */
+async function loadScores() {
+  try {
+    const res  = await fetch(`${API}/admin/scores`, { headers:{'Authorization':'Bearer '+adminToken} });
+    allScores  = await res.json();
+    renderScores(allScores);
+    renderRecentScores(allScores.slice(0, 8));
+  } catch(e) {
+    document.getElementById('scoresTable').innerHTML = '<div class="tbl-empty">// ERROR LOADING SCORES</div>';
+  }
+}
+
+function renderScores(scores) {
+  document.getElementById('scoreCount').textContent = `// ${scores.length} RECORDS`;
+  const el = document.getElementById('scoresTable');
+  if (!scores.length) { el.innerHTML = '<div class="tbl-empty">// NO SCORES YET</div>'; return; }
+  el.innerHTML = `<table>
+    <thead><tr><th>Player</th><th>Score</th><th>Language</th><th>Mode</th><th>XP</th><th>Streak</th><th>Date</th></tr></thead>
+    <tbody>${scores.map(s=>`<tr>
+      <td style="font-weight:600">${s.username}</td>
+      <td style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--cyan)">${s.score}</td>
+      <td><span class="badge badge-user">${s.language?.toUpperCase()}</span></td>
+      <td style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">${s.mode}</td>
+      <td style="color:var(--yellow);font-family:var(--display);font-size:.8rem">${s.xpEarned}</td>
+      <td style="color:var(--orange)">🔥 ${s.streak}</td>
+      <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted)">${new Date(s.playedAt).toLocaleDateString()}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+</script>
+</body>
+</html>
