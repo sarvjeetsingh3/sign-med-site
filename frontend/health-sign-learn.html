@@ -135,7 +135,7 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
 .orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(255,0,170,.06),transparent 70%);bottom:-50px;right:-50px;animation:orbF 15s ease-in-out infinite reverse;}
 .orb3{width:300px;height:300px;background:radial-gradient(circle,rgba(0,180,255,.07),transparent 70%);top:50%;right:20%;animation:orbF 10s ease-in-out infinite 2s;}
 @keyframes orbF{0%,100%{transform:translate(0,0)}33%{transform:translate(20px,-20px)}66%{transform:translate(-15px,15px)}}
-.hero-inner{max-width:1100px;width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:center;position:relative;z-index:1;}
+.hero-inner{max-width:1100px;width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:start;position:relative;z-index:1;}
 .hero-sys{font-family:var(--mono);font-size:.7rem;color:var(--cyan);letter-spacing:.05em;margin-bottom:1.5rem;opacity:.7;}
 .hero-sys span{color:var(--muted);}
 .blink{animation:blink .8s step-end infinite;}
@@ -641,11 +641,24 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
         <div class="term-line"><span class="warn">[!]</span> Educational only — not medical advice</div>
       </div>
     </div>
-    <div class="hero-stats">
-      <div class="stat-card" onclick="gotoSec('sign')"><div class="stat-icon">🎮</div><div class="stat-num">4</div><div class="stat-label">Game Modes</div><div class="stat-sub">Quiz · Match · Type · Speed</div></div>
-      <div class="stat-card" onclick="gotoSec('sign')"><div class="stat-icon">🤟</div><div class="stat-num">3</div><div class="stat-label">Sign Languages</div><div class="stat-sub">ASL · BSL · ISL</div></div>
-      <div class="stat-card" onclick="gotoSec('allergy')"><div class="stat-icon">⚠️</div><div class="stat-num">9+</div><div class="stat-label">Allergen Types</div><div class="stat-sub">symptoms + tips</div></div>
-      <div class="stat-card" onclick="gotoSec('emergency')"><div class="stat-icon">🆘</div><div class="stat-num">6</div><div class="stat-label">Emergency Protocols</div><div class="stat-sub">step-by-step</div></div>
+    <div>
+      <!-- CYBER RUNNER GAME -->
+      <div id="cyberRunner" style="position:relative;width:100%;height:160px;background:rgba(0,3,8,.95);border:1px solid var(--border);overflow:hidden;margin-bottom:.8rem;cursor:pointer;" onclick="jumpPlayer()" title="Click or press Space to jump!">
+        <canvas id="runnerCanvas" style="width:100%;height:100%;display:block;"></canvas>
+        <div id="runnerMsg" style="position:absolute;bottom:.4rem;right:.6rem;font-family:var(--mono);font-size:.52rem;color:rgba(0,255,200,.3);letter-spacing:.08em">SPACE / TAP TO JUMP</div>
+        <div id="runnerScore" style="position:absolute;top:.5rem;right:.7rem;font-family:var(--display);font-size:.65rem;font-weight:700;color:var(--cyan);letter-spacing:.1em">SCORE: 0</div>
+        <div id="runnerOver" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:.4rem;background:rgba(0,0,0,.7)">
+          <div style="font-family:var(--display);font-size:.8rem;font-weight:900;color:var(--red);letter-spacing:.15em">GAME OVER</div>
+          <div id="runnerFinalScore" style="font-family:var(--mono);font-size:.65rem;color:var(--cyan)"></div>
+          <div style="font-family:var(--mono);font-size:.58rem;color:var(--muted)">TAP TO RESTART</div>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card" onclick="gotoSec('sign')"><div class="stat-icon">🎮</div><div class="stat-num">4</div><div class="stat-label">Game Modes</div><div class="stat-sub">Quiz · Match · Type · Speed</div></div>
+        <div class="stat-card" onclick="gotoSec('sign')"><div class="stat-icon">🤟</div><div class="stat-num">3</div><div class="stat-label">Sign Languages</div><div class="stat-sub">ASL · BSL · ISL</div></div>
+        <div class="stat-card" onclick="gotoSec('allergy')"><div class="stat-icon">⚠️</div><div class="stat-num">9+</div><div class="stat-label">Allergen Types</div><div class="stat-sub">symptoms + tips</div></div>
+        <div class="stat-card" onclick="gotoSec('emergency')"><div class="stat-icon">🆘</div><div class="stat-num">6</div><div class="stat-label">Emergency Protocols</div><div class="stat-sub">step-by-step</div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1933,6 +1946,341 @@ function closeSOS(){
   document.body.style.overflow='';
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSOS();closeCardModal();closeCheckout();}});
+
+/* ═══ CYBER RUNNER GAME ═══ */
+(function(){
+  const canvas=document.getElementById('runnerCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const wrap=document.getElementById('cyberRunner');
+  const scoreEl=document.getElementById('runnerScore');
+  const overEl=document.getElementById('runnerOver');
+  const finalEl=document.getElementById('runnerFinalScore');
+
+  const C={cyan:'#00ffc8',mag:'#ff00aa',blue:'#00b4ff',yellow:'#ffdd00',red:'#ff2244',green:'#00ff88',bg:'#000308'};
+  let W,H,GY,animId;
+  let p,obs,parts,stars,score,spd,frame,dead,hi=0;
+
+  function resize(){
+    W=canvas.width=wrap.offsetWidth;
+    H=canvas.height=wrap.offsetHeight;
+    GY=H-22;
+  }
+
+  function init(){
+    resize();
+    score=0;spd=3.2;frame=0;dead=false;
+    p={x:52,y:GY-22,w:14,h:22,vy:0,grnd:true,color:C.cyan,trail:[]};
+    obs=[];parts=[];
+    stars=Array.from({length:25},()=>({
+      x:Math.random()*W,y:Math.random()*(GY-10),
+      r:Math.random()*.8+.2,spd:Math.random()*.4+.2,
+      c:[C.cyan,C.mag,C.blue][Math.floor(Math.random()*3)]
+    }));
+    overEl.style.display='none';
+    scoreEl.textContent='SCORE: 0';
+    if(animId)cancelAnimationFrame(animId);
+    loop();
+  }
+
+  function jump(){
+    if(dead){init();return;}
+    if(p.grnd){p.vy=-9.5;p.grnd=false;}
+  }
+
+  // expose globally
+  window.jumpPlayer=jump;
+
+  function spawnObs(){
+    const types=[
+      {w:20,h:20,type:'virus',c:C.red},
+      {w:18,h:18,type:'bacteria',c:C.green},
+      {w:16,h:16,type:'germ',c:C.mag},
+      {w:20,h:18,type:'covid',c:C.yellow},
+      {w:16,h:20,type:'amoeba',c:C.blue},
+    ];
+    const t=types[Math.floor(Math.random()*types.length)];
+    obs.push({x:W+10,y:GY-t.h,w:t.w,h:t.h,c:t.c,type:t.type,wobble:0});
+  }
+
+  function spawnParticle(x,y,c){
+    for(let i=0;i<6;i++){
+      parts.push({x,y,vx:(Math.random()-0.5)*4,vy:(Math.random()-1.5)*3,
+        life:1,c,r:Math.random()*2+1});
+    }
+  }
+
+  function drawGrid(){
+    ctx.strokeStyle='rgba(0,255,200,0.04)';
+    ctx.lineWidth=1;
+    for(let x=0;x<W;x+=30){
+      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+    }
+    for(let y=0;y<H;y+=20){
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    }
+  }
+
+  function drawGround(){
+    // Ground line with neon glow
+    ctx.shadowBlur=8;ctx.shadowColor=C.cyan;
+    ctx.strokeStyle='rgba(0,255,200,0.5)';
+    ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(0,GY+1);ctx.lineTo(W,GY+1);ctx.stroke();
+    ctx.shadowBlur=0;
+    // Dashes scrolling
+    ctx.strokeStyle='rgba(0,255,200,0.15)';
+    ctx.lineWidth=1;
+    for(let x=(-frame*spd%40);x<W;x+=40){
+      ctx.beginPath();ctx.moveTo(x,GY+8);ctx.lineTo(x+20,GY+8);ctx.stroke();
+    }
+  }
+
+  function drawPlayer(){
+    // Trail
+    p.trail.forEach((t,i)=>{
+      ctx.globalAlpha=(i/p.trail.length)*0.3;
+      ctx.fillStyle=C.cyan;
+      ctx.fillRect(t.x,t.y,p.w,p.h);
+    });
+    ctx.globalAlpha=1;
+
+    // Pixel body — cyberpunk character
+    const x=p.x,y=p.y;
+    // Glow
+    ctx.shadowBlur=12;ctx.shadowColor=C.cyan;
+    // Body
+    ctx.fillStyle=C.cyan;
+    ctx.fillRect(x+2,y+8,p.w-4,p.h-8);
+    // Head
+    ctx.fillStyle=C.blue;
+    ctx.fillRect(x+3,y,p.w-6,8);
+    // Visor
+    ctx.fillStyle=C.mag;
+    ctx.fillRect(x+5,y+2,6,3);
+    // Legs (animated)
+    const legOff=p.grnd?Math.sin(frame*0.3)*3:0;
+    ctx.fillStyle=C.cyan;
+    ctx.fillRect(x+2,y+p.h-6,5,6+legOff);
+    ctx.fillRect(x+p.w-7,y+p.h-6,5,6-legOff);
+    ctx.shadowBlur=0;
+  }
+
+  function drawObstacles(){
+    obs.forEach(o=>{
+      o.wobble=(o.wobble||0)+0.15;
+      const bob=Math.sin(o.wobble)*2;
+      const x=o.x, y=o.y+bob;
+      ctx.shadowBlur=14;ctx.shadowColor=o.c;
+
+      if(o.type==='virus'){
+        // Round body
+        ctx.fillStyle=o.c;
+        ctx.fillRect(x+4,y+2,o.w-8,o.h-4);
+        ctx.fillRect(x+2,y+4,o.w-4,o.h-8);
+        ctx.fillRect(x+3,y+3,o.w-6,o.h-6);
+        // Spikes around
+        ctx.fillStyle=o.c;
+        ctx.fillRect(x+o.w/2-1,y-3,2,4);   // top
+        ctx.fillRect(x+o.w/2-1,y+o.h-1,2,4); // bottom
+        ctx.fillRect(x-3,y+o.h/2-1,4,2);   // left
+        ctx.fillRect(x+o.w-1,y+o.h/2-1,4,2); // right
+        ctx.fillRect(x,y+1,2,2);             // corners
+        ctx.fillRect(x+o.w-2,y+1,2,2);
+        ctx.fillRect(x,y+o.h-3,2,2);
+        ctx.fillRect(x+o.w-2,y+o.h-3,2,2);
+        // Evil eyes
+        ctx.fillStyle='rgba(0,0,0,0.7)';
+        ctx.fillRect(x+5,y+6,3,3);
+        ctx.fillRect(x+o.w-8,y+6,3,3);
+        // Mouth
+        ctx.fillRect(x+5,y+o.h-8,o.w-10,2);
+        ctx.fillRect(x+5,y+o.h-6,2,2);
+        ctx.fillRect(x+o.w-7,y+o.h-6,2,2);
+
+      } else if(o.type==='bacteria'){
+        // Oval body
+        ctx.fillStyle=o.c;
+        ctx.fillRect(x+2,y,o.w-4,o.h);
+        ctx.fillRect(x,y+3,o.w,o.h-6);
+        // Flagella (tail lines)
+        ctx.strokeStyle=o.c;ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.moveTo(x+o.w,y+o.h/2);
+        ctx.bezierCurveTo(x+o.w+6,y+o.h/2-4,x+o.w+8,y+o.h/2+2,x+o.w+12,y+o.h/2-2);
+        ctx.stroke();
+        ctx.beginPath();ctx.moveTo(x+o.w,y+o.h/2+3);
+        ctx.bezierCurveTo(x+o.w+5,y+o.h/2+6,x+o.w+9,y+o.h/2+2,x+o.w+13,y+o.h/2+5);
+        ctx.stroke();
+        // Nucleus
+        ctx.fillStyle='rgba(0,0,0,0.4)';
+        ctx.fillRect(x+5,y+5,o.w-10,o.h-10);
+        // Eyes
+        ctx.fillStyle='rgba(0,0,0,0.8)';
+        ctx.fillRect(x+4,y+5,2,2);
+        ctx.fillRect(x+o.w-6,y+5,2,2);
+
+      } else if(o.type==='germ'){
+        // Spiky round germ
+        ctx.fillStyle=o.c;
+        ctx.fillRect(x+3,y,o.w-6,o.h);
+        ctx.fillRect(x,y+3,o.w,o.h-6);
+        ctx.fillRect(x+1,y+1,o.w-2,o.h-2);
+        // Many spikes
+        for(let i=0;i<8;i++){
+          const angle=(i/8)*Math.PI*2+o.wobble*0.1;
+          const sx=x+o.w/2+Math.cos(angle)*(o.w/2);
+          const sy=y+o.h/2+Math.sin(angle)*(o.h/2);
+          ctx.fillRect(sx-1,sy-1,3,3);
+        }
+        // Face
+        ctx.fillStyle='rgba(0,0,0,0.6)';
+        ctx.fillRect(x+4,y+4,2,2);
+        ctx.fillRect(x+o.w-6,y+4,2,2);
+        ctx.fillRect(x+3,y+o.h-6,o.w-6,2);
+
+      } else if(o.type==='covid'){
+        // COVID ball
+        ctx.fillStyle=o.c;
+        ctx.fillRect(x+3,y+2,o.w-6,o.h-4);
+        ctx.fillRect(x+2,y+3,o.w-4,o.h-6);
+        // Crown spikes (like COVID)
+        const spikes=[[x+o.w/2-1,y-4,2,5],[x+3,y-2,2,4],[x+o.w-5,y-2,2,4],
+                      [x+o.w/2-1,y+o.h-1,2,5],[x+3,y+o.h-2,2,4],[x+o.w-5,y+o.h-2,2,4],
+                      [x-4,y+o.h/2-1,5,2],[x+o.w-1,y+o.h/2-1,5,2]];
+        spikes.forEach(s=>ctx.fillRect(...s));
+        // Spike tips (circles)
+        ctx.fillStyle='rgba(255,255,255,0.6)';
+        spikes.forEach(s=>ctx.fillRect(s[0],s[1],2,2));
+        // Eyes
+        ctx.fillStyle='rgba(0,0,0,0.7)';
+        ctx.fillRect(x+5,y+6,3,3);
+        ctx.fillRect(x+o.w-8,y+6,3,3);
+        ctx.fillRect(x+4,y+11,o.w-8,2);
+
+      } else if(o.type==='amoeba'){
+        // Blobby irregular shape
+        ctx.fillStyle=o.c;
+        ctx.globalAlpha=0.85;
+        ctx.fillRect(x+2,y,o.w-4,o.h);
+        ctx.fillRect(x,y+2,o.w,o.h-4);
+        ctx.fillRect(x+1,y+1,o.w-2,o.h-2);
+        // Blob bumps
+        ctx.fillRect(x-2,y+4,3,5);
+        ctx.fillRect(x+o.w-1,y+6,3,4);
+        ctx.fillRect(x+4,y-2,5,3);
+        ctx.fillRect(x+5,y+o.h-1,4,3);
+        ctx.globalAlpha=1;
+        // Nucleus
+        ctx.fillStyle='rgba(0,0,0,0.35)';
+        ctx.fillRect(x+4,y+4,o.w-8,o.h-8);
+        // Dot eyes
+        ctx.fillStyle='rgba(0,0,0,0.8)';
+        ctx.fillRect(x+4,y+5,2,2);
+        ctx.fillRect(x+o.w-6,y+5,2,2);
+        ctx.fillRect(x+5,y+o.h-7,o.w-10,2);
+      }
+      ctx.shadowBlur=0;
+    });
+  }
+
+  function drawStars(){
+    stars.forEach(s=>{
+      ctx.fillStyle=s.c;
+      ctx.globalAlpha=0.6;
+      ctx.fillRect(s.x,s.y,s.r*2,s.r*2);
+    });
+    ctx.globalAlpha=1;
+  }
+
+  function drawParticles(){
+    parts.forEach(pt=>{
+      ctx.globalAlpha=pt.life*0.8;
+      ctx.fillStyle=pt.c;
+      ctx.fillRect(pt.x,pt.y,pt.r*2,pt.r*2);
+    });
+    ctx.globalAlpha=1;
+  }
+
+  function drawScore(){
+    ctx.fillStyle=C.cyan;
+    ctx.font=`700 11px 'Share Tech Mono',monospace`;
+    ctx.textAlign='left';
+    ctx.fillText(`// SCORE: ${score}`,8,16);
+    if(hi>0){
+      ctx.fillStyle='rgba(0,255,200,0.4)';
+      ctx.font=`9px 'Share Tech Mono',monospace`;
+      ctx.fillText(`HI: ${hi}`,8,28);
+    }
+  }
+
+  function loop(){
+    frame++;
+    ctx.fillStyle=C.bg;
+    ctx.fillRect(0,0,W,H);
+    drawGrid();
+
+    // Scroll stars
+    stars.forEach(s=>{s.x-=s.spd;if(s.x<0)s.x=W;});
+    drawStars();
+    drawGround();
+
+    // Physics
+    if(!p.grnd){p.vy+=0.55;p.y+=p.vy;}
+    if(p.y>=GY-p.h){p.y=GY-p.h;p.vy=0;p.grnd=true;}
+
+    // Trail
+    p.trail.push({x:p.x,y:p.y});
+    if(p.trail.length>8)p.trail.shift();
+
+    // Spawn obstacles
+    const spawnRate=Math.max(55,90-Math.floor(score/8));
+    if(frame%spawnRate===0)spawnObs();
+
+    // Move obstacles
+    obs.forEach(o=>{o.x-=spd;});
+    obs=obs.filter(o=>o.x>-50);
+
+    // Particles
+    parts.forEach(pt=>{pt.x+=pt.vx;pt.y+=pt.vy;pt.vy+=0.15;pt.life-=0.05;});
+    parts=parts.filter(pt=>pt.life>0);
+
+    // Collision
+    obs.forEach(o=>{
+      if(p.x+p.w-4>o.x+2&&p.x+4<o.x+o.w-2&&p.y+p.h-2>o.y&&p.y+2<o.y+o.h){
+        dead=true;
+        if(score>hi)hi=score;
+        spawnParticle(p.x+p.w/2,p.y+p.h/2,C.red);
+      }
+    });
+
+    drawObstacles();
+    drawParticles();
+    drawPlayer();
+    drawScore();
+
+    // Score
+    if(frame%6===0)score++;
+    scoreEl.textContent='SCORE: '+score;
+
+    // Speed up
+    spd=3.2+score*0.012;
+
+    if(dead){
+      overEl.style.display='flex';
+      finalEl.textContent=`SCORE: ${score}  |  BEST: ${hi}`;
+      return;
+    }
+
+    animId=requestAnimationFrame(loop);
+  }
+
+  // Controls
+  document.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();}});
+  window.addEventListener('resize',()=>{resize();});
+
+  // Auto start after short delay
+  setTimeout(init,600);
+})();
 
 // Init backend
 updateNavAuth();

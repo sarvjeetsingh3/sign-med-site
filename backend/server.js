@@ -1,34 +1,50 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+const cors    = require('cors');
+const path    = require('path');
 require('dotenv').config();
 
-const app = express();
-app.use(cors({
-  origin: ['http://localhost:5000', 'http://localhost:5001'],
-  credentials: true
-}));
-app.use(express.json());
+const connectDB  = require('./config/db');
+const logger     = require('./utils/logger');
+const { apiLimiter } = require('./middleware/rateLimit');
 
-// Routes
+const app = express();
+
+// ── Middleware ──────────────────────────────────────────
+app.use(cors({ origin: ['http://localhost:5000', 'http://localhost:5001'], credentials: true }));
+app.use(express.json());
+app.use(apiLimiter); // Global rate limit
+
+// Request logger
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => logger.request(req.method, req.originalUrl, res.statusCode, Date.now() - start));
+  next();
+});
+
+// ── Routes ──────────────────────────────────────────────
 app.use('/api/auth',        require('./routes/auth'));
 app.use('/api/scores',      require('./routes/scores'));
 app.use('/api/leaderboard', require('./routes/leaderboard'));
 app.use('/api/admin',       require('./routes/admin'));
 
-// Health check
-// Serve frontend
-const path = require('path');
+// ── Serve Frontend ──────────────────────────────────────
 app.use(express.static(path.join(__dirname, '../frontend')));
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend', 'health-sign-learn.html'));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../frontend', 'health-sign-learn.html')));
+
+// ── Global Error Handler ────────────────────────────────
+app.use((err, req, res, next) => {
+  logger.error(`Unhandled error: ${err.message}`);
+  res.status(500).json({ error: 'Internal server error.' });
 });
-// Connect DB then start server
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('✅ MongoDB connected');
-    app.listen(process.env.PORT, () =>
-      console.log(`🚀 Server running on http://localhost:${process.env.PORT}`)
-    );
-  })
-  .catch(err => console.error('❌ DB Error:', err));
+
+// ── 404 Handler ─────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ error: `Route ${req.originalUrl} not found.` });
+});
+
+// ── Start ────────────────────────────────────────────────
+connectDB().then(() => {
+  app.listen(process.env.PORT, () =>
+    logger.success(`Server running → http://localhost:${process.env.PORT}`)
+  );
+});
