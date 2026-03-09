@@ -3,488 +3,1149 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGNMED // ADMIN CONTROL PANEL</title>
+<title>SIGNMED // NEURAL HEALTH INTERFACE</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{
-  --void:#000308;--deep:#020812;--panel:rgba(255,0,170,0.03);
-  --border:rgba(255,0,170,0.15);--cyan:#00ffc8;--blue:#00b4ff;
+  --void:#000308;--deep:#020812;--panel:rgba(0,255,200,0.03);
+  --border:rgba(0,255,200,0.15);--cyan:#00ffc8;--blue:#00b4ff;
   --magenta:#ff00aa;--yellow:#ffdd00;--red:#ff2244;--green:#00ff88;
   --orange:#ff7700;--text:#c8f0ff;--muted:#4a7a99;
   --mono:'Share Tech Mono',monospace;--display:'Orbitron',sans-serif;--body:'Rajdhani',sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--void);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh;}
+body{background:var(--void);color:var(--text);font-family:var(--body);font-weight:400;overflow-x:hidden;cursor:crosshair;}
 body::before{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);pointer-events:none;}
-.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,0,170,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,0,170,0.03) 1px,transparent 1px);background-size:40px 40px;}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,255,200,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,200,0.04) 1px,transparent 1px);background-size:40px 40px;animation:gridShift 20s linear infinite;}
+@keyframes gridShift{from{background-position:0 0}to{background-position:40px 40px}}
 
-/* LOGIN SCREEN */
-#loginScreen{position:fixed;inset:0;z-index:500;background:var(--void);display:flex;align-items:center;justify-content:center;}
-.login-box{background:var(--deep);border:1px solid var(--magenta);padding:2.5rem;width:100%;max-width:400px;position:relative;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));box-shadow:0 0 60px rgba(255,0,170,.1);}
-.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),var(--cyan),transparent);}
-.login-logo{font-family:var(--display);font-size:1.1rem;font-weight:900;color:var(--magenta);text-shadow:0 0 20px var(--magenta);letter-spacing:.2em;text-align:center;margin-bottom:.3rem;}
-.login-sub{font-family:var(--mono);font-size:.62rem;color:var(--muted);text-align:center;letter-spacing:.15em;margin-bottom:2rem;}
-.lf-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;display:block;}
-.lf-input{width:100%;background:rgba(255,0,170,.03);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.85rem;padding:.65rem .9rem;outline:none;margin-bottom:1rem;transition:border-color .2s;}
-.lf-input:focus{border-color:var(--magenta);box-shadow:0 0 12px rgba(255,0,170,.1);}
-.lf-btn{width:100%;font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.85rem;cursor:pointer;background:linear-gradient(135deg,rgba(255,0,170,.2),rgba(0,180,255,.1));color:var(--magenta);border:1px solid var(--magenta);transition:all .2s;}
-.lf-btn:hover{box-shadow:0 0 20px rgba(255,0,170,.3);}
-.lf-msg{font-family:var(--mono);font-size:.67rem;margin-top:.8rem;padding:.5rem .8rem;display:none;}
-.lf-msg.err{background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.3);color:var(--red);}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;background:rgba(0,3,8,0.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--blue),var(--magenta),transparent);animation:navGlow 4s linear infinite;}
+@keyframes navGlow{0%,100%{opacity:.5}50%{opacity:1}}
+.nav-logo{font-family:var(--display);font-size:1rem;font-weight:900;color:var(--cyan);text-shadow:0 0 20px var(--cyan),0 0 40px rgba(0,255,200,.3);letter-spacing:.2em;}
+.nav-logo span{color:var(--magenta);text-shadow:0 0 20px var(--magenta);}
+.nav-links{display:flex;gap:.2rem;}
+.nav-links button{background:none;border:1px solid transparent;color:var(--muted);font-family:var(--body);font-weight:600;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .8rem;cursor:pointer;transition:all .2s;}
+.nav-links button:hover,.nav-links button.active{color:var(--cyan);border-color:var(--border);background:rgba(0,255,200,.05);text-shadow:0 0 10px var(--cyan);}
 
-/* MAIN LAYOUT */
-#app{display:none;min-height:100vh;position:relative;z-index:1;}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:rgba(2,8,18,.97);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;}
-.sidebar::after{content:'';position:absolute;top:0;right:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--magenta),var(--cyan),transparent);}
-.sb-logo{padding:1.5rem 1.2rem 1rem;border-bottom:1px solid var(--border);}
-.sb-logo-title{font-family:var(--display);font-size:.85rem;font-weight:900;color:var(--magenta);text-shadow:0 0 15px var(--magenta);letter-spacing:.15em;}
-.sb-logo-sub{font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:.2rem;letter-spacing:.1em;}
-.sb-admin{font-family:var(--mono);font-size:.62rem;color:var(--cyan);margin-top:.4rem;}
-.sb-nav{flex:1;padding:.8rem 0;}
-.sb-btn{width:100%;background:none;border:none;color:var(--muted);font-family:var(--body);font-weight:600;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:.7rem 1.2rem;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.7rem;transition:all .2s;position:relative;}
-.sb-btn:hover,.sb-btn.active{color:var(--magenta);background:rgba(255,0,170,.06);}
-.sb-btn.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--magenta);box-shadow:0 0 8px var(--magenta);}
-.sb-icon{font-size:1rem;width:20px;text-align:center;}
-.sb-bottom{padding:1rem 1.2rem;border-top:1px solid var(--border);}
-.sb-logout{width:100%;font-family:var(--display);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.55rem;cursor:pointer;background:transparent;color:var(--red);border:1px solid rgba(255,34,68,.3);transition:all .2s;}
-.sb-logout:hover{background:rgba(255,34,68,.08);border-color:var(--red);}
+/* GLITCH */
+.glitch{position:relative;animation:glitchA 8s infinite;}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;}
+.glitch::before{color:var(--magenta);clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);animation:glitchT 8s infinite;}
+.glitch::after{color:var(--blue);clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);animation:glitchB 8s infinite;}
+@keyframes glitchA{0%,92%,100%{transform:translate(0)}93%{transform:translate(-2px,1px)}94%{transform:translate(2px,-1px)}95%{transform:translate(0)}}
+@keyframes glitchT{0%,92%,100%{transform:translate(0);opacity:0}93%{transform:translate(-3px,0);opacity:.8}95%{opacity:0}}
+@keyframes glitchB{0%,92%,100%{transform:translate(0);opacity:0}95%{transform:translate(3px,0);opacity:.8}97%{opacity:0}}
 
-/* MAIN CONTENT */
-.main{margin-left:220px;padding:2rem;min-height:100vh;}
-.page{display:none;}
-.page.active{display:block;}
-.page-hd{margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
-.page-hd::after{content:'';display:block;width:80px;height:1px;background:linear-gradient(90deg,var(--magenta),transparent);margin-top:.8rem;}
-.page-eyebrow{font-family:var(--mono);font-size:.6rem;color:var(--magenta);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.4rem;opacity:.7;}
-.page-title{font-family:var(--display);font-size:1.6rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text);}
-.page-title span{color:var(--magenta);}
-
-/* STAT CARDS */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
-.stat-card{background:var(--panel);border:1px solid var(--border);padding:1.4rem;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:all .3s;}
-.stat-card:hover{transform:translateY(-3px);border-color:var(--magenta);}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),transparent);animation:scan 3s linear infinite;}
-@keyframes scan{from{top:0;opacity:1}70%{opacity:1}to{top:100%;opacity:0}}
-.sc-icon{font-size:1.8rem;margin-bottom:.6rem;}
-.sc-num{font-family:var(--display);font-size:2rem;font-weight:900;color:var(--magenta);text-shadow:0 0 20px rgba(255,0,170,.4);}
-.sc-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem;}
-.sc-sub{font-family:var(--mono);font-size:.62rem;color:var(--cyan);margin-top:.3rem;}
-
-/* TABLE */
-.tbl-wrap{background:rgba(255,0,170,.02);border:1px solid var(--border);overflow:hidden;}
-.tbl-header{padding:.8rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
-.tbl-title{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text);}
-.tbl-count{font-family:var(--mono);font-size:.62rem;color:var(--magenta);}
-.tbl-search{background:rgba(255,0,170,.04);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.72rem;padding:.4rem .8rem;outline:none;width:200px;}
-.tbl-search:focus{border-color:var(--magenta);}
-table{width:100%;border-collapse:collapse;}
-thead th{font-family:var(--mono);font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:.6rem 1rem;text-align:left;border-bottom:1px solid var(--border);background:rgba(255,0,170,.03);}
-tbody td{font-family:var(--body);font-size:.83rem;padding:.7rem 1rem;border-bottom:1px solid rgba(255,0,170,.05);transition:background .15s;}
-tbody tr:hover td{background:rgba(255,0,170,.04);}
-tbody tr:last-child td{border-bottom:none;}
-.badge{font-family:var(--mono);font-size:.58rem;padding:.18rem .5rem;text-transform:uppercase;letter-spacing:.06em;display:inline-block;}
-.badge-admin{background:rgba(255,0,170,.12);color:var(--magenta);border:1px solid rgba(255,0,170,.3);}
-.badge-user{background:rgba(0,180,255,.08);color:var(--blue);border:1px solid rgba(0,180,255,.2);}
-.badge-banned{background:rgba(255,34,68,.12);color:var(--red);border:1px solid rgba(255,34,68,.3);}
-.badge-active{background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.2);}
-.act-btn{font-family:var(--mono);font-size:.6rem;padding:.25rem .6rem;cursor:pointer;border:none;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;margin-right:.3rem;}
-.btn-ban{background:rgba(255,221,0,.08);color:var(--yellow);border:1px solid rgba(255,221,0,.3);}
-.btn-ban:hover{background:rgba(255,221,0,.15);}
-.btn-unban{background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.3);}
-.btn-unban:hover{background:rgba(0,255,136,.15);}
-.btn-del{background:rgba(255,34,68,.08);color:var(--red);border:1px solid rgba(255,34,68,.3);}
-.btn-del:hover{background:rgba(255,34,68,.15);}
-.tbl-empty{text-align:center;padding:3rem;font-family:var(--mono);font-size:.72rem;color:var(--muted);opacity:.6;}
-.tbl-loading{text-align:center;padding:3rem;font-family:var(--mono);font-size:.72rem;color:var(--magenta);animation:blink .8s step-end infinite;}
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 2rem 2rem;position:relative;}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(0,255,200,.08),transparent 70%);top:-100px;left:-100px;animation:orbF 12s ease-in-out infinite;}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(255,0,170,.06),transparent 70%);bottom:-50px;right:-50px;animation:orbF 15s ease-in-out infinite reverse;}
+.orb3{width:300px;height:300px;background:radial-gradient(circle,rgba(0,180,255,.07),transparent 70%);top:50%;right:20%;animation:orbF 10s ease-in-out infinite 2s;}
+@keyframes orbF{0%,100%{transform:translate(0,0)}33%{transform:translate(20px,-20px)}66%{transform:translate(-15px,15px)}}
+.hero-inner{max-width:1100px;width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:center;position:relative;z-index:1;}
+.hero-sys{font-family:var(--mono);font-size:.7rem;color:var(--cyan);letter-spacing:.05em;margin-bottom:1.5rem;opacity:.7;}
+.hero-sys span{color:var(--muted);}
+.blink{animation:blink .8s step-end infinite;}
 @keyframes blink{50%{opacity:0}}
+.hero-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.6rem);font-weight:900;line-height:1.05;letter-spacing:.05em;margin-bottom:1.5rem;text-transform:uppercase;}
+.hero-title .l1{color:var(--cyan);text-shadow:0 0 30px rgba(0,255,200,.5),0 0 60px rgba(0,255,200,.2);display:block;}
+.hero-title .l2{color:var(--text);display:block;}
+.hero-title .l3{color:var(--magenta);text-shadow:0 0 30px rgba(255,0,170,.5);display:block;font-size:.55em;letter-spacing:.3em;}
+.hero-desc{font-size:1rem;color:var(--muted);line-height:1.8;margin-bottom:2rem;max-width:500px;border-left:2px solid var(--border);padding-left:1rem;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-c{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.8rem 1.8rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;border:none;}
+.btn-c::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);transform:translateX(-100%);transition:transform .4s;}
+.btn-c:hover::before{transform:translateX(100%);}
+.btn-p{background:linear-gradient(135deg,rgba(0,255,200,.2),rgba(0,180,255,.2));color:var(--cyan);border:1px solid var(--cyan);box-shadow:0 0 20px rgba(0,255,200,.2),inset 0 0 20px rgba(0,255,200,.05);}
+.btn-p:hover{box-shadow:0 0 30px rgba(0,255,200,.4),inset 0 0 30px rgba(0,255,200,.1);transform:translateY(-2px);}
+.btn-s{background:transparent;color:var(--magenta);border:1px solid var(--magenta);box-shadow:0 0 20px rgba(255,0,170,.1);}
+.btn-s:hover{box-shadow:0 0 30px rgba(255,0,170,.3);transform:translateY(-2px);}
+.term-line{font-family:var(--mono);font-size:.67rem;color:rgba(0,255,200,.4);letter-spacing:.04em;margin-bottom:.35rem;margin-top:1.8rem;}
+.term-line .ok{color:var(--green);}.term-line .warn{color:var(--yellow);}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+.stat-card{background:var(--panel);border:1px solid var(--border);padding:1.2rem;position:relative;overflow:hidden;cursor:pointer;transition:all .3s;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:scan 3s linear infinite;}
+.stat-card:nth-child(2)::before{animation-delay:.75s;background:linear-gradient(90deg,transparent,var(--magenta),transparent);}
+.stat-card:nth-child(3)::before{animation-delay:1.5s;background:linear-gradient(90deg,transparent,var(--blue),transparent);}
+.stat-card:nth-child(4)::before{animation-delay:2.25s;background:linear-gradient(90deg,transparent,var(--green),transparent);}
+@keyframes scan{from{top:0;opacity:1}70%{opacity:1}to{top:100%;opacity:0}}
+.stat-card:hover{transform:translateY(-3px);border-color:var(--cyan);background:rgba(0,255,200,.06);}
+.stat-icon{font-size:1.6rem;margin-bottom:.5rem;}
+.stat-num{font-family:var(--display);font-size:1.4rem;font-weight:900;color:var(--cyan);}
+.stat-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem;font-family:var(--body);font-weight:600;}
+.stat-sub{font-size:.65rem;color:rgba(74,122,153,.6);margin-top:.2rem;font-family:var(--mono);}
 
-/* TOAST */
-.toast{position:fixed;bottom:2rem;right:2rem;z-index:1000;font-family:var(--mono);font-size:.72rem;padding:.7rem 1.2rem;border:1px solid;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));transform:translateY(100px);opacity:0;transition:all .3s;pointer-events:none;}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.ok{background:rgba(0,255,136,.1);border-color:var(--green);color:var(--green);}
-.toast.err{background:rgba(255,34,68,.1);border-color:var(--red);color:var(--red);}
+/* SECTIONS */
+section{padding:5rem 2rem;position:relative;z-index:1;}
+.sec-con{max-width:1100px;margin:0 auto;}
+.sec-hd{text-align:center;margin-bottom:3.5rem;}
+.sec-hd::after{content:'';display:block;width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:1.5rem auto 0;}
+.eyebrow{font-family:var(--mono);font-size:.65rem;color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.8rem;display:block;opacity:.8;}
+.sec-title{font-family:var(--display);font-size:clamp(1.5rem,3vw,2.3rem);font-weight:900;text-transform:uppercase;letter-spacing:.08em;line-height:1.1;color:var(--text);}
+.sec-title .hl{color:var(--cyan);}
+.sec-sub{font-size:.95rem;color:var(--muted);line-height:1.7;max-width:520px;margin:.8rem auto 0;}
 
-/* CONFIRM MODAL */
-.confirm-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:600;display:none;align-items:center;justify-content:center;}
-.confirm-ov.open{display:flex;}
-.confirm-box{background:var(--deep);border:1px solid var(--red);padding:2rem;max-width:380px;width:100%;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));animation:cIn .2s ease;}
-@keyframes cIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-.confirm-title{font-family:var(--display);font-size:.85rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:.6rem;}
-.confirm-msg{font-family:var(--body);font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem;}
-.confirm-btns{display:flex;gap:.8rem;}
-.confirm-yes{flex:1;font-family:var(--display);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.65rem;cursor:pointer;background:rgba(255,34,68,.12);color:var(--red);border:1px solid var(--red);transition:all .2s;}
-.confirm-yes:hover{background:rgba(255,34,68,.2);}
-.confirm-no{flex:1;font-family:var(--display);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.65rem;cursor:pointer;background:transparent;color:var(--muted);border:1px solid var(--border);transition:all .2s;}
-.confirm-no:hover{border-color:var(--muted);color:var(--text);}
+/* ═══════════════════════════════════════
+   GAME SECTION
+═══════════════════════════════════════ */
+#sign{background:linear-gradient(180deg,var(--void) 0%,#010a14 100%);}
 
-@media(max-width:768px){.sidebar{width:60px;}.sb-btn span{display:none;}.sb-logo-title,.sb-logo-sub,.sb-admin{display:none;}.main{margin-left:60px;}}
+/* Language Selector */
+.lang-select-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;}
+.lang-sel-btn{font-family:var(--body);font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--muted);padding:.55rem 1.3rem;cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:all .2s;}
+.lang-sel-btn.active,.lang-sel-btn:hover{background:rgba(0,255,200,.08);border-color:var(--cyan);color:var(--cyan);text-shadow:0 0 10px var(--cyan);}
+
+/* Mode cards */
+.game-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2.5rem;}
+.mode-card{background:var(--panel);border:1px solid var(--border);padding:1.4rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+.mode-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,200,.04),transparent);opacity:0;transition:opacity .2s;}
+.mode-card:hover{border-color:var(--cyan);transform:translateY(-3px);}
+.mode-card:hover::after{opacity:1;}
+.mode-card.locked{opacity:.4;cursor:not-allowed;}
+.mode-icon{font-size:2rem;margin-bottom:.6rem;}
+.mode-name{font-family:var(--display);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin-bottom:.3rem;}
+.mode-desc{font-family:var(--mono);font-size:.65rem;color:var(--muted);line-height:1.5;}
+.mode-badge{position:absolute;top:.6rem;right:.6rem;font-family:var(--mono);font-size:.55rem;padding:.15rem .4rem;text-transform:uppercase;letter-spacing:.08em;}
+.badge-new{background:rgba(0,255,200,.12);color:var(--cyan);border:1px solid rgba(0,255,200,.3);}
+.badge-hot{background:rgba(255,119,0,.12);color:var(--orange);border:1px solid rgba(255,119,0,.3);}
+.badge-lock{background:rgba(74,122,153,.12);color:var(--muted);border:1px solid rgba(74,122,153,.3);}
+
+/* HUD Bar */
+.game-hud{display:flex;align-items:center;gap:1.5rem;background:rgba(0,255,200,.03);border:1px solid var(--border);padding:.8rem 1.4rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.hud-item{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.75rem;}
+.hud-label{color:var(--muted);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;}
+.hud-val{color:var(--cyan);font-weight:700;font-size:.85rem;font-family:var(--display);}
+.lives-display{display:flex;gap:.3rem;}
+.life{font-size:.9rem;transition:all .3s;}
+.life.lost{opacity:.2;filter:grayscale(1);}
+.xp-bar-wrap{flex:1;min-width:120px;}
+.xp-bar-track{height:6px;background:rgba(0,255,200,.08);border:1px solid var(--border);position:relative;overflow:hidden;}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));transition:width .5s ease;position:relative;}
+.xp-bar-fill::after{content:'';position:absolute;right:0;top:-2px;width:8px;height:10px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.streak-fire{animation:pulse 1s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+/* GAME ARENA */
+.game-arena{background:rgba(0,255,200,.02);border:1px solid var(--border);padding:2rem;min-height:400px;position:relative;overflow:hidden;}
+.game-arena::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--blue),transparent);}
+
+/* Progress bar */
+.prog-bar{height:4px;background:rgba(0,255,200,.08);border:1px solid var(--border);margin-bottom:1.5rem;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width .4s ease;}
+
+/* Question header */
+.q-header{text-align:center;margin-bottom:1.8rem;}
+.q-mode-tag{font-family:var(--mono);font-size:.65rem;color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.6rem;opacity:.7;}
+.q-instruction{font-family:var(--display);font-size:clamp(1rem,2.5vw,1.4rem);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text);}
+
+/* Big sign display */
+.sign-display{text-align:center;margin:1.5rem 0;}
+.big-emoji{font-size:5rem;display:block;animation:floatSign 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(0,255,200,.3));}
+@keyframes floatSign{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.big-letter{font-family:var(--display);font-size:4rem;font-weight:900;color:var(--cyan);text-shadow:0 0 40px rgba(0,255,200,.5),0 0 80px rgba(0,255,200,.2);display:block;letter-spacing:.1em;}
+.sign-hint{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:.5rem;}
+
+/* Answer options grid */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1.5rem;}
+.option-btn{background:var(--panel);border:1px solid var(--border);padding:1rem 1.4rem;cursor:pointer;font-family:var(--body);font-weight:600;font-size:.95rem;color:var(--text);text-align:left;display:flex;align-items:center;gap:.8rem;transition:all .2s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));position:relative;overflow:hidden;}
+.option-btn:hover:not(.disabled){border-color:var(--cyan);background:rgba(0,255,200,.06);transform:translateX(3px);}
+.option-btn.correct{border-color:var(--green)!important;background:rgba(0,255,136,.12)!important;animation:correctPulse .4s ease;}
+.option-btn.wrong{border-color:var(--red)!important;background:rgba(255,34,68,.1)!important;animation:wrongShake .3s ease;}
+.option-btn.disabled{cursor:not-allowed;}
+@keyframes correctPulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+@keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.opt-letter{font-family:var(--display);font-weight:900;font-size:1.4rem;color:var(--cyan);min-width:32px;}
+.opt-emoji{font-size:1.6rem;min-width:32px;text-align:center;}
+.opt-text{font-size:.88rem;}
+.opt-key{position:absolute;top:.4rem;right:.6rem;font-family:var(--mono);font-size:.55rem;color:var(--muted);border:1px solid var(--border);padding:.1rem .3rem;}
+
+/* Type answer input */
+.type-area{margin-top:1.5rem;text-align:center;}
+.type-input{background:rgba(0,255,200,.04);border:1px solid var(--border);color:var(--cyan);font-family:var(--display);font-size:1.8rem;font-weight:700;text-align:center;padding:.6rem 1rem;width:160px;letter-spacing:.2em;text-transform:uppercase;outline:none;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+.type-input:focus{border-color:var(--cyan);box-shadow:0 0 20px rgba(0,255,200,.15);}
+.type-submit{display:block;margin:1rem auto 0;font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.7rem 2rem;cursor:pointer;background:linear-gradient(135deg,rgba(0,255,200,.2),rgba(0,180,255,.2));color:var(--cyan);border:1px solid var(--cyan);transition:all .2s;}
+.type-submit:hover{box-shadow:0 0 20px rgba(0,255,200,.3);transform:translateY(-1px);}
+
+/* Feedback overlay */
+.feedback-bar{position:absolute;bottom:0;left:0;right:0;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;transform:translateY(100%);transition:transform .3s ease;}
+.feedback-bar.show{transform:translateY(0);}
+.feedback-bar.correct-fb{background:rgba(0,255,136,.1);border-top:2px solid var(--green);}
+.feedback-bar.wrong-fb{background:rgba(255,34,68,.08);border-top:2px solid var(--red);}
+.fb-icon{font-size:1.5rem;}
+.fb-text{font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+.fb-text.correct-fb{color:var(--green);}
+.fb-text.wrong-fb{color:var(--red);}
+.fb-sub{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:.2rem;}
+.next-btn{margin-left:auto;font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.6rem 1.4rem;cursor:pointer;border:none;transition:all .2s;}
+.next-btn.correct-nb{background:rgba(0,255,136,.15);color:var(--green);border:1px solid var(--green);}
+.next-btn.wrong-nb{background:rgba(0,180,255,.1);color:var(--blue);border:1px solid var(--blue);}
+
+/* Floating score popup */
+.score-pop{position:absolute;font-family:var(--display);font-weight:900;font-size:1.2rem;color:var(--green);text-shadow:0 0 20px var(--green);pointer-events:none;animation:scorePop .8s ease forwards;z-index:50;}
+@keyframes scorePop{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.3)}}
+
+/* RESULT SCREEN */
+.result-screen{text-align:center;padding:2rem;}
+.result-title{font-family:var(--display);font-size:2rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;}
+.result-title.win{color:var(--cyan);text-shadow:0 0 30px rgba(0,255,200,.5);}
+.result-title.lose{color:var(--red);text-shadow:0 0 30px rgba(255,34,68,.4);}
+.result-emoji{font-size:4rem;margin:1rem 0;animation:resultBounce .6s ease;}
+@keyframes resultBounce{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.result-stats{display:flex;justify-content:center;gap:2rem;margin:1.5rem 0;flex-wrap:wrap;}
+.rs-item{text-align:center;}
+.rs-num{font-family:var(--display);font-size:1.8rem;font-weight:900;color:var(--cyan);}
+.rs-lbl{font-family:var(--mono);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.result-btns{display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;}
+
+/* STUDY MODE */
+.study-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(75px,1fr));gap:.65rem;}
+.study-card{background:var(--panel);border:1px solid var(--border);padding:.8rem .4rem;text-align:center;cursor:pointer;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));transition:all .2s;position:relative;}
+.study-card:hover{border-color:var(--cyan);transform:translateY(-2px);}
+.study-card.learned{border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.04);}
+.study-card.learned::after{content:'✓';position:absolute;top:2px;right:4px;font-size:.55rem;color:var(--green);}
+.sc-emoji{font-size:1.7rem;display:block;margin-bottom:.3rem;}
+.sc-letter{font-family:var(--display);font-weight:900;font-size:.9rem;color:var(--cyan);}
+.sc-word{font-size:.58rem;color:var(--muted);font-family:var(--mono);margin-top:.15rem;}
+.study-phrase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.9rem;margin-top:2rem;}
+.sph-card{background:var(--panel);border:1px solid var(--border);padding:1.1rem;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px));}
+.sph-signs{font-size:1.3rem;margin-bottom:.4rem;}
+.sph-text{font-family:var(--display);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;}
+.sph-steps{font-family:var(--mono);font-size:.63rem;color:var(--muted);line-height:1.5;}
+
+/* ── ALLERGY ── */
+#allergy{background:#010a14;}
+.allergy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.2rem;}
+.allergy-card{background:var(--panel);border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:all .3s;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));}
+.allergy-card:hover{border-color:var(--magenta);transform:translateY(-4px);background:rgba(255,0,170,.04);box-shadow:0 0 30px rgba(255,0,170,.08);}
+.allergy-card::before{content:'';position:absolute;top:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),transparent);opacity:0;}
+.allergy-card:hover::before{opacity:1;animation:allergyScan .7s ease forwards;}
+@keyframes allergyScan{0%{top:0;opacity:1}100%{top:100%;opacity:0}}
+.ac-top{padding:1.2rem 1.4rem .8rem;display:flex;gap:.9rem;align-items:flex-start;border-bottom:1px solid var(--border);transition:background .3s;}
+.allergy-card:hover .ac-top{background:rgba(255,0,170,.03);}
+.ac-icon{font-size:2.2rem;filter:drop-shadow(0 0 8px rgba(255,0,170,.3));transition:all .3s;}
+.allergy-card:hover .ac-icon{transform:scale(1.15) rotate(-5deg);filter:drop-shadow(0 0 16px rgba(255,0,170,.6));}
+.ac-name{font-family:var(--display);font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text);transition:color .2s;}
+.allergy-card:hover .ac-name{color:var(--magenta);text-shadow:0 0 12px rgba(255,0,170,.4);}
+.ac-type{font-family:var(--mono);font-size:.62rem;color:var(--magenta);margin-top:.2rem;letter-spacing:.04em;}
+.ac-body{padding:1rem 1.4rem 1.2rem;}
+.ac-lbl{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;}
+.symptom-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+.symptom-pill{font-family:var(--mono);font-size:.62rem;padding:.2rem .55rem;background:rgba(255,0,170,.07);color:var(--magenta);border:1px solid rgba(255,0,170,.2);clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%);transition:all .2s;cursor:default;position:relative;}
+.symptom-pill:hover{background:rgba(255,0,170,.18);color:var(--text);transform:translateY(-2px);box-shadow:0 0 10px rgba(255,0,170,.2);}
+/* Symptom pill tooltip */
+.symptom-pill .pill-tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(4px) scale(.95);background:var(--deep);border:1px solid var(--magenta);color:var(--text);font-family:var(--mono);font-size:.58rem;padding:.35rem .7rem;white-space:nowrap;opacity:0;pointer-events:none;transition:all .2s;z-index:20;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));box-shadow:0 0 16px rgba(255,0,170,.15);}
+.symptom-pill:hover .pill-tip{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}
+.sev-row{display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem;}
+.sev-track{flex:1;height:3px;background:rgba(255,255,255,.06);}
+.sev-fill{height:100%;position:relative;transition:width .8s;}
+.sev-fill::after{content:'';position:absolute;right:0;top:-3px;width:6px;height:6px;border-radius:50%;}
+.sev-low{background:var(--green);}.sev-low::after{background:var(--green);box-shadow:0 0 6px var(--green);}
+.sev-med{background:var(--yellow);}.sev-med::after{background:var(--yellow);box-shadow:0 0 6px var(--yellow);}
+.sev-high{background:var(--red);}.sev-high::after{background:var(--red);box-shadow:0 0 6px var(--red);}
+.sev-txt{font-family:var(--mono);font-size:.6rem;white-space:nowrap;}
+/* Severity bar animates wider on hover */
+.allergy-card:hover .sev-fill{filter:brightness(1.3);box-shadow:0 0 8px currentColor;}
+.ac-tip{font-family:var(--body);font-size:.77rem;color:var(--muted);line-height:1.6;background:rgba(255,221,0,.04);border:1px solid rgba(255,221,0,.1);border-left:2px solid var(--yellow);padding:.6rem .9rem;transition:all .3s;}
+.ac-tip::before{content:'⚡ ';color:var(--yellow);}
+.allergy-card:hover .ac-tip{background:rgba(255,221,0,.07);border-color:rgba(255,221,0,.25);color:var(--text);}
+
+/* ── MEDS ── */
+#meds{background:var(--void);}
+.meds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.2rem;}
+.med-card{background:var(--panel);border:1px solid var(--border);padding:1.4rem;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);transition:all .25s;}
+.med-card:hover{border-color:var(--blue);background:rgba(0,180,255,.04);transform:translateY(-3px);box-shadow:0 0 30px rgba(0,180,255,.08);}
+.med-card::after{content:'';position:absolute;top:0;right:0;width:30px;height:30px;background:linear-gradient(225deg,rgba(0,180,255,.15),transparent);clip-path:polygon(100% 0,0 0,100% 100%);}
+.med-card::before{content:'';position:absolute;top:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:0;transition:opacity .3s;}
+.med-card:hover::before{opacity:1;animation:medScan .7s ease forwards;}
+@keyframes medScan{0%{top:0;opacity:1}100%{top:100%;opacity:0}}
+.med-name{font-family:var(--display);font-size:.82rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin-bottom:.3rem;transition:color .2s;}
+.med-card:hover .med-name{color:var(--blue);text-shadow:0 0 12px rgba(0,180,255,.4);}
+.med-cls{font-family:var(--mono);font-size:.62rem;color:var(--blue);letter-spacing:.04em;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:1px solid var(--border);}
+.fx-sec{margin-bottom:.9rem;}
+.fx-lbl{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
+.fx-lbl::after{content:'';flex:1;height:1px;}
+.fx-lbl.c{color:var(--yellow);}.fx-lbl.c::after{background:linear-gradient(90deg,rgba(255,221,0,.3),transparent);}
+.fx-lbl.s{color:var(--red);}.fx-lbl.s::after{background:linear-gradient(90deg,rgba(255,34,68,.3),transparent);}
+.fx-item{display:flex;gap:.6rem;align-items:flex-start;font-family:var(--body);font-size:.8rem;color:var(--muted);margin-bottom:.3rem;line-height:1.4;padding:.3rem .5rem;border:1px solid transparent;transition:all .2s;cursor:default;position:relative;}
+.fx-item:hover{color:var(--text);padding-left:.9rem;border-color:rgba(0,180,255,.12);background:rgba(0,180,255,.04);}
+.fx-item:hover .fx-dot.c{transform:scale(1.8);box-shadow:0 0 10px var(--yellow);}
+.fx-item:hover .fx-dot.s{transform:scale(1.8);box-shadow:0 0 10px var(--red);}
+/* Tooltip */
+.fx-item .fx-tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(4px) scale(.95);background:var(--deep);border:1px solid var(--blue);color:var(--cyan);font-family:var(--mono);font-size:.6rem;padding:.4rem .8rem;white-space:nowrap;opacity:0;pointer-events:none;transition:all .2s;z-index:20;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));box-shadow:0 0 16px rgba(0,180,255,.15);}
+.fx-item:hover .fx-tip{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}
+.fx-dot{width:4px;height:4px;border-radius:50%;margin-top:.45rem;flex-shrink:0;transition:all .2s;}
+.fx-dot.c{background:var(--yellow);box-shadow:0 0 4px var(--yellow);}
+.fx-dot.s{background:var(--red);box-shadow:0 0 4px var(--red);}
+.med-ft{font-family:var(--mono);font-size:.65rem;color:rgba(74,122,153,.5);padding-top:.8rem;border-top:1px solid var(--border);line-height:1.5;transition:color .3s;}
+.med-card:hover .med-ft{color:rgba(74,122,153,.85);}
+
+/* ── KIT ── */
+#kit{background:#010a14;}
+.kit-wrap{display:grid;grid-template-columns:200px 1fr;gap:1.5rem;}
+.kit-cats{display:flex;flex-direction:column;gap:.5rem;}
+.kit-cat-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--body);font-weight:700;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;padding:.7rem 1rem;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.6rem;transition:all .2s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);}
+.kit-cat-btn:hover,.kit-cat-btn.active{background:rgba(0,255,136,.06);border-color:var(--green);color:var(--green);text-shadow:0 0 8px var(--green);}
+.kit-items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.9rem;}
+.kit-item{background:var(--panel);border:1px solid var(--border);padding:1.1rem;transition:all .2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+.kit-item:hover{border-color:var(--green);background:rgba(0,255,136,.04);}
+.kit-item-icon{font-size:1.7rem;margin-bottom:.5rem;filter:drop-shadow(0 0 6px rgba(0,255,136,.3));}
+.kit-item-name{font-family:var(--display);font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);margin-bottom:.3rem;}
+.kit-item-use{font-size:.77rem;color:var(--muted);line-height:1.5;}
+.kit-item-qty{display:inline-block;font-family:var(--mono);font-size:.6rem;background:rgba(0,255,136,.07);color:var(--green);border:1px solid rgba(0,255,136,.2);padding:.15rem .5rem;margin-top:.5rem;}
+
+/* ── EMERGENCY ── */
+#emergency{background:var(--void);}
+.emg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem;}
+.emg-card{background:var(--panel);border:1px solid var(--border);overflow:hidden;transition:all .25s;}
+.emg-card:hover{transform:translateY(-3px);border-color:var(--red);}
+.emg-top{padding:1.1rem 1.3rem;display:flex;align-items:center;gap:.9rem;position:relative;overflow:hidden;}
+.emg-top::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,34,68,.07),transparent);}
+.emg-icon{font-size:1.8rem;position:relative;z-index:1;filter:drop-shadow(0 0 8px rgba(255,34,68,.4));}
+.emg-title{font-family:var(--display);font-weight:700;font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text);position:relative;z-index:1;}
+.emg-sub{font-family:var(--mono);font-size:.62rem;color:var(--red);position:relative;z-index:1;}
+.emg-div{height:1px;background:linear-gradient(90deg,var(--red),var(--magenta),transparent);opacity:.4;}
+.emg-steps{padding:1.1rem 1.3rem;}
+.emg-step{display:flex;gap:.8rem;margin-bottom:.75rem;align-items:flex-start;}
+.emg-num{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:.58rem;font-weight:900;}
+.n-r{background:rgba(255,34,68,.15);color:var(--red);border:1px solid rgba(255,34,68,.3);}
+.n-b{background:rgba(0,180,255,.15);color:var(--blue);border:1px solid rgba(0,180,255,.3);}
+.n-g{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.3);}
+.n-o{background:rgba(255,119,0,.15);color:var(--orange);border:1px solid rgba(255,119,0,.3);}
+.emg-st{font-size:.8rem;color:var(--muted);line-height:1.5;padding-top:2px;}
+.emg-warn{margin:0 1.3rem 1.2rem;background:rgba(255,34,68,.05);border:1px solid rgba(255,34,68,.2);padding:.6rem .9rem;font-family:var(--mono);font-size:.67rem;color:var(--red);line-height:1.5;}
+.emg-warn::before{content:'// WARNING: ';}
+
+footer{background:var(--deep);border-top:1px solid var(--border);padding:2rem;text-align:center;position:relative;z-index:1;}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--blue),var(--magenta),transparent);}
+.ft-logo{font-family:var(--display);font-size:1rem;font-weight:900;letter-spacing:.2em;color:var(--cyan);text-shadow:0 0 20px rgba(0,255,200,.4);margin-bottom:.5rem;}
+.ft-txt{font-family:var(--body);font-size:.82rem;color:var(--muted);line-height:1.6;}
+.ft-disc{font-family:var(--mono);font-size:.62rem;color:rgba(74,122,153,.4);margin-top:.5rem;}
+
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.87);backdrop-filter:blur(12px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-ov.open{display:flex;}
+.modal-box{background:var(--deep);border:1px solid var(--cyan);max-width:460px;width:100%;padding:2rem;position:relative;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));box-shadow:0 0 40px rgba(0,255,200,.1);animation:mIn .2s ease;}
+@keyframes mIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;font-family:var(--mono);}
+.modal-close:hover{color:var(--red);}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── AUTH MODAL ── */
+.auth-tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.auth-tab{font-family:var(--display);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:none;border:none;color:var(--muted);padding:.6rem 1.2rem;cursor:pointer;position:relative;transition:color .2s;}
+.auth-tab.active{color:var(--cyan);}
+.auth-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.auth-field{margin-bottom:1rem;}
+.auth-field label{display:block;font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
+.auth-input{width:100%;background:rgba(0,255,200,.03);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.85rem;padding:.65rem .9rem;outline:none;transition:border-color .2s;}
+.auth-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,255,200,.1);}
+.auth-submit{width:100%;font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.85rem;cursor:pointer;background:linear-gradient(135deg,rgba(0,255,200,.2),rgba(0,180,255,.2));color:var(--cyan);border:1px solid var(--cyan);transition:all .2s;margin-top:.5rem;}
+.auth-submit:hover{box-shadow:0 0 20px rgba(0,255,200,.3);}
+.auth-msg{font-family:var(--mono);font-size:.68rem;padding:.5rem .8rem;margin-top:.8rem;display:none;}
+.auth-msg.err{background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.3);color:var(--red);}
+.auth-msg.ok{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);color:var(--green);}
+
+/* ── NAV AUTH AREA ── */
+.nav-auth{display:flex;align-items:center;gap:.6rem;}
+.nav-user{font-family:var(--mono);font-size:.68rem;color:var(--cyan);display:none;align-items:center;gap:.5rem;}
+.nav-user .usr-xp{color:var(--yellow);font-size:.6rem;}
+.nav-btn-auth{font-family:var(--display);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.4rem .9rem;cursor:pointer;transition:all .2s;border:none;}
+.btn-login{background:transparent;color:var(--cyan);border:1px solid var(--border);}
+.btn-login:hover{border-color:var(--cyan);}
+.btn-logout{background:transparent;color:var(--muted);border:1px solid var(--border);display:none;}
+.btn-logout:hover{color:var(--red);border-color:var(--red);}
+
+/* ── LEADERBOARD ── */
+.lb-wrap{margin-top:2rem;}
+.lb-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.lb-tab{font-family:var(--mono);font-size:.65rem;background:transparent;border:1px solid var(--border);color:var(--muted);padding:.35rem .8rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s;}
+.lb-tab.active,.lb-tab:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,200,.05);}
+.lb-table{width:100%;border-collapse:collapse;}
+.lb-table th{font-family:var(--mono);font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:.5rem .8rem;text-align:left;border-bottom:1px solid var(--border);}
+.lb-table td{font-family:var(--body);font-size:.85rem;padding:.65rem .8rem;border-bottom:1px solid rgba(0,255,200,.05);transition:background .2s;}
+.lb-table tr:hover td{background:rgba(0,255,200,.03);}
+.lb-rank{font-family:var(--display);font-weight:900;font-size:.85rem;}
+.lb-rank.r1{color:var(--yellow);}
+.lb-rank.r2{color:var(--muted);}
+.lb-rank.r3{color:var(--orange);}
+.lb-score{font-family:var(--display);font-weight:700;color:var(--cyan);}
+.lb-lang{font-family:var(--mono);font-size:.65rem;color:var(--blue);}
+.lb-empty{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:center;padding:2rem;opacity:.6;}
+.lb-loading{text-align:center;padding:2rem;font-family:var(--mono);font-size:.72rem;color:var(--cyan);animation:blink .8s step-end infinite;}
+
+@media(max-width:768px){
+  .hero-inner,.kit-wrap{grid-template-columns:1fr;}
+  .hero-stats,.nav-links{display:none;}
+  .kit-cats{flex-direction:row;flex-wrap:wrap;}
+  .options-grid{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
 <div class="grid-bg"></div>
 
-<!-- LOGIN -->
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">⚡ SIGNMED</div>
-    <div class="login-sub">// ADMIN CONTROL PANEL — RESTRICTED ACCESS</div>
-    <label class="lf-label">Admin Email</label>
-    <input class="lf-input" id="adminEmail" type="email" placeholder="admin@signmed.io">
-    <label class="lf-label">Password</label>
-    <input class="lf-input" id="adminPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()">
-    <button class="lf-btn" onclick="adminLogin()">▶ ACCESS CONTROL PANEL</button>
-    <div class="lf-msg" id="loginMsg"></div>
+<nav>
+  <div class="nav-logo">SIGN<span>MED</span> // v2.0</div>
+  <div class="nav-links">
+    <button onclick="gotoSec('sign')" id="n-sign">[ SIGN_LANG ]</button>
+    <button onclick="gotoSec('allergy')" id="n-allergy">[ ALLERGY ]</button>
+    <button onclick="gotoSec('meds')" id="n-meds">[ MEDICATIONS ]</button>
+    <button onclick="gotoSec('kit')" id="n-kit">[ FIRST_AID ]</button>
+    <button onclick="gotoSec('emergency')" id="n-emg">[ EMERGENCY ]</button>
   </div>
-</div>
+  <div class="nav-auth">
+    <div class="nav-user" id="navUser">
+      <span id="navUsername">USER</span>
+      <span class="usr-xp" id="navXP">0 XP</span>
+    </div>
+    <button class="nav-btn-auth btn-login" id="btnLogin" onclick="openAuth()">[ LOGIN ]</button>
+    <button class="nav-btn-auth btn-logout" id="btnLogout" onclick="logout()">[ LOGOUT ]</button>
+  </div>
+</nav>
 
-<!-- MAIN APP -->
-<div id="app">
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="sb-logo">
-      <div class="sb-logo-title">⚡ SIGNMED</div>
-      <div class="sb-logo-sub">// ADMIN PANEL v1.0</div>
-      <div class="sb-admin" id="sbAdminName">ADMIN</div>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-orb orb1"></div><div class="hero-orb orb2"></div><div class="hero-orb orb3"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-sys"><span>SYS://</span>NEURAL_HEALTH_INTERFACE &nbsp;<span>MODULE:</span>EDUCATION &nbsp;<span>STATUS:</span>ONLINE<span class="blink">█</span></div>
+      <h1 class="hero-title">
+        <span class="l1 glitch" data-text="SIGN LANGUAGE">SIGN LANGUAGE</span>
+        <span class="l2">&amp; MEDICAL</span>
+        <span class="l3">// NEURAL EDUCATION SYSTEM //</span>
+      </h1>
+      <p class="hero-desc">Advanced learning platform with gamified ASL · BSL · ISL training, allergy protocols, pharmaceutical side-effect databases, and emergency response systems.</p>
+      <div class="hero-btns">
+        <button class="btn-c btn-p" onclick="gotoSec('sign')">▶ PLAY SIGN GAME</button>
+        <button class="btn-c btn-s" onclick="gotoSec('allergy')">⚕ MEDICAL DATABASE</button>
+      </div>
+      <div>
+        <div class="term-line"><span class="ok">[OK]</span> Game Engine v3.0 — 4 modes loaded</div>
+        <div class="term-line"><span class="ok">[OK]</span> Sign Language DB — ASL · BSL · ISL indexed</div>
+        <div class="term-line"><span class="ok">[OK]</span> Allergy + Medication modules — online</div>
+        <div class="term-line"><span class="warn">[!]</span> Educational only — not medical advice</div>
+      </div>
     </div>
-    <div class="sb-nav">
-      <button class="sb-btn active" onclick="showPage('dashboard',this)"><span class="sb-icon">📊</span><span>Dashboard</span></button>
-      <button class="sb-btn" onclick="showPage('users',this)"><span class="sb-icon">👥</span><span>Users</span></button>
-      <button class="sb-btn" onclick="showPage('scores',this)"><span class="sb-icon">🏆</span><span>Scores</span></button>
-    </div>
-    <div class="sb-bottom">
-      <button class="sb-logout" onclick="adminLogout()">✕ LOGOUT</button>
+    <div class="hero-stats">
+      <div class="stat-card" onclick="gotoSec('sign')"><div class="stat-icon">🎮</div><div class="stat-num">4</div><div class="stat-label">Game Modes</div><div class="stat-sub">Quiz · Match · Type · Speed</div></div>
+      <div class="stat-card" onclick="gotoSec('sign')"><div class="stat-icon">🤟</div><div class="stat-num">3</div><div class="stat-label">Sign Languages</div><div class="stat-sub">ASL · BSL · ISL</div></div>
+      <div class="stat-card" onclick="gotoSec('allergy')"><div class="stat-icon">⚠️</div><div class="stat-num">9+</div><div class="stat-label">Allergen Types</div><div class="stat-sub">symptoms + tips</div></div>
+      <div class="stat-card" onclick="gotoSec('emergency')"><div class="stat-icon">🆘</div><div class="stat-num">6</div><div class="stat-label">Emergency Protocols</div><div class="stat-sub">step-by-step</div></div>
     </div>
   </div>
+</section>
 
-  <!-- Main -->
-  <div class="main">
+<!-- SIGN LANGUAGE GAME -->
+<section id="sign">
+  <div class="sec-con">
+    <div class="sec-hd reveal">
+      <span class="eyebrow">// MODULE_01 :: GAMIFIED_SIGN_LANGUAGE_TRAINER</span>
+      <h2 class="sec-title">LEARN <span class="hl">SIGN LANGUAGE</span></h2>
+      <p class="sec-sub">Choose your language, pick a mode, and train like a pro. Earn XP, keep your streak, and level up your signing skills.</p>
+    </div>
 
-    <!-- DASHBOARD PAGE -->
-    <div class="page active" id="page-dashboard">
-      <div class="page-hd">
-        <div class="page-eyebrow">// OVERVIEW :: SYSTEM_STATUS</div>
-        <div class="page-title">ADMIN <span>DASHBOARD</span></div>
+    <!-- Language selector -->
+    <div class="lang-select-row reveal" id="langSelectRow">
+      <button class="lang-sel-btn active" onclick="pickLang('asl',this)">🇺🇸 ASL</button>
+      <button class="lang-sel-btn" onclick="pickLang('bsl',this)">🇬🇧 BSL</button>
+      <button class="lang-sel-btn" onclick="pickLang('isl',this)">🇮🇳 ISL</button>
+      <button class="lang-sel-btn" onclick="pickLang('gen',this)">🌍 UNIVERSAL</button>
+    </div>
+
+    <!-- Mode selector -->
+    <div class="game-modes reveal" id="gameModes">
+      <div class="mode-card" onclick="startGame('quiz')">
+        <span class="mode-badge badge-hot">HOT</span>
+        <div class="mode-icon">🔍</div>
+        <div class="mode-name">SIGN QUIZ</div>
+        <div class="mode-desc">See a hand sign — pick the right letter from 4 choices</div>
       </div>
-      <div class="stats-grid" id="statsGrid">
-        <div class="stat-card"><div class="sc-icon">⏳</div><div class="sc-num">—</div><div class="sc-label">Loading...</div></div>
+      <div class="mode-card" onclick="startGame('reverse')">
+        <span class="mode-badge badge-new">NEW</span>
+        <div class="mode-icon">🔄</div>
+        <div class="mode-name">REVERSE QUIZ</div>
+        <div class="mode-desc">See a letter — pick which emoji shows the correct hand sign</div>
       </div>
-      <!-- Recent activity -->
-      <div class="tbl-wrap">
-        <div class="tbl-header">
-          <div class="tbl-title">// RECENT SCORES</div>
-          <div class="tbl-count" id="recentCount"></div>
+      <div class="mode-card" onclick="startGame('type')">
+        <div class="mode-icon">⌨️</div>
+        <div class="mode-name">TYPE IT</div>
+        <div class="mode-desc">See a hand sign — type the letter from memory</div>
+      </div>
+      <div class="mode-card" onclick="startGame('study')">
+        <div class="mode-icon">📖</div>
+        <div class="mode-name">STUDY MODE</div>
+        <div class="mode-desc">Browse all signs and phrases at your own pace</div>
+      </div>
+    </div>
+
+    <!-- HUD -->
+    <div class="game-hud reveal" id="gameHUD" style="display:none">
+      <div class="hud-item">
+        <span class="hud-label">LANG</span>
+        <span class="hud-val" id="hudLang">ASL</span>
+      </div>
+      <div class="hud-item">
+        <div>
+          <div class="hud-label">LIVES</div>
+          <div class="lives-display" id="livesDisplay"></div>
         </div>
-        <div id="recentScoresTable"><div class="tbl-loading">// LOADING...</div></div>
       </div>
-    </div>
-
-    <!-- USERS PAGE -->
-    <div class="page" id="page-users">
-      <div class="page-hd">
-        <div class="page-eyebrow">// MODULE :: USER_MANAGEMENT</div>
-        <div class="page-title">ALL <span>USERS</span></div>
+      <div class="hud-item">
+        <div>
+          <div class="hud-label">SCORE</div>
+          <div class="hud-val" id="hudScore">0</div>
+        </div>
       </div>
-      <div class="tbl-wrap">
-        <div class="tbl-header">
-          <div class="tbl-title">// USER_DATABASE</div>
-          <div style="display:flex;gap:.5rem;align-items:center">
-            <input class="tbl-search" id="userSearch" placeholder="Search username..." oninput="filterUsers()">
-            <div class="tbl-count" id="userCount"></div>
+      <div class="hud-item">
+        <div>
+          <div class="hud-label">STREAK <span class="streak-fire" id="streakFire">🔥</span></div>
+          <div class="hud-val" id="hudStreak">0</div>
+        </div>
+      </div>
+      <div class="hud-item" style="flex:1">
+        <div style="width:100%">
+          <div style="display:flex;justify-content:space-between;margin-bottom:.3rem">
+            <span class="hud-label">XP PROGRESS</span>
+            <span class="hud-label" id="hudXP">0 / 100 XP</span>
+          </div>
+          <div class="xp-bar-wrap">
+            <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBar" style="width:0%"></div></div>
           </div>
         </div>
-        <div id="usersTable"><div class="tbl-loading">// LOADING USERS...</div></div>
+      </div>
+      <button class="btn-c btn-s" style="font-size:.6rem;padding:.4rem .9rem" onclick="exitGame()">✕ EXIT</button>
+    </div>
+
+    <!-- Game Arena -->
+    <div class="game-arena reveal" id="gameArena" style="display:none">
+      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div id="arenaContent"></div>
+      <div class="feedback-bar" id="feedbackBar">
+        <div class="fb-icon" id="fbIcon"></div>
+        <div><div class="fb-text" id="fbText"></div><div class="fb-sub" id="fbSub"></div></div>
+        <button class="next-btn" id="nextBtn" onclick="nextQuestion()">CONTINUE ▶</button>
       </div>
     </div>
 
-    <!-- SCORES PAGE -->
-    <div class="page" id="page-scores">
-      <div class="page-hd">
-        <div class="page-eyebrow">// MODULE :: SCORE_DATABASE</div>
-        <div class="page-title">ALL <span>SCORES</span></div>
-      </div>
-      <div class="tbl-wrap">
-        <div class="tbl-header">
-          <div class="tbl-title">// SCORE_RECORDS</div>
-          <div class="tbl-count" id="scoreCount"></div>
-        </div>
-        <div id="scoresTable"><div class="tbl-loading">// LOADING SCORES...</div></div>
-      </div>
-    </div>
+    <!-- Study Area -->
+    <div id="studyArea" style="display:none"></div>
 
+  </div>
+</section>
+
+<!-- ALLERGY -->
+<section id="allergy"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_02 :: ALLERGEN_DATABASE</span><h2 class="sec-title">ALLERGIES &amp; <span class="hl">SYMPTOM ANALYSIS</span></h2><p class="sec-sub">Know your allergens. Recognise symptoms early. Understand what to do.</p></div><div class="allergy-grid" id="allergyGrid"></div></div></section>
+
+<!-- MEDS -->
+<section id="meds"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_03 :: PHARMACOLOGICAL_SIDE_EFFECTS</span><h2 class="sec-title">MEDICATION <span class="hl">SIDE EFFECTS</span></h2><p class="sec-sub">Commonly prescribed medications and their documented side effects. Always consult a healthcare professional.</p></div><div class="meds-grid" id="medsGrid"></div></div></section>
+
+<!-- KIT -->
+<section id="kit"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_04 :: FIRST_AID_INVENTORY</span><h2 class="sec-title">BUILD YOUR <span class="hl">MEDICAL KIT</span></h2><p class="sec-sub">Essential items every household needs — with usage guides and recommended quantities.</p></div><div class="kit-wrap reveal"><div class="kit-cats" id="kitCats"></div><div class="kit-items-grid" id="kitItems"></div></div></div></section>
+
+<!-- EMERGENCY -->
+<section id="emergency"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_05 :: EMERGENCY_RESPONSE_PROTOCOLS</span><h2 class="sec-title">EMERGENCY <span class="hl">PROCEDURES</span></h2><p class="sec-sub">Step-by-step protocols for life-threatening situations. Stay calm. Act fast. Save lives.</p></div><div class="emg-grid" id="emgGrid"></div></div></section>
+
+<!-- LEADERBOARD -->
+<section id="leaderboard" style="background:#010a14;">
+  <div class="sec-con">
+    <div class="sec-hd reveal">
+      <span class="eyebrow">// MODULE_06 :: GLOBAL_LEADERBOARD</span>
+      <h2 class="sec-title">TOP <span class="hl">PLAYERS</span></h2>
+      <p class="sec-sub">The best sign language learners on the platform. Login to compete!</p>
+    </div>
+    <div class="lb-wrap reveal">
+      <div class="lb-tabs">
+        <button class="lb-tab active" onclick="loadLeaderboard('',this)">🌍 ALL</button>
+        <button class="lb-tab" onclick="loadLeaderboard('asl',this)">🇺🇸 ASL</button>
+        <button class="lb-tab" onclick="loadLeaderboard('bsl',this)">🇬🇧 BSL</button>
+        <button class="lb-tab" onclick="loadLeaderboard('isl',this)">🇮🇳 ISL</button>
+        <button class="lb-tab" onclick="loadLeaderboard('gen',this)">🌍 UNIVERSAL</button>
+      </div>
+      <div id="lbContent"><div class="lb-loading">// LOADING LEADERBOARD DATA...</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-logo">✋ SIGNMED // NEURAL HEALTH INTERFACE</div>
+  <p class="ft-txt">A free educational resource for sign language &amp; essential medical knowledge.</p>
+  <p class="ft-disc">// EDUCATIONAL PURPOSES ONLY — NOT A SUBSTITUTE FOR PROFESSIONAL MEDICAL ADVICE //</p>
+</footer>
+
+<div class="modal-ov" id="modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">[X]</button>
+    <div id="modalContent"></div>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- CONFIRM MODAL -->
-<div class="confirm-ov" id="confirmModal">
-  <div class="confirm-box">
-    <div class="confirm-title" id="confirmTitle">CONFIRM ACTION</div>
-    <div class="confirm-msg" id="confirmMsg"></div>
-    <div class="confirm-btns">
-      <button class="confirm-yes" id="confirmYes">▶ CONFIRM</button>
-      <button class="confirm-no" onclick="closeConfirm()">✕ CANCEL</button>
+<!-- AUTH MODAL -->
+<div class="modal-ov" id="authModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box" style="border-color:var(--cyan)">
+    <button class="modal-close" onclick="document.getElementById('authModal').classList.remove('open')">[X]</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">[ LOGIN ]</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">[ REGISTER ]</button>
+    </div>
+    <!-- LOGIN FORM -->
+    <div id="formLogin">
+      <div class="auth-field"><label>Email</label><input class="auth-input" id="loginEmail" type="email" placeholder="user@signmed.io"></div>
+      <div class="auth-field"><label>Password</label><input class="auth-input" id="loginPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="auth-submit" onclick="doLogin()">▶ LOGIN TO SIGNMED</button>
+      <div class="auth-msg" id="loginMsg"></div>
+    </div>
+    <!-- REGISTER FORM -->
+    <div id="formRegister" style="display:none">
+      <div class="auth-field"><label>Username</label><input class="auth-input" id="regUser" type="text" placeholder="NeuralSigner_01"></div>
+      <div class="auth-field"><label>Email</label><input class="auth-input" id="regEmail" type="email" placeholder="user@signmed.io"></div>
+      <div class="auth-field"><label>Password</label><input class="auth-input" id="regPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <button class="auth-submit" onclick="doRegister()">▶ CREATE ACCOUNT</button>
+      <div class="auth-msg" id="registerMsg"></div>
     </div>
   </div>
 </div>
 
 <script>
+/* ═══ BACKEND API ═══ */
 const API = 'http://localhost:5000/api';
-let adminToken = localStorage.getItem('signmed_admin_token');
-let allUsers = [], allScores = [];
+let authToken = localStorage.getItem('signmed_token');
+let authUser  = localStorage.getItem('signmed_user');
+let authXP    = parseInt(localStorage.getItem('signmed_xp') || '0');
 
-/* ═══ AUTH ═══ */
-async function adminLogin() {
-  const email    = document.getElementById('adminEmail').value.trim();
-  const password = document.getElementById('adminPass').value;
-  const msg      = document.getElementById('loginMsg');
-  if (!email || !password) { showLoginMsg('// Fill in all fields', 'err'); return; }
-  showLoginMsg('// Authenticating...', 'ok');
+function updateNavAuth() {
+  const nu = document.getElementById('navUser');
+  const bl = document.getElementById('btnLogin');
+  const bo = document.getElementById('btnLogout');
+  if (authToken && authUser) {
+    nu.style.display = 'flex';
+    document.getElementById('navUsername').textContent = authUser;
+    document.getElementById('navXP').textContent = authXP + ' XP';
+    bl.style.display = 'none';
+    bo.style.display = 'block';
+  } else {
+    nu.style.display = 'none';
+    bl.style.display = 'block';
+    bo.style.display = 'none';
+  }
+}
+
+function openAuth() {
+  document.getElementById('authModal').classList.add('open');
+}
+
+function switchTab(tab) {
+  document.getElementById('formLogin').style.display    = tab==='login'    ? 'block' : 'none';
+  document.getElementById('formRegister').style.display = tab==='register' ? 'block' : 'none';
+  document.getElementById('tabLogin').classList.toggle('active',    tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active', tab==='register');
+}
+
+function showAuthMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'auth-msg ' + type;
+  el.style.display = 'block';
+}
+
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPass').value;
+  if (!email || !password) return showAuthMsg('loginMsg','// Fill in all fields','err');
+  showAuthMsg('loginMsg','// Authenticating...','ok');
   try {
     const res  = await fetch(`${API}/auth/login`, {
-      method: 'POST', headers: {'Content-Type':'application/json'},
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email, password})
     });
     const data = await res.json();
-    if (!res.ok) return showLoginMsg('// ERROR: ' + data.error, 'err');
-    if (data.role !== 'admin') return showLoginMsg('// ACCESS DENIED — Not an admin account', 'err');
-    adminToken = data.token;
-    localStorage.setItem('signmed_admin_token', adminToken);
-    document.getElementById('sbAdminName').textContent = data.username.toUpperCase();
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    loadDashboard();
-    loadUsers();
-    loadScores();
-  } catch(e) { showLoginMsg('// CONNECTION ERROR — Is your server running on :5000?', 'err'); }
+    if (!res.ok) return showAuthMsg('loginMsg','// ERROR: ' + data.error,'err');
+    authToken = data.token; authUser = data.username; authXP = data.xp || 0;
+    localStorage.setItem('signmed_token', authToken);
+    localStorage.setItem('signmed_user',  authUser);
+    localStorage.setItem('signmed_xp',    authXP);
+    showAuthMsg('loginMsg','// LOGIN SUCCESSFUL — WELCOME BACK, ' + authUser.toUpperCase(),'ok');
+    setTimeout(()=>document.getElementById('authModal').classList.remove('open'), 1000);
+    updateNavAuth();
+    loadLeaderboard('', document.querySelector('.lb-tab.active'));
+  } catch(e) { showAuthMsg('loginMsg','// CONNECTION ERROR — is your server running?','err'); }
 }
 
-function showLoginMsg(text, type) {
-  const el = document.getElementById('loginMsg');
-  el.textContent = text; el.className = 'lf-msg ' + type; el.style.display = 'block';
-}
-
-function adminLogout() {
-  adminToken = null;
-  localStorage.removeItem('signmed_admin_token');
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-}
-
-// Auto-login if token exists
-window.addEventListener('load', async () => {
-  if (adminToken) {
-    try {
-      const res = await fetch(`${API}/admin/stats`, { headers:{'Authorization':'Bearer '+adminToken} });
-      if (res.ok) {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        loadDashboard(); loadUsers(); loadScores();
-        return;
-      }
-    } catch(e) {}
-    localStorage.removeItem('signmed_admin_token');
-    adminToken = null;
-  }
-});
-
-/* ═══ NAVIGATION ═══ */
-function showPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-
-/* ═══ TOAST ═══ */
-function toast(msg, type='ok') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 2500);
-}
-
-/* ═══ CONFIRM ═══ */
-let confirmCallback = null;
-function confirm(title, msg, cb) {
-  document.getElementById('confirmTitle').textContent = title;
-  document.getElementById('confirmMsg').textContent   = msg;
-  confirmCallback = cb;
-  document.getElementById('confirmModal').classList.add('open');
-  document.getElementById('confirmYes').onclick = () => { closeConfirm(); cb(); };
-}
-function closeConfirm() { document.getElementById('confirmModal').classList.remove('open'); }
-
-/* ═══ DASHBOARD ═══ */
-async function loadDashboard() {
+async function doRegister() {
+  const username = document.getElementById('regUser').value.trim();
+  const email    = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPass').value;
+  if (!username || !email || !password) return showAuthMsg('registerMsg','// Fill in all fields','err');
+  showAuthMsg('registerMsg','// Creating account...','ok');
   try {
-    const res  = await fetch(`${API}/admin/stats`, { headers:{'Authorization':'Bearer '+adminToken} });
+    const res  = await fetch(`${API}/auth/register`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({username, email, password})
+    });
     const data = await res.json();
-    document.getElementById('statsGrid').innerHTML = `
-      <div class="stat-card">
-        <div class="sc-icon">👥</div>
-        <div class="sc-num">${data.totalUsers}</div>
-        <div class="sc-label">Total Users</div>
-        <div class="sc-sub">${data.bannedUsers} banned</div>
+    if (!res.ok) return showAuthMsg('registerMsg','// ERROR: ' + data.error,'err');
+    authToken = data.token; authUser = data.username; authXP = 0;
+    localStorage.setItem('signmed_token', authToken);
+    localStorage.setItem('signmed_user',  authUser);
+    localStorage.setItem('signmed_xp',    '0');
+    showAuthMsg('registerMsg','// ACCOUNT CREATED — WELCOME, ' + authUser.toUpperCase(),'ok');
+    setTimeout(()=>document.getElementById('authModal').classList.remove('open'), 1000);
+    updateNavAuth();
+  } catch(e) { showAuthMsg('registerMsg','// CONNECTION ERROR — is your server running?','err'); }
+}
+
+function logout() {
+  authToken = null; authUser = null; authXP = 0;
+  localStorage.removeItem('signmed_token');
+  localStorage.removeItem('signmed_user');
+  localStorage.removeItem('signmed_xp');
+  updateNavAuth();
+}
+
+async function saveScoreToBackend(language, mode, score, xpEarned, streak) {
+  if (!authToken) return;
+  try {
+    await fetch(`${API}/scores`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},
+      body: JSON.stringify({language, mode, score, xpEarned, streak})
+    });
+    authXP += xpEarned;
+    localStorage.setItem('signmed_xp', authXP);
+    updateNavAuth();
+  } catch(e) { console.warn('Score save failed:', e); }
+}
+
+async function loadLeaderboard(lang, btn) {
+  if (btn) { document.querySelectorAll('.lb-tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  const el = document.getElementById('lbContent');
+  if (!el) return;
+  el.innerHTML = '<div class="lb-loading">// FETCHING LEADERBOARD DATA...</div>';
+  try {
+    const url = lang ? `${API}/leaderboard/${lang}` : `${API}/leaderboard`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (!data.length) { el.innerHTML='<div class="lb-empty">// NO SCORES YET — BE THE FIRST TO PLAY!</div>'; return; }
+    const ranks = ['🥇','🥈','🥉'];
+    el.innerHTML = `<table class="lb-table">
+      <thead><tr>
+        <th>RANK</th><th>PLAYER</th><th>SCORE</th>
+        ${!lang?'<th>LANGUAGE</th>':''}
+        <th>MODE</th><th>STREAK</th>
+      </tr></thead>
+      <tbody>${data.map((s,i)=>`<tr>
+        <td><span class="lb-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${ranks[i]||('#'+(i+1))}</span></td>
+        <td>${s.username}</td>
+        <td><span class="lb-score">${s.score}</span></td>
+        ${!lang?`<td><span class="lb-lang">${s.language?.toUpperCase()}</span></td>`:''}
+        <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted)">${s.mode}</td>
+        <td style="color:var(--orange)">🔥 ${s.streak}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  } catch(e) {
+    el.innerHTML = '<div class="lb-empty">// BACKEND OFFLINE — START YOUR SERVER TO SEE SCORES</div>';
+  }
+}
+
+/* ═══ UTILS ═══ */
+function gotoSec(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const nmap={sign:'n-sign',allergy:'n-allergy',meds:'n-meds',kit:'n-kit',emergency:'n-emg'};
+const sObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){Object.values(nmap).forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('active');});const b=document.getElementById(nmap[x.target.id]);if(b)b.classList.add('active');}}),{threshold:.3});
+['sign','allergy','meds','kit','emergency','leaderboard'].forEach(id=>{const el=document.getElementById(id);if(el)sObs.observe(el);});
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+function pick(a,n){return shuffle(a).slice(0,n);}
+
+/* ═══ SIGN DATA ═══ */
+const SD={
+  asl:{label:'ASL',note:'One-handed fingerspelling. Primary sign language of the USA.',
+    alpha:[{l:'A',e:'✊',w:'Closed fist'},{l:'B',e:'🖐',w:'Flat palm, fingers together'},{l:'C',e:'🤏',w:'Curved C-shape'},{l:'D',e:'☝️',w:'Index up, other fingers circle thumb'},{l:'E',e:'🤙',w:'Bent/curled fingers'},{l:'F',e:'👌',w:'Index+thumb circle, others up'},{l:'G',e:'👈',w:'Index+thumb point sideways'},{l:'H',e:'🤞',w:'Index+middle point sideways'},{l:'I',e:'🤙',w:'Pinky raised, others closed'},{l:'J',e:'🤙',w:'Pinky traces J in air'},{l:'K',e:'✌️',w:'Index+middle up, thumb between'},{l:'L',e:'🤙',w:'L-shape: index up, thumb out'},{l:'M',e:'✊',w:'3 fingers folded over thumb'},{l:'N',e:'✊',w:'2 fingers folded over thumb'},{l:'O',e:'👌',w:'All fingers form an O circle'},{l:'P',e:'👇',w:'K-shape pointing downward'},{l:'Q',e:'👇',w:'G-shape pointing downward'},{l:'R',e:'🤞',w:'Index+middle crossed'},{l:'S',e:'✊',w:'Fist with thumb over fingers'},{l:'T',e:'✊',w:'Thumb tucked between index+middle'},{l:'U',e:'✌️',w:'Index+middle up, together'},{l:'V',e:'✌️',w:'Index+middle up, spread apart'},{l:'W',e:'🖖',w:'3 fingers up spread wide'},{l:'X',e:'☝️',w:'Index finger hooked/bent'},{l:'Y',e:'🤙',w:'Pinky+thumb extended'},{l:'Z',e:'☝️',w:'Index traces Z shape in air'}],
+    phrases:[{text:'Hello',signs:'👋',steps:'Open hand near forehead, wave sideways'},{text:'Thank You',signs:'🙏',steps:'Flat hand touches chin, moves forward'},{text:'Please',signs:'✋',steps:'Flat hand on chest, circular motion'},{text:'Help',signs:'👊',steps:'Fist on open palm, raise both up'},{text:'Sorry',signs:'✊',steps:'A-shape fist, circles on chest'},{text:'Yes',signs:'✊',steps:'Fist nods up and down'},{text:'No',signs:'✌️',steps:'Index+middle tap thumb twice'},{text:'I Love You',signs:'🤟',steps:'Thumb+index+pinky extended together'}]},
+  bsl:{label:'BSL',note:'Two-handed fingerspelling. Primary sign language of the UK.',
+    alpha:[{l:'A',e:'👐',w:'Both hands form A together'},{l:'B',e:'👋',w:'Both hands, fingers together'},{l:'C',e:'🤏',w:'Both hands form C-shape'},{l:'D',e:'👈',w:'Both hands D-shape'},{l:'E',e:'🖐',w:'Both hands E-shape'},{l:'F',e:'👌',w:'Both hands F-shape'},{l:'G',e:'👈',w:'Both hands G-shape'},{l:'H',e:'🤞',w:'Both hands H-shape'},{l:'I',e:'☝️',w:'Index finger points up'},{l:'J',e:'🤙',w:'Index traces J in air'},{l:'K',e:'✌️',w:'Both hands K-shape'},{l:'L',e:'🤙',w:'Both hands L-shape'},{l:'M',e:'✊',w:'Both hands M-shape'},{l:'N',e:'✊',w:'Both hands N-shape'},{l:'O',e:'👌',w:'Both hands form circle'},{l:'P',e:'🖐',w:'Both hands P-shape'},{l:'Q',e:'🤏',w:'Both hands Q-shape'},{l:'R',e:'🤞',w:'Both hands R-shape crossed'},{l:'S',e:'✊',w:'Both hands S-shape'},{l:'T',e:'☝️',w:'Both hands T-shape'},{l:'U',e:'✌️',w:'Both hands U-shape'},{l:'V',e:'✌️',w:'Both hands V-shape'},{l:'W',e:'🖖',w:'Both hands W-shape'},{l:'X',e:'☝️',w:'Both hands X-hooked'},{l:'Y',e:'🤙',w:'Both hands Y-shape'},{l:'Z',e:'☝️',w:'Index traces Z'}],
+    phrases:[{text:'Hello',signs:'👋',steps:'Flat hand wave at side of head'},{text:'Please',signs:'🙏',steps:'Both palms together, slight bow'},{text:'Thank You',signs:'🙏',steps:'Flat hand touch chin, move forward'},{text:'Yes',signs:'✊',steps:'Fist moved down emphatically'},{text:'No',signs:'🤚',steps:'Open palm waved side to side'},{text:'Help',signs:'🤝',steps:'Both hands clasp and lift upward'},{text:'Where',signs:'☝️',steps:'Index finger wagged side to side'},{text:'Name',signs:'✌️',steps:'Both hands tap temples'}]},
+  isl:{label:'ISL',note:'Indian Sign Language — being standardised by ISLRTC.',
+    alpha:[{l:'अ/A',e:'✊',w:'Closed fist'},{l:'ब/B',e:'🖐',w:'Open palm forward'},{l:'क/K',e:'✌️',w:'Two fingers extended'},{l:'ड/D',e:'👈',w:'Index points sideways'},{l:'ए/E',e:'🤏',w:'Pinch shape'},{l:'फ/F',e:'👌',w:'OK circle shape'},{l:'ग/G',e:'👊',w:'Knuckles forward'},{l:'ह/H',e:'🤞',w:'Two-hand H'},{l:'ई/I',e:'🤙',w:'Pinky up'},{l:'ज/J',e:'🤙',w:'J-trace with pinky'},{l:'ल/L',e:'🤙',w:'L-shape'},{l:'म/M',e:'✊',w:'M-shape'},{l:'न/N',e:'✊',w:'N-shape'},{l:'ओ/O',e:'👌',w:'O-circle'},{l:'प/P',e:'👇',w:'P-shape down'},{l:'र/R',e:'🤞',w:'R-cross'},{l:'स/S',e:'✊',w:'S-shape'},{l:'त/T',e:'✊',w:'T-shape'},{l:'उ/U',e:'✌️',w:'U-shape'},{l:'व/V',e:'✌️',w:'V-sign'},{l:'य/Y',e:'🤙',w:'Y-shape'},{l:'ज़/Z',e:'☝️',w:'Z-trace'},{l:'श/SH',e:'🖐',w:'Flat hand'},{l:'ण/N2',e:'🤏',w:'Pinch-N'},{l:'ख/KH',e:'✊',w:'Open K variant'},{l:'घ/GH',e:'👊',w:'GH knuckle shape'}],
+    phrases:[{text:'Namaste',signs:'🙏',steps:'Both palms pressed together at chest'},{text:'Yes (Haan)',signs:'✊',steps:'Head nod with closed fist'},{text:'No (Nahi)',signs:'🤚',steps:'Palm waved left to right'},{text:'Help (Madad)',signs:'🤝',steps:'Both hands reach out then pull back'},{text:'Water (Pani)',signs:'💧',steps:'W-shape tap chin twice'},{text:'Food (Khana)',signs:'🍽️',steps:'Fingers bunched to mouth'},{text:'Doctor',signs:'👨‍⚕️',steps:'D-shape tapped on wrist'},{text:'Thank You',signs:'🙏',steps:'Palms together then forward'}]},
+  gen:{label:'UNIVERSAL',note:'Widely understood gestures across many cultures.',
+    alpha:[{l:'👍',e:'👍',w:'Approval / Good'},{l:'👎',e:'👎',w:'Disapproval / Bad'},{l:'🤟',e:'🤟',w:'I Love You'},{l:'✌️',e:'✌️',w:'Peace / Two'},{l:'🤞',e:'🤞',w:'Good Luck'},{l:'👏',e:'👏',w:'Applause'},{l:'🙏',e:'🙏',w:'Please / Thank you'},{l:'💪',e:'💪',w:'Strong'},{l:'🤷',e:'🤷',w:"Don't know"},{l:'👉',e:'👉',w:'That direction'},{l:'✋',e:'✋',w:'Stop / Wait'},{l:'☝️',e:'☝️',w:'One / Listen'},{l:'👐',e:'👐',w:'Open / Wide'},{l:'🙌',e:'🙌',w:'Celebrate'},{l:'🤝',e:'🤝',w:'Agreement'},{l:'👋',e:'👋',w:'Hello / Goodbye'},{l:'❤️',e:'❤️',w:'Love'},{l:'🍽️',e:'🍽️',w:'Eat / Food'},{l:'💧',e:'💧',w:'Water / Drink'},{l:'🩺',e:'🩺',w:'Doctor / Medical'},{l:'⚠️',e:'⚠️',w:'Warning / Danger'},{l:'📞',e:'🤙',w:'Call me'},{l:'👀',e:'✌️',w:'Look / See'},{l:'👂',e:'✋',w:'Listen / Hear'},{l:'🚗',e:'🚗',w:'Car / Drive'},{l:'🆘',e:'🆘',w:'Emergency'}],
+    phrases:[{text:'Are you OK?',signs:'👍❓',steps:'Thumbs up with questioning face'},{text:'Call for help',signs:'📞🆘',steps:'Phone gesture then wave arms overhead'},{text:"I don't understand",signs:'🤷',steps:'Both palms up, shrug shoulders'},{text:'Slow down',signs:'✋',steps:'Open palm pushed down slowly twice'},{text:'Come here',signs:'👈',steps:'Index finger curled toward self'},{text:'Go away',signs:'👋',steps:'Open hand waved away firmly'},{text:'I need a doctor',signs:'🩺',steps:'D-shape tapped on wrist, point to self'},{text:'Emergency!',signs:'🆘',steps:'Both fists crossed, shaken urgently'}]}
+};
+
+/* ═══ GAME STATE ═══ */
+let gLang='asl', gMode='', gQ=[], gIdx=0, gLives=3, gScore=0, gStreak=0, gXP=0, gAnswered=false, learnedSet=new Set();
+const TOTAL_Q=10, XP_PER_Q=10, XP_LEVEL=100;
+
+function pickLang(l,btn){
+  gLang=l;
+  document.querySelectorAll('.lang-sel-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function buildQuestions(mode){
+  const data=SD[gLang];
+  const pool=shuffle(data.alpha).slice(0,TOTAL_Q);
+  if(mode==='quiz'||mode==='reverse'){
+    return pool.map(item=>{
+      const wrongs=shuffle(data.alpha.filter(x=>x.l!==item.l)).slice(0,3);
+      const opts=shuffle([item,...wrongs]);
+      return{item,opts,mode};
+    });
+  } else if(mode==='type'){
+    return pool.map(item=>({item,mode}));
+  }
+  return [];
+}
+
+function startGame(mode){
+  if(mode==='study'){showStudy();return;}
+  gMode=mode; gQ=buildQuestions(mode); gIdx=0; gLives=3; gScore=0; gStreak=0; gAnswered=false;
+  document.getElementById('gameModes').style.display='none';
+  document.getElementById('gameHUD').style.display='flex';
+  document.getElementById('gameArena').style.display='block';
+  document.getElementById('studyArea').style.display='none';
+  document.getElementById('hudLang').textContent=SD[gLang].label;
+  updateHUD(); renderQuestion();
+}
+
+function exitGame(){
+  document.getElementById('gameModes').style.display='grid';
+  document.getElementById('gameHUD').style.display='none';
+  document.getElementById('gameArena').style.display='none';
+  document.getElementById('studyArea').style.display='none';
+}
+
+function updateHUD(){
+  document.getElementById('hudScore').textContent=gScore;
+  document.getElementById('hudStreak').textContent=gStreak;
+  document.getElementById('hudXP').textContent=`${gXP%XP_LEVEL} / ${XP_LEVEL} XP`;
+  document.getElementById('xpBar').style.width=((gXP%XP_LEVEL)/XP_LEVEL*100)+'%';
+  const ld=document.getElementById('livesDisplay');
+  ld.innerHTML='';
+  for(let i=0;i<3;i++){
+    const d=document.createElement('span');
+    d.className='life'+(i>=gLives?' lost':'');
+    d.textContent='❤️';
+    ld.appendChild(d);
+  }
+}
+
+function renderQuestion(){
+  if(gIdx>=gQ.length){showResult();return;}
+  hideFeedback();
+  gAnswered=false;
+  const q=gQ[gIdx];
+  const pct=Math.round(gIdx/TOTAL_Q*100);
+  document.getElementById('progFill').style.width=pct+'%';
+
+  if(q.mode==='quiz'){
+    document.getElementById('arenaContent').innerHTML=`
+      <div class="q-header">
+        <div class="q-mode-tag">// MODE: SIGN_QUIZ :: Q${gIdx+1} of ${TOTAL_Q}</div>
+        <div class="q-instruction">What letter does this hand sign represent?</div>
       </div>
-      <div class="stat-card">
-        <div class="sc-icon">🎮</div>
-        <div class="sc-num">${data.totalScores}</div>
-        <div class="sc-label">Games Played</div>
-        <div class="sc-sub">all time</div>
+      <div class="sign-display">
+        <span class="big-emoji">${q.item.e}</span>
+        <div class="sign-hint">// ${SD[gLang].label} HAND SIGN — SELECT THE CORRECT LETTER</div>
       </div>
-      <div class="stat-card">
-        <div class="sc-icon">⚡</div>
-        <div class="sc-num">${data.totalXP.toLocaleString()}</div>
-        <div class="sc-label">Total XP Earned</div>
-        <div class="sc-sub">across all players</div>
-      </div>
-      <div class="stat-card">
-        <div class="sc-icon">🏆</div>
-        <div class="sc-num">${data.topScore?.score || 0}</div>
-        <div class="sc-label">Highest Score</div>
-        <div class="sc-sub">${data.topScore?.username || '—'}</div>
-      </div>
-      <div class="stat-card">
-        <div class="sc-icon">🚫</div>
-        <div class="sc-num">${data.bannedUsers}</div>
-        <div class="sc-label">Banned Users</div>
-        <div class="sc-sub">currently restricted</div>
+      <div class="options-grid">
+        ${q.opts.map((o,i)=>`
+          <button class="option-btn" onclick="checkAnswer(this,'${o.l}','${q.item.l}')">
+            <span class="opt-letter">${o.l}</span>
+            <span class="opt-text">${o.w}</span>
+            <span class="opt-key">${['A','B','C','D'][i]}</span>
+          </button>`).join('')}
       </div>`;
-    // Recent scores in dashboard
-    renderRecentScores(allScores.slice(0, 8));
-  } catch(e) {
-    document.getElementById('statsGrid').innerHTML = '<div style="font-family:var(--mono);font-size:.72rem;color:var(--red);padding:1rem">// ERROR LOADING STATS</div>';
+  } else if(q.mode==='reverse'){
+    document.getElementById('arenaContent').innerHTML=`
+      <div class="q-header">
+        <div class="q-mode-tag">// MODE: REVERSE_QUIZ :: Q${gIdx+1} of ${TOTAL_Q}</div>
+        <div class="q-instruction">Which hand sign represents the letter <span style="color:var(--cyan);font-family:var(--display)">${q.item.l}</span>?</div>
+      </div>
+      <div class="options-grid" style="grid-template-columns:1fr 1fr;gap:1rem;max-width:500px;margin:1.5rem auto 0">
+        ${q.opts.map((o,i)=>`
+          <button class="option-btn" style="flex-direction:column;text-align:center;padding:1.3rem;justify-content:center" onclick="checkAnswer(this,'${o.l}','${q.item.l}')">
+            <span class="opt-emoji" style="font-size:2.5rem;display:block;margin-bottom:.4rem">${o.e}</span>
+            <span class="opt-text" style="font-family:var(--mono);font-size:.65rem;color:var(--muted)">${o.w}</span>
+            <span class="opt-key">${['A','B','C','D'][i]}</span>
+          </button>`).join('')}
+      </div>`;
+  } else if(q.mode==='type'){
+    document.getElementById('arenaContent').innerHTML=`
+      <div class="q-header">
+        <div class="q-mode-tag">// MODE: TYPE_IT :: Q${gIdx+1} of ${TOTAL_Q}</div>
+        <div class="q-instruction">Type the letter this hand sign represents</div>
+      </div>
+      <div class="sign-display">
+        <span class="big-emoji">${q.item.e}</span>
+        <div class="sign-hint">// ${q.item.w.toUpperCase()}</div>
+      </div>
+      <div class="type-area">
+        <input class="type-input" id="typeInput" maxlength="3" autocomplete="off" placeholder="?" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')submitType('${q.item.l}')">
+        <button class="type-submit" onclick="submitType('${q.item.l}')">▶ SUBMIT ANSWER</button>
+      </div>`;
+    setTimeout(()=>{const el=document.getElementById('typeInput');if(el)el.focus();},100);
   }
 }
 
-function renderRecentScores(scores) {
-  const el = document.getElementById('recentScoresTable');
-  document.getElementById('recentCount').textContent = `// ${scores.length} RECENT`;
-  if (!scores.length) { el.innerHTML = '<div class="tbl-empty">// NO SCORES YET</div>'; return; }
-  el.innerHTML = `<table>
-    <thead><tr><th>Player</th><th>Score</th><th>Language</th><th>Mode</th><th>Streak</th><th>Date</th></tr></thead>
-    <tbody>${scores.map(s=>`<tr>
-      <td style="font-weight:600">${s.username}</td>
-      <td style="font-family:var(--display);font-weight:700;color:var(--cyan)">${s.score}</td>
-      <td><span class="badge badge-user">${s.language?.toUpperCase()}</span></td>
-      <td style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">${s.mode}</td>
-      <td style="color:var(--orange)">🔥 ${s.streak}</td>
-      <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted)">${new Date(s.playedAt).toLocaleDateString()}</td>
-    </tr>`).join('')}</tbody>
-  </table>`;
-}
-
-/* ═══ USERS ═══ */
-async function loadUsers() {
-  try {
-    const res  = await fetch(`${API}/admin/users`, { headers:{'Authorization':'Bearer '+adminToken} });
-    allUsers   = await res.json();
-    renderUsers(allUsers);
-  } catch(e) {
-    document.getElementById('usersTable').innerHTML = '<div class="tbl-empty">// ERROR LOADING USERS</div>';
+function checkAnswer(btn,chosen,correct){
+  if(gAnswered)return;
+  gAnswered=true;
+  const allBtns=document.querySelectorAll('.option-btn');
+  allBtns.forEach(b=>b.classList.add('disabled'));
+  if(chosen===correct){
+    btn.classList.add('correct');
+    handleCorrect(btn);
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b=>{if(b.querySelector('.opt-letter')?.textContent===correct||b.querySelector('.option-btn')?.textContent===correct)b.classList.add('correct');});
+    // highlight the correct one
+    allBtns.forEach(b=>{
+      const lt=b.querySelector('.opt-letter');
+      if(lt&&lt.textContent===correct)b.classList.add('correct');
+    });
+    handleWrong();
   }
 }
 
-function renderUsers(users) {
-  document.getElementById('userCount').textContent = `// ${users.length} USERS`;
-  const el = document.getElementById('usersTable');
-  if (!users.length) { el.innerHTML = '<div class="tbl-empty">// NO USERS FOUND</div>'; return; }
-  el.innerHTML = `<table>
-    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>XP</th><th>Joined</th><th>Actions</th></tr></thead>
-    <tbody>${users.map(u=>`<tr id="urow-${u._id}">
-      <td style="font-weight:700;color:var(--text)">${u.username}</td>
-      <td style="font-family:var(--mono);font-size:.72rem;color:var(--muted)">${u.email}</td>
-      <td><span class="badge ${u.role==='admin'?'badge-admin':'badge-user'}">${u.role}</span></td>
-      <td><span class="badge ${u.banned?'badge-banned':'badge-active'}">${u.banned?'BANNED':'ACTIVE'}</span></td>
-      <td style="font-family:var(--display);font-size:.8rem;color:var(--yellow)">${u.xp||0}</td>
-      <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted)">${new Date(u.createdAt).toLocaleDateString()}</td>
-      <td>
-        ${u.role!=='admin'?`
-          <button class="act-btn ${u.banned?'btn-unban':'btn-ban'}" onclick="toggleBan('${u._id}','${u.username}',${u.banned})">
-            ${u.banned?'UNBAN':'BAN'}
-          </button>
-          <button class="act-btn btn-del" onclick="deleteUser('${u._id}','${u.username}')">DELETE</button>
-        `:'<span style="font-family:var(--mono);font-size:.6rem;color:var(--muted)">PROTECTED</span>'}
-      </td>
-    </tr>`).join('')}</tbody>
-  </table>`;
-}
-
-function filterUsers() {
-  const q = document.getElementById('userSearch').value.toLowerCase();
-  renderUsers(allUsers.filter(u => u.username.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)));
-}
-
-async function toggleBan(id, username, isBanned) {
-  const action = isBanned ? 'UNBAN' : 'BAN';
-  confirm(
-    `${action} USER`,
-    `Are you sure you want to ${action.toLowerCase()} "${username}"?`,
-    async () => {
-      try {
-        const res  = await fetch(`${API}/admin/users/${id}/ban`, {
-          method:'PATCH', headers:{'Authorization':'Bearer '+adminToken}
-        });
-        const data = await res.json();
-        if (!res.ok) return toast('// ERROR: ' + data.error, 'err');
-        toast(`// USER ${data.banned ? 'BANNED' : 'UNBANNED'} SUCCESSFULLY`, 'ok');
-        loadUsers();
-        loadDashboard();
-      } catch(e) { toast('// CONNECTION ERROR', 'err'); }
-    }
-  );
-}
-
-async function deleteUser(id, username) {
-  confirm(
-    'DELETE USER',
-    `Permanently delete "${username}" and all their scores? This cannot be undone.`,
-    async () => {
-      try {
-        const res = await fetch(`${API}/admin/users/${id}`, {
-          method:'DELETE', headers:{'Authorization':'Bearer '+adminToken}
-        });
-        if (!res.ok) return toast('// ERROR deleting user', 'err');
-        toast(`// USER "${username}" DELETED`, 'ok');
-        loadUsers();
-        loadDashboard();
-        loadScores();
-      } catch(e) { toast('// CONNECTION ERROR', 'err'); }
-    }
-  );
-}
-
-/* ═══ SCORES ═══ */
-async function loadScores() {
-  try {
-    const res  = await fetch(`${API}/admin/scores`, { headers:{'Authorization':'Bearer '+adminToken} });
-    allScores  = await res.json();
-    renderScores(allScores);
-    renderRecentScores(allScores.slice(0, 8));
-  } catch(e) {
-    document.getElementById('scoresTable').innerHTML = '<div class="tbl-empty">// ERROR LOADING SCORES</div>';
+function submitType(correct){
+  if(gAnswered)return;
+  const inp=document.getElementById('typeInput');
+  if(!inp||!inp.value.trim())return;
+  gAnswered=true;
+  inp.disabled=true;
+  const typed=inp.value.trim().toUpperCase();
+  // flexible match for ISL (e.g. "A" matches "अ/A")
+  const isCorrect=correct.toUpperCase().includes(typed)||typed===correct.toUpperCase();
+  if(isCorrect){
+    inp.style.borderColor='var(--green)';inp.style.color='var(--green)';
+    handleCorrect(inp);
+  } else {
+    inp.style.borderColor='var(--red)';inp.style.color='var(--red)';
+    inp.value=correct;
+    handleWrong();
   }
 }
 
-function renderScores(scores) {
-  document.getElementById('scoreCount').textContent = `// ${scores.length} RECORDS`;
-  const el = document.getElementById('scoresTable');
-  if (!scores.length) { el.innerHTML = '<div class="tbl-empty">// NO SCORES YET</div>'; return; }
-  el.innerHTML = `<table>
-    <thead><tr><th>Player</th><th>Score</th><th>Language</th><th>Mode</th><th>XP</th><th>Streak</th><th>Date</th></tr></thead>
-    <tbody>${scores.map(s=>`<tr>
-      <td style="font-weight:600">${s.username}</td>
-      <td style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--cyan)">${s.score}</td>
-      <td><span class="badge badge-user">${s.language?.toUpperCase()}</span></td>
-      <td style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">${s.mode}</td>
-      <td style="color:var(--yellow);font-family:var(--display);font-size:.8rem">${s.xpEarned}</td>
-      <td style="color:var(--orange)">🔥 ${s.streak}</td>
-      <td style="font-family:var(--mono);font-size:.68rem;color:var(--muted)">${new Date(s.playedAt).toLocaleDateString()}</td>
-    </tr>`).join('')}</tbody>
-  </table>`;
+function handleCorrect(el){
+  const pts=10+(gStreak>=3?5:0)+(gStreak>=5?5:0);
+  gScore+=pts; gStreak++; gXP+=XP_PER_Q;
+  learnedSet.add(gQ[gIdx].item.l);
+  showFeedback(true, gStreak>=3?`🔥 ${gStreak} STREAK! +${pts} PTS`:'CORRECT!', gQ[gIdx].item.w);
+  spawnScorePop(`+${pts}`, el);
+  updateHUD();
 }
+function handleWrong(){
+  gLives=Math.max(0,gLives-1);
+  gStreak=0;
+  showFeedback(false,'INCORRECT','The correct answer was: '+gQ[gIdx].item.w);
+  updateHUD();
+  if(gLives===0){setTimeout(()=>showResult(),1200);}
+}
+
+function showFeedback(correct,text,sub){
+  const bar=document.getElementById('feedbackBar');
+  const fb=correct?'correct-fb':'wrong-fb';
+  bar.className='feedback-bar show '+(correct?'correct-fb':'wrong-fb');
+  document.getElementById('fbIcon').textContent=correct?'✅':'❌';
+  const ft=document.getElementById('fbText');
+  ft.className='fb-text '+(correct?'correct-fb':'wrong-fb');
+  ft.textContent=text;
+  document.getElementById('fbSub').textContent=sub;
+  const nb=document.getElementById('nextBtn');
+  nb.className='next-btn '+(correct?'correct-nb':'wrong-nb');
+}
+function hideFeedback(){
+  document.getElementById('feedbackBar').className='feedback-bar';
+}
+
+function nextQuestion(){
+  if(gLives===0){showResult();return;}
+  gIdx++;
+  if(gIdx>=gQ.length){showResult();return;}
+  renderQuestion();
+}
+
+function spawnScorePop(text,refEl){
+  const arena=document.getElementById('gameArena');
+  const pop=document.createElement('div');
+  pop.className='score-pop';
+  pop.textContent=text;
+  pop.style.left='50%';
+  pop.style.top='40%';
+  pop.style.transform='translateX(-50%)';
+  arena.appendChild(pop);
+  setTimeout(()=>pop.remove(),900);
+}
+
+function showResult(){
+  hideFeedback();
+  const win=gLives>0;
+  // Save to backend if logged in
+  if(win) saveScoreToBackend(gLang, gMode, gScore, gXP, gStreak);
+  const acc=gQ.length>0?Math.round((gScore/(gQ.length*10))*100):0;
+  document.getElementById('arenaContent').innerHTML=`
+    <div class="result-screen">
+      <div class="result-emoji">${win?'🏆':'💀'}</div>
+      <div class="result-title ${win?'win':'lose'}">${win?'MISSION COMPLETE':'GAME OVER'}</div>
+      <div class="result-stats">
+        <div class="rs-item"><div class="rs-num" style="color:var(--cyan)">${gScore}</div><div class="rs-lbl">Total Score</div></div>
+        <div class="rs-item"><div class="rs-num" style="color:var(--green)">${gIdx}</div><div class="rs-lbl">Questions</div></div>
+        <div class="rs-item"><div class="rs-num" style="color:var(--yellow)">${gXP}</div><div class="rs-lbl">XP Earned</div></div>
+        <div class="rs-item"><div class="rs-num" style="color:var(--orange)">${learnedSet.size}</div><div class="rs-lbl">Signs Learned</div></div>
+      </div>
+      <div class="result-btns">
+        <button class="btn-c btn-p" onclick="startGame('${gMode}')">▶ PLAY AGAIN</button>
+        <button class="btn-c btn-s" onclick="showStudy()">📖 STUDY MODE</button>
+        <button class="btn-c" style="background:transparent;color:var(--muted);border:1px solid var(--border)" onclick="exitGame()">← MENU</button>
+      </div>
+    </div>`;
+  document.getElementById('progFill').style.width='100%';
+}
+
+/* STUDY MODE */
+function showStudy(){
+  gMode='study';
+  document.getElementById('gameModes').style.display='none';
+  document.getElementById('gameHUD').style.display='none';
+  document.getElementById('gameArena').style.display='none';
+  const sa=document.getElementById('studyArea');
+  sa.style.display='block';
+  const d=SD[gLang];
+  sa.innerHTML=`
+    <div style="background:rgba(0,255,200,.03);border:1px solid var(--border);border-left:3px solid var(--cyan);padding:.8rem 1.2rem;margin-bottom:1.5rem;font-family:var(--mono);font-size:.73rem;color:var(--muted);">
+      SYS:// <strong style="color:var(--cyan)">${d.label} — ${['American Sign Language','British Sign Language','Indian Sign Language','Universal Signs'][['asl','bsl','isl','gen'].indexOf(gLang)]}</strong> — ${d.note}
+      <button class="btn-c btn-s" style="font-size:.6rem;padding:.4rem .8rem;float:right;margin-top:-.1rem" onclick="exitGame()">← BACK</button>
+    </div>
+    <div class="study-grid">${d.alpha.map(i=>`
+      <div class="study-card${learnedSet.has(i.l)?' learned':''}">
+        <span class="sc-emoji">${i.e}</span>
+        <div class="sc-letter">${i.l}</div>
+        <div class="sc-word">${i.w}</div>
+      </div>`).join('')}
+    </div>
+    <div style="font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin:2.5rem 0 1.2rem;display:flex;align-items:center;gap:.8rem;">
+      ▶ COMMON PHRASES <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);display:block"></span>
+    </div>
+    <div class="study-phrase-grid">${d.phrases.map(p=>`
+      <div class="sph-card">
+        <div class="sph-signs">${p.signs}</div>
+        <div class="sph-text">${p.text}</div>
+        <div class="sph-steps">// ${p.steps}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+/* ═══ ALLERGY DATA ═══ */
+const AL=[
+  {icon:'🥜',name:'PEANUT ALLERGY',type:'FOOD_ALLERGEN_CLASS:01',syms:['Hives','Swelling','Nausea','Anaphylaxis','Throat tightening','Breathing difficulty'],sev:90,sc:'sev-high',st:'SEVERE',tip:'Carry an EpiPen at all times. Read all food labels. Warn restaurants of your allergy.'},
+  {icon:'🌾',name:'GLUTEN / WHEAT',type:'FOOD_ALLERGEN_CLASS:02',syms:['Bloating','Diarrhoea','Fatigue','Abdominal pain','Skin rash'],sev:60,sc:'sev-med',st:'MODERATE',tip:'Avoid wheat, barley, rye. Look for gluten-free certification. Check sauces.'},
+  {icon:'🥛',name:'DAIRY / LACTOSE',type:'FOOD_ALLERGEN_CLASS:03',syms:['Bloating','Cramping','Gas','Diarrhoea','Nausea'],sev:50,sc:'sev-med',st:'MODERATE',tip:'Try oat, almond or soy milk. Check medication labels too.'},
+  {icon:'🐝',name:'BEE / WASP STING',type:'INSECT_VENOM_ALLERGEN',syms:['Swelling','Redness','Hives','Anaphylaxis','Rapid heartbeat'],sev:85,sc:'sev-high',st:'HIGH RISK',tip:'Seek help if throat swells. Scrape stinger sideways — never squeeze it.'},
+  {icon:'🌸',name:'POLLEN (HAY FEVER)',type:'ENVIRONMENTAL_ALLERGEN:AIRBORNE',syms:['Sneezing','Runny nose','Itchy eyes','Congestion','Coughing'],sev:35,sc:'sev-low',st:'MILD',tip:'Check pollen counts daily. Antihistamines help. Close windows on high-pollen days.'},
+  {icon:'🐱',name:'PET DANDER',type:'ENVIRONMENTAL_ALLERGEN:ANIMAL',syms:['Sneezing','Itchy eyes','Skin rash','Wheeze','Congestion'],sev:45,sc:'sev-med',st:'MODERATE',tip:'HEPA air purifiers help. Wash hands after animal contact.'},
+  {icon:'💊',name:'PENICILLIN / ANTIBIOTICS',type:'DRUG_ALLERGEN:ANTIBIOTIC',syms:['Skin rash','Hives','Fever','Anaphylaxis','Facial swelling'],sev:80,sc:'sev-high',st:'HIGH RISK',tip:'Always inform doctors and dentists of antibiotic allergies before treatment.'},
+  {icon:'🏠',name:'DUST MITES',type:'ENVIRONMENTAL_ALLERGEN:INDOOR',syms:['Sneezing','Runny nose','Itchy skin','Asthma trigger','Red eyes'],sev:40,sc:'sev-low',st:'MILD',tip:'Use allergen-proof mattress covers. Wash bedding at 60°C+ weekly.'},
+  {icon:'🧤',name:'LATEX ALLERGY',type:'CONTACT_ALLERGEN:RUBBER',syms:['Skin rash','Itching','Hives','Anaphylaxis (rare)','Swelling'],sev:65,sc:'sev-med',st:'MODERATE',tip:'Inform medical staff before procedures. Banana, avocado, kiwi can cross-react.'},
+];
+const symTips={
+  'Hives':'Raised itchy welts on the skin surface',
+  'Swelling':'Can affect lips, tongue or throat — serious if airway involved',
+  'Nausea':'Avoid strong smells and lie still if severe',
+  'Anaphylaxis':'Life-threatening — use EpiPen and call 999 immediately',
+  'Throat tightening':'Go to A&E immediately — airway risk',
+  'Breathing difficulty':'Sit upright and call emergency services now',
+  'Bloating':'Caused by gas buildup in the digestive tract',
+  'Diarrhoea':'Stay hydrated — drink water with electrolytes',
+  'Fatigue':'Rest and avoid strenuous activity',
+  'Abdominal pain':'Apply warm compress to reduce discomfort',
+  'Skin rash':'Avoid scratching — apply cool compress',
+  'Cramping':'Caused by intestinal spasm — heat helps',
+  'Gas':'Dietary changes can reduce this significantly',
+  'Redness':'Indicates localised inflammation or irritation',
+  'Rapid heartbeat':'Sit down and breathe slowly — seek help if persists',
+  'Sneezing':'Your immune system reacting to the allergen',
+  'Runny nose':'Antihistamines can reduce this effectively',
+  'Itchy eyes':'Avoid rubbing — use antihistamine eye drops',
+  'Congestion':'Nasal saline spray can provide quick relief',
+  'Coughing':'May indicate airway inflammation — monitor closely',
+  'Wheeze':'High-pitched breathing sound — seek medical help',
+  'Fever':'Temperature above 38°C — monitor carefully',
+  'Facial swelling':'Can indicate severe allergic reaction — seek care',
+  'Itchy skin':'Cool water and calamine lotion can soothe',
+  'Asthma trigger':'Use rescue inhaler if prescribed',
+  'Red eyes':'Avoid contact lenses during flare-ups',
+  'Itching':'Antihistamines help — avoid hot showers',
+  'Anaphylaxis (rare)':'Though rare, always carry an EpiPen if at risk',
+};
+document.getElementById('allergyGrid').innerHTML=AL.map(a=>`<div class="allergy-card reveal"><div class="ac-top"><div class="ac-icon">${a.icon}</div><div><div class="ac-name">${a.name}</div><div class="ac-type">${a.type}</div></div></div><div class="ac-body"><div class="ac-lbl">// SYMPTOM_ARRAY</div><div class="symptom-list">${a.syms.map(s=>`<span class="symptom-pill">${s}${symTips[s]?`<span class="pill-tip">ℹ️ ${symTips[s]}</span>`:''}</span>`).join('')}</div><div class="sev-row"><span class="ac-lbl" style="white-space:nowrap;margin:0">SEVERITY:</span><div class="sev-track"><div class="sev-fill ${a.sc}" style="width:${a.sev}%"></div></div><span class="sev-txt" style="color:${a.sc==='sev-high'?'var(--red)':a.sc==='sev-med'?'var(--yellow)':'var(--green)'}">${a.st}</span></div><div class="ac-tip">${a.tip}</div></div></div>`).join('');
+
+/* ═══ MEDICATIONS ═══ */
+const MD=[
+  {name:'IBUPROFEN (ADVIL)',cls:'NSAID_PAIN_RELIEVER',c:['Stomach upset','Nausea','Heartburn','Dizziness'],s:['GI bleeding','Kidney impairment','Elevated blood pressure','Severe allergic reaction']},
+  {name:'PARACETAMOL (TYLENOL)',cls:'ANALGESIC / ANTIPYRETIC',c:['Nausea (rare)','Skin rash (rare)'],s:['Liver damage on overdose','Severe skin reaction (SJS)','Kidney damage']},
+  {name:'AMOXICILLIN',cls:'ANTIBIOTIC :: PENICILLIN_CLASS',c:['Diarrhoea','Nausea','Skin rash','Vomiting'],s:['Anaphylactic shock','Stevens-Johnson Syndrome','C. difficile infection']},
+  {name:'CETIRIZINE (ZYRTEC)',cls:'ANTIHISTAMINE_H1_CLASS',c:['Drowsiness','Dry mouth','Headache','Fatigue'],s:['Severe allergic reaction (rare)','Irregular heartbeat (rare)']},
+  {name:'METFORMIN',cls:'ANTIDIABETIC :: TYPE_2_ORAL',c:['Nausea','Diarrhoea','Stomach pain','Metallic taste'],s:['Lactic acidosis (rare)','Vitamin B12 deficiency','Kidney stress']},
+  {name:'ASPIRIN',cls:'NSAID / ANTIPLATELET_AGENT',c:['Stomach irritation','Nausea','Heartburn'],s:["Reye's syndrome (children)",'GI bleeding','Tinnitus at high doses']},
+  {name:'OMEPRAZOLE (PRILOSEC)',cls:'PROTON_PUMP_INHIBITOR',c:['Headache','Diarrhoea','Nausea','Stomach pain'],s:['Low magnesium','Fracture risk','C. difficile infection']},
+  {name:'ATORVASTATIN (LIPITOR)',cls:'HMG-CoA_REDUCTASE_INHIBITOR',c:['Muscle aches','Nausea','Diarrhoea','Headache'],s:['Rhabdomyolysis','Hepatotoxicity','Cognitive effects (rare)']},
+  {name:'SALBUTAMOL (VENTOLIN)',cls:'SHORT-ACTING BETA2_AGONIST',c:['Trembling','Rapid heartbeat','Headache','Nervousness'],s:['Paradoxical bronchospasm','Severe allergic reaction','Hypokalaemia']},
+];
+const medTips={
+  'Stomach upset':'Take with food or milk to reduce this',
+  'Nausea':'Sit upright for 30 min after taking',
+  'Heartburn':'Avoid lying down after dose',
+  'Dizziness':'Rise slowly from sitting position',
+  'GI bleeding':'Stop use and seek emergency care immediately',
+  'Kidney impairment':'Stay well hydrated while using',
+  'Elevated blood pressure':'Monitor BP regularly',
+  'Severe allergic reaction':'Stop use — call emergency services',
+  'Liver damage on overdose':'Never exceed recommended dose',
+  'Skin rash (rare)':'Discontinue and consult doctor',
+  'Drowsiness':'Avoid driving or operating machinery',
+  'Dry mouth':'Stay hydrated, chew sugar-free gum',
+  'Headache':'Usually resolves within a few days',
+  'Fatigue':'Avoid alcohol — worsens this effect',
+  'Diarrhoea':'Stay hydrated with electrolytes',
+  'Muscle aches':'Report severe muscle pain immediately',
+  'Trembling':'Usually mild — reduces over time',
+  'Rapid heartbeat':'Rest and monitor — seek help if severe',
+  'Metallic taste':'Usually fades after first few doses',
+  'Stomach irritation':'Always take with food',
+  'Anaphylactic shock':'Use EpiPen if available — call 999',
+};
+document.getElementById('medsGrid').innerHTML=MD.map(m=>`<div class="med-card reveal"><div class="med-name">// ${m.name}</div><div class="med-cls">${m.cls}</div><div class="fx-sec"><div class="fx-lbl c">COMMON_EFFECTS</div>${m.c.map(e=>`<div class="fx-item"><div class="fx-dot c"></div>${e}${medTips[e]?`<span class="fx-tip">💡 ${medTips[e]}</span>`:''}</div>`).join('')}</div><div class="fx-sec"><div class="fx-lbl s">SERIOUS — SEEK_MEDICAL_ATTENTION</div>${m.s.map(e=>`<div class="fx-item"><div class="fx-dot s"></div>${e}${medTips[e]?`<span class="fx-tip">⚠️ ${medTips[e]}</span>`:''}</div>`).join('')}</div><div class="med-ft">⚕ Always follow prescribed dosage. Consult a pharmacist or physician if unsure.</div></div>`).join('');
+
+/* ═══ KIT ═══ */
+const KD={'WOUND_CARE':{icon:'🩹',items:[{icon:'🩹',name:'Adhesive Bandages',use:'Cover small cuts, prevent infection',qty:'Assorted ×20'},{icon:'🧻',name:'Sterile Gauze Pads',use:'Cover large wounds, absorb blood',qty:'4×4 inch ×10'},{icon:'🩺',name:'Medical Adhesive Tape',use:'Secure dressings in place',qty:'×1 roll'},{icon:'✂️',name:'Bandage Scissors',use:'Cut gauze and tape safely',qty:'×1 pair'},{icon:'🧴',name:'Antiseptic Wipes',use:'Clean wounds to prevent infection',qty:'×20 wipes'},{icon:'💦',name:'Saline Solution',use:'Flush wounds and eyes',qty:'100ml bottle'}]},'MEDICATIONS':{icon:'💊',items:[{icon:'💊',name:'Paracetamol',use:'Pain relief and fever reduction',qty:'×20 tablets'},{icon:'💊',name:'Ibuprofen',use:'Pain, inflammation and fever',qty:'×20 tablets'},{icon:'💊',name:'Antihistamine',use:'Mild allergic reactions',qty:'×10 tablets'},{icon:'🧴',name:'Antiseptic Cream',use:'Minor cuts, burns, bites',qty:'×1 tube'},{icon:'💊',name:'Antacid Tablets',use:'Heartburn and indigestion',qty:'×10 tablets'},{icon:'💉',name:'Oral Rehydration Salts',use:'Treat dehydration',qty:'×5 sachets'}]},'TOOLS':{icon:'🩺',items:[{icon:'🌡️',name:'Digital Thermometer',use:'Check body temperature',qty:'×1'},{icon:'🩺',name:'Disposable Gloves',use:'Protection when treating others',qty:'×5 pairs'},{icon:'🔦',name:'Torch',use:'Examine wounds in low light',qty:'×1'},{icon:'🪡',name:'Sterile Tweezers',use:'Remove splinters',qty:'×1'},{icon:'📋',name:'First Aid Manual',use:'Step-by-step emergency reference',qty:'×1'},{icon:'💉',name:'Sterile Syringe',use:'Irrigate wounds (no needle)',qty:'×2'}]},'EMERGENCY':{icon:'🆘',items:[{icon:'🧊',name:'Instant Cold Pack',use:'Reduce swelling from injuries',qty:'×3'},{icon:'🦺',name:'Emergency Foil Blanket',use:'Prevent shock, maintain warmth',qty:'×2'},{icon:'💉',name:'EpiPen (if prescribed)',use:'Anaphylaxis emergency treatment',qty:'×1 (Rx)'},{icon:'🩸',name:'Tourniquet (CAT)',use:'Life-threatening limb bleeding',qty:'×1'},{icon:'😷',name:'CPR Face Shield',use:'Rescue breaths during CPR',qty:'×2'},{icon:'📱',name:'Emergency Contact Card',use:'Critical emergency numbers',qty:'×1'}]}};
+let aKit='WOUND_CARE';
+function renderKit(cat){aKit=cat;document.querySelectorAll('.kit-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));document.getElementById('kitItems').innerHTML=KD[cat].items.map(i=>`<div class="kit-item"><div class="kit-item-icon">${i.icon}</div><div class="kit-item-name">${i.name}</div><div class="kit-item-use">${i.use}</div><span class="kit-item-qty">QTY: ${i.qty}</span></div>`).join('');}
+document.getElementById('kitCats').innerHTML=Object.entries(KD).map(([c,v])=>`<button class="kit-cat-btn${c===aKit?' active':''}" data-cat="${c}" onclick="renderKit('${c}')">${v.icon} ${c.replace('_',' ')}</button>`).join('');
+renderKit(aKit);
+
+/* ═══ EMERGENCY ═══ */
+const EG=[
+  {icon:'💔',title:'CARDIAC ARREST',sub:'CARDIAC_EVENT :: CRITICAL',steps:[{c:'r',t:'Call emergency services immediately — 999 / 112 / 911'},{c:'r',t:'Begin CPR: 30 chest compressions at 100–120/min'},{c:'b',t:'Give 2 rescue breaths — tilt head, lift chin, seal lips'},{c:'b',t:'Continue 30:2 cycle until ambulance or AED arrives'},{c:'g',t:'Use AED if available — follow voice instructions exactly'}],warn:'Do NOT stop CPR unless a medical professional takes over.'},
+  {icon:'🫁',title:'CHOKING (ADULT)',sub:'AIRWAY_OBSTRUCTION :: CRITICAL',steps:[{c:'b',t:'Ask "Are you choking?" — if they cannot speak, act now'},{c:'o',t:'Give 5 firm back blows with heel of hand between shoulder blades'},{c:'o',t:'Give 5 abdominal thrusts (Heimlich) — inward and upward'},{c:'r',t:'Alternate 5 back blows + 5 thrusts until clear'},{c:'g',t:'If unconscious — begin CPR immediately'}],warn:'Do NOT perform abdominal thrusts on pregnant women or infants.'},
+  {icon:'🔥',title:'BURNS',sub:'THERMAL_INJURY :: VARIABLE',steps:[{c:'b',t:'Cool under cool running water for 20 minutes'},{c:'b',t:'Remove jewellery/clothing unless stuck to skin'},{c:'g',t:'Cover loosely with cling film or clean non-fluffy material'},{c:'r',t:'NEVER apply ice, butter, toothpaste, or pop blisters'},{c:'r',t:'Seek help for burns larger than palm, or on face/joints'}],warn:'Never use ice on burns — it causes further tissue damage.'},
+  {icon:'🩸',title:'SEVERE BLEEDING',sub:'HAEMORRHAGE_CONTROL :: URGENT',steps:[{c:'r',t:'Apply firm direct pressure with clean cloth or bandage'},{c:'o',t:'Do NOT remove cloth — add more on top if soaked'},{c:'b',t:'Elevate injured limb above heart level if possible'},{c:'g',t:'Apply tourniquet 5–8cm above wound for limb bleed'},{c:'r',t:'Call emergency services if bleeding does not slow in 10 min'}],warn:'Bright red spurting blood = arterial bleed — act within seconds.'},
+  {icon:'🤢',title:'ANAPHYLAXIS',sub:'ANAPHYLACTIC_SHOCK :: LIFE_THREATENING',steps:[{c:'r',t:'Inject EpiPen into outer thigh immediately'},{c:'r',t:'Call emergency services (999/112/911) right away'},{c:'b',t:'Lay flat with legs raised — or upright if breathing is hard'},{c:'o',t:'Give second EpiPen after 5–15 mins if no improvement'},{c:'g',t:'Stay with person and reassure until paramedics arrive'}],warn:'Always go to hospital after EpiPen — biphasic reaction can occur hours later.'},
+  {icon:'🧠',title:'STROKE — F.A.S.T.',sub:'CEREBROVASCULAR_EVENT :: CRITICAL',steps:[{c:'r',t:'F — FACE: Ask to smile — is one side drooping?'},{c:'r',t:'A — ARMS: Raise both — does one drift downward?'},{c:'o',t:'S — SPEECH: Repeat phrase — is it slurred or confused?'},{c:'b',t:'T — TIME: Any YES — call emergency services IMMEDIATELY'},{c:'g',t:'Note the exact time symptoms started — vital for doctors'}],warn:'Do NOT give food or water to a stroke patient — swallowing may be impaired.'},
+];
+const nc={r:'n-r',b:'n-b',g:'n-g',o:'n-o'};
+document.getElementById('emgGrid').innerHTML=EG.map(em=>`<div class="emg-card reveal"><div class="emg-top"><div class="emg-icon">${em.icon}</div><div><div class="emg-title">${em.title}</div><div class="emg-sub">${em.sub}</div></div></div><div class="emg-div"></div><div class="emg-steps">${em.steps.map((s,i)=>`<div class="emg-step"><div class="emg-num ${nc[s.c]}">${i+1}</div><div class="emg-st">${s.t}</div></div>`).join('')}</div><div class="emg-warn">${em.warn}</div></div>`).join('');
+
+setTimeout(()=>document.querySelectorAll('.reveal').forEach(el=>obs.observe(el)),100);
+
+// Init backend
+updateNavAuth();
+loadLeaderboard('', null);
 </script>
 </body>
 </html>
