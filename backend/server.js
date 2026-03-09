@@ -43,8 +43,16 @@ app.use((req, res) => {
 });
 
 // ── Start ────────────────────────────────────────────────
-connectDB().then(() => {
-  app.listen(process.env.PORT, () =>
-    logger.success(`Server running → http://localhost:${process.env.PORT}`)
-  );
-});
+if (require.main === module) {
+  // Only start listening when run directly (not during tests)
+  connectDB().then(() => {
+    app.listen(process.env.PORT, () =>
+      logger.success(`Server running → http://localhost:${process.env.PORT}`)
+    );
+  });
+} else {
+  // During tests — just connect DB, don't listen
+  connectDB();
+}
+
+module.exports = app;

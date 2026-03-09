@@ -313,9 +313,31 @@ section{padding:5rem 2rem;position:relative;z-index:1;}
 .sph-text{font-family:var(--display);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;}
 .sph-steps{font-family:var(--mono);font-size:.63rem;color:var(--muted);line-height:1.5;}
 
+/* ── SEARCH BAR ── */
+.search-wrap{position:relative;margin-bottom:1.8rem;z-index:50;}
+.search-input{width:100%;background:rgba(0,255,200,.03);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.78rem;padding:.8rem 1rem .8rem 2.8rem;outline:none;transition:all .25s;letter-spacing:.05em;}
+.search-input:focus{border-color:var(--cyan);box-shadow:0 0 20px rgba(0,255,200,.08);background:rgba(0,255,200,.05);}
+.search-input::placeholder{color:var(--muted);opacity:.6;}
+.search-icon{position:absolute;left:.9rem;top:1rem;color:var(--cyan);font-size:.85rem;opacity:.6;pointer-events:none;}
+.search-count{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.08em;}
+.search-dropdown{position:absolute;top:100%;left:0;right:0;background:#010a14;border:1px solid rgba(0,255,200,.3);border-top:2px solid var(--cyan);z-index:9999;max-height:260px;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.97);}
+.search-suggestion{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(255,255,255,.04);}
+.search-suggestion:hover{background:rgba(0,255,200,.05);}
+.search-suggestion:hover .sug-open{color:var(--cyan);opacity:1;}
+.sug-active{background:rgba(0,255,200,.08)!important;border-left:2px solid var(--cyan);}
+.sug-active .sug-open{color:var(--cyan)!important;opacity:1!important;}
+.sug-active .sug-name{color:var(--cyan);}
+.sug-icon{font-size:1.1rem;flex-shrink:0;}
+.sug-name{font-family:var(--display);font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--text);flex:1;}
+.sug-type{font-family:var(--mono);font-size:.58rem;color:var(--muted);flex:2;}
+.sug-open{font-family:var(--mono);font-size:.58rem;color:var(--muted);opacity:.4;flex-shrink:0;transition:all .15s;}
+.sug-empty{padding:.8rem 1rem;font-family:var(--mono);font-size:.65rem;color:var(--muted);}
+.search-no-result{text-align:center;padding:3rem 1rem;font-family:var(--mono);font-size:.75rem;color:var(--muted);letter-spacing:.1em;}
+.search-no-result span{color:var(--cyan);}
+
 /* ── ALLERGY ── */
 #allergy{background:#010a14;}
-.allergy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.2rem;}
+.allergy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
 .allergy-card{background:var(--panel);border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:all .3s;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));}
 .allergy-card:hover{border-color:var(--magenta);transform:translateY(-4px);background:rgba(255,0,170,.04);box-shadow:0 0 30px rgba(255,0,170,.08);}
 .allergy-card::before{content:'';position:absolute;top:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),transparent);opacity:0;}
@@ -762,10 +784,24 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 </section>
 
 <!-- ALLERGY -->
-<section id="allergy"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_02 :: ALLERGEN_DATABASE</span><h2 class="sec-title">ALLERGIES &amp; <span class="hl">SYMPTOM ANALYSIS</span></h2><p class="sec-sub">Know your allergens. Recognise symptoms early. Understand what to do.</p></div><div class="allergy-grid" id="allergyGrid"></div></div></section>
+<section id="allergy"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_02 :: ALLERGEN_DATABASE</span><h2 class="sec-title">ALLERGIES &amp; <span class="hl">SYMPTOM ANALYSIS</span></h2><p class="sec-sub">Know your allergens. Recognise symptoms early. Understand what to do.</p></div>
+<div class="search-wrap reveal">
+  <span class="search-icon">🔍</span>
+  <input class="search-input" id="allergySearch" type="text" placeholder="SEARCH_ALLERGEN :: e.g. peanut, dust, latex..." oninput="filterAllergy(this.value)" autocomplete="off"/>
+  <span class="search-count" id="allergyCount"></span>
+  <div class="search-dropdown" id="allergyDropdown" style="display:none;"></div>
+</div>
+<div class="allergy-grid" id="allergyGrid"></div></div></section>
 
 <!-- MEDS -->
-<section id="meds"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_03 :: PHARMACOLOGICAL_SIDE_EFFECTS</span><h2 class="sec-title">MEDICATION <span class="hl">SIDE EFFECTS</span></h2><p class="sec-sub">Commonly prescribed medications and their documented side effects. Always consult a healthcare professional.</p></div><div class="meds-grid" id="medsGrid"></div></div></section>
+<section id="meds"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_03 :: PHARMACOLOGICAL_SIDE_EFFECTS</span><h2 class="sec-title">MEDICATION <span class="hl">SIDE EFFECTS</span></h2><p class="sec-sub">Commonly prescribed medications and their documented side effects. Always consult a healthcare professional.</p></div>
+<div class="search-wrap reveal">
+  <span class="search-icon">🔍</span>
+  <input class="search-input" id="medSearch" type="text" placeholder="SEARCH_MEDICATION :: e.g. ibuprofen, aspirin, metformin..." oninput="filterMeds(this.value)" autocomplete="off"/>
+  <span class="search-count" id="medCount"></span>
+  <div class="search-dropdown" id="medDropdown" style="display:none;"></div>
+</div>
+<div class="meds-grid" id="medsGrid"></div></div></section>
 
 <!-- KIT -->
 <section id="kit"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_04 :: FIRST_AID_INVENTORY</span><h2 class="sec-title">BUILD YOUR <span class="hl">MEDICAL KIT</span></h2><p class="sec-sub">Essential items every household needs — with usage guides and recommended quantities.</p></div><div class="kit-wrap reveal"><div class="kit-cats" id="kitCats"></div><div class="kit-items-grid" id="kitItems"></div></div></div></section>
@@ -1400,6 +1436,15 @@ const AL=[
   {icon:'💊',name:'PENICILLIN / ANTIBIOTICS',type:'DRUG_ALLERGEN:ANTIBIOTIC',syms:['Skin rash','Hives','Fever','Anaphylaxis','Facial swelling'],sev:80,sc:'sev-high',st:'HIGH RISK',tip:'Always inform doctors and dentists of antibiotic allergies before treatment.'},
   {icon:'🏠',name:'DUST MITES',type:'ENVIRONMENTAL_ALLERGEN:INDOOR',syms:['Sneezing','Runny nose','Itchy skin','Asthma trigger','Red eyes'],sev:40,sc:'sev-low',st:'MILD',tip:'Use allergen-proof mattress covers. Wash bedding at 60°C+ weekly.'},
   {icon:'🧤',name:'LATEX ALLERGY',type:'CONTACT_ALLERGEN:RUBBER',syms:['Skin rash','Itching','Hives','Anaphylaxis (rare)','Swelling'],sev:65,sc:'sev-med',st:'MODERATE',tip:'Inform medical staff before procedures. Banana, avocado, kiwi can cross-react.'},
+  {icon:'🦐',name:'SHELLFISH ALLERGY',type:'FOOD_ALLERGEN_CLASS:04',syms:['Hives','Vomiting','Swelling','Anaphylaxis','Stomach cramps'],sev:88,sc:'sev-high',st:'SEVERE',tip:'Avoid shrimp, crab, lobster, prawn. Cross-contamination risk in seafood restaurants.'},
+  {icon:'🥚',name:'EGG ALLERGY',type:'FOOD_ALLERGEN_CLASS:05',syms:['Skin rash','Nausea','Vomiting','Stomach cramps','Hives'],sev:55,sc:'sev-med',st:'MODERATE',tip:'Check vaccine ingredients — some contain egg protein. Read baked goods labels carefully.'},
+  {icon:'🌳',name:'TREE NUT ALLERGY',type:'FOOD_ALLERGEN_CLASS:06',syms:['Hives','Swelling','Throat tightening','Anaphylaxis','Vomiting'],sev:87,sc:'sev-high',st:'SEVERE',tip:'Avoid almonds, cashews, walnuts, pistachios. Cross-react risk with peanuts.'},
+  {icon:'🐟',name:'FISH ALLERGY',type:'FOOD_ALLERGEN_CLASS:07',syms:['Hives','Nausea','Vomiting','Anaphylaxis','Diarrhoea'],sev:82,sc:'sev-high',st:'HIGH RISK',tip:'Cod, tuna, salmon are common triggers. Fish sauce and Worcestershire sauce often contain fish.'},
+  {icon:'🌿',name:'MOULD ALLERGY',type:'ENVIRONMENTAL_ALLERGEN:FUNGAL',syms:['Sneezing','Runny nose','Itchy eyes','Coughing','Asthma trigger'],sev:38,sc:'sev-low',st:'MILD',tip:'Keep indoor humidity below 50%. Fix leaks promptly. Use dehumidifiers in damp rooms.'},
+  {icon:'🪳',name:'COCKROACH ALLERGY',type:'ENVIRONMENTAL_ALLERGEN:INSECT',syms:['Sneezing','Itchy eyes','Asthma trigger','Skin rash','Coughing'],sev:42,sc:'sev-low',st:'MILD',tip:'Seal food in airtight containers. Fix water leaks. Use roach baits rather than sprays.'},
+  {icon:'🌱',name:'SOY ALLERGY',type:'FOOD_ALLERGEN_CLASS:08',syms:['Hives','Itching','Nausea','Stomach cramps','Runny nose'],sev:48,sc:'sev-med',st:'MODERATE',tip:'Avoid tofu, soy milk, edamame. Soy lecithin in many processed foods — check labels.'},
+  {icon:'🥗',name:'NICKEL ALLERGY',type:'CONTACT_ALLERGEN:METAL',syms:['Skin rash','Itching','Redness','Blisters','Dry patches'],sev:35,sc:'sev-low',st:'MILD',tip:'Common in jewellery, belt buckles, coins. Opt for surgical steel or gold. Avoid cheap metal accessories.'},
+  {icon:'🌺',name:'FRAGRANCE ALLERGY',type:'CONTACT_ALLERGEN:CHEMICAL',syms:['Skin rash','Headache','Sneezing','Itchy eyes','Congestion'],sev:30,sc:'sev-low',st:'MILD',tip:'Choose fragrance-free cosmetics and detergents. Avoid heavily scented candles and air fresheners.'},
 ];
 const symTips={
   'Hives':'Raised itchy welts on the skin surface',
@@ -1430,8 +1475,107 @@ const symTips={
   'Red eyes':'Avoid contact lenses during flare-ups',
   'Itching':'Antihistamines help — avoid hot showers',
   'Anaphylaxis (rare)':'Though rare, always carry an EpiPen if at risk',
+  'Vomiting':'Stay hydrated — sip water slowly',
+  'Stomach cramps':'Apply warm compress, avoid solid food temporarily',
+  'Blisters':'Do not pop — keep clean and dry',
+  'Dry patches':'Moisturise with fragrance-free cream',
+  'Headache':'Rest in a dark quiet room, stay hydrated',
 };
-document.getElementById('allergyGrid').innerHTML=AL.map((a,i)=>`<div class="allergy-card reveal" onclick="openAllergyModal(${i})" style="cursor:pointer"><div class="ac-top"><div class="ac-icon">${a.icon}</div><div><div class="ac-name">${a.name}</div><div class="ac-type">${a.type}</div></div></div><div class="ac-body"><div class="ac-lbl">// SYMPTOM_ARRAY</div><div class="symptom-list">${a.syms.map(s=>`<span class="symptom-pill">${s}${symTips[s]?`<span class="pill-tip">ℹ️ ${symTips[s]}</span>`:''}</span>`).join('')}</div><div class="sev-row"><span class="ac-lbl" style="white-space:nowrap;margin:0">SEVERITY:</span><div class="sev-track"><div class="sev-fill ${a.sc}" style="width:${a.sev}%"></div></div><span class="sev-txt" style="color:${a.sc==='sev-high'?'var(--red)':a.sc==='sev-med'?'var(--yellow)':'var(--green)'}">${a.st}</span></div><div class="ac-tip">${a.tip}</div></div><span class="click-hint">[ CLICK TO EXPAND ]</span></div>`).join('');
+
+function allergyCardHTML(a,i){
+  return `<div class="allergy-card" onclick="openAllergyModal(${i})" style="cursor:pointer"><div class="ac-top"><div class="ac-icon">${a.icon}</div><div><div class="ac-name">${a.name}</div><div class="ac-type">${a.type}</div></div></div><div class="ac-body"><div class="ac-lbl">// SYMPTOM_ARRAY</div><div class="symptom-list">${a.syms.map(s=>`<span class="symptom-pill">${s}${symTips[s]?`<span class="pill-tip">ℹ️ ${symTips[s]}</span>`:''}</span>`).join('')}</div><div class="sev-row"><span class="ac-lbl" style="white-space:nowrap;margin:0">SEVERITY:</span><div class="sev-track"><div class="sev-fill ${a.sc}" style="width:${a.sev}%"></div></div><span class="sev-txt" style="color:${a.sc==='sev-high'?'var(--red)':a.sc==='sev-med'?'var(--yellow)':'var(--green)'}">${a.st}</span></div><div class="ac-tip">${a.tip}</div></div><span class="click-hint">[ CLICK TO EXPAND ]</span></div>`;
+}
+
+function renderAllergy(list, showCount=false){
+  const grid=document.getElementById('allergyGrid');
+  const countEl=document.getElementById('allergyCount');
+  if(!list.length){
+    grid.innerHTML=`<div class="search-no-result" style="grid-column:1/-1">// NO_RESULTS_FOUND — try <span>"peanut"</span> or <span>"dust"</span></div>`;
+    countEl.textContent='';return;
+  }
+  grid.innerHTML=list.slice(0,4).map((a)=>allergyCardHTML(a,AL.indexOf(a))).join('');
+  countEl.textContent=showCount?`${list.length} RESULTS`:'';
+}
+
+let allergyActiveIdx=-1;
+
+function filterAllergy(q){
+  const term=q.toLowerCase().trim();
+  const dropdown=document.getElementById('allergyDropdown');
+  allergyActiveIdx=-1;
+  if(!term){
+    dropdown.style.display='none';
+    renderAllergy(AL);
+    document.getElementById('allergyCount').textContent='';
+    return;
+  }
+  const filtered=AL.filter(a=>
+    a.name.toLowerCase().includes(term)||
+    a.type.toLowerCase().includes(term)||
+    a.syms.some(s=>s.toLowerCase().includes(term))||
+    a.tip.toLowerCase().includes(term)
+  );
+  if(filtered.length){
+    dropdown.style.display='block';
+    dropdown.innerHTML=filtered.map(a=>{
+      const realIdx=AL.indexOf(a);
+      return `<div class="search-suggestion" data-index="${realIdx}" data-type="allergy">
+        <span class="sug-icon">${a.icon}</span>
+        <span class="sug-name">${a.name}</span>
+        <span class="sug-type">${a.type}</span>
+        <span class="sug-open">[ OPEN ]</span>
+      </div>`;
+    }).join('');
+    // Attach click listeners properly
+    dropdown.querySelectorAll('.search-suggestion').forEach(el=>{
+      el.addEventListener('mousedown', e=>{
+        e.preventDefault();
+        selectAllergy(parseInt(el.getAttribute('data-index')));
+      });
+    });
+  } else {
+    dropdown.style.display='block';
+    dropdown.innerHTML=`<div class="sug-empty">// NO_MATCH_FOUND</div>`;
+  }
+  renderAllergy(filtered, true);
+}
+
+function selectAllergy(i){
+  document.getElementById('allergyDropdown').style.display='none';
+  document.getElementById('allergySearch').value='';
+  document.getElementById('allergyCount').textContent='';
+  allergyActiveIdx=-1;
+  renderAllergy(AL);
+  openAllergyModal(i);
+}
+
+// Keyboard navigation for allergy search
+document.getElementById('allergySearch').addEventListener('keydown',function(e){
+  const dropdown=document.getElementById('allergyDropdown');
+  const items=dropdown.querySelectorAll('.search-suggestion');
+  if(!items.length) return;
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    allergyActiveIdx=Math.min(allergyActiveIdx+1,items.length-1);
+    items.forEach((el,i)=>el.classList.toggle('sug-active',i===allergyActiveIdx));
+    items[allergyActiveIdx]?.scrollIntoView({block:'nearest'});
+  } else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    allergyActiveIdx=Math.max(allergyActiveIdx-1,0);
+    items.forEach((el,i)=>el.classList.toggle('sug-active',i===allergyActiveIdx));
+    items[allergyActiveIdx]?.scrollIntoView({block:'nearest'});
+  } else if(e.key==='Enter'){
+    e.preventDefault();
+    if(allergyActiveIdx>=0 && items[allergyActiveIdx]){
+      selectAllergy(parseInt(items[allergyActiveIdx].getAttribute('data-index')));
+    }
+  } else if(e.key==='Escape'){
+    dropdown.style.display='none';
+    allergyActiveIdx=-1;
+  }
+});
+
+renderAllergy(AL);
 
 /* ═══ MEDICATIONS ═══ */
 const MD=[
@@ -1444,6 +1588,15 @@ const MD=[
   {name:'OMEPRAZOLE (PRILOSEC)',cls:'PROTON_PUMP_INHIBITOR',c:['Headache','Diarrhoea','Nausea','Stomach pain'],s:['Low magnesium','Fracture risk','C. difficile infection']},
   {name:'ATORVASTATIN (LIPITOR)',cls:'HMG-CoA_REDUCTASE_INHIBITOR',c:['Muscle aches','Nausea','Diarrhoea','Headache'],s:['Rhabdomyolysis','Hepatotoxicity','Cognitive effects (rare)']},
   {name:'SALBUTAMOL (VENTOLIN)',cls:'SHORT-ACTING BETA2_AGONIST',c:['Trembling','Rapid heartbeat','Headache','Nervousness'],s:['Paradoxical bronchospasm','Severe allergic reaction','Hypokalaemia']},
+  {name:'AZITHROMYCIN (ZITHROMAX)',cls:'ANTIBIOTIC :: MACROLIDE_CLASS',c:['Nausea','Diarrhoea','Stomach pain','Vomiting'],s:['QT prolongation','Liver damage','Severe allergic reaction','Hearing loss (rare)']},
+  {name:'LISINOPRIL (ZESTRIL)',cls:'ACE_INHIBITOR :: ANTIHYPERTENSIVE',c:['Dry cough','Dizziness','Headache','Fatigue'],s:['Angioedema (life-threatening)','Kidney impairment','High potassium levels','Low blood pressure']},
+  {name:'SERTRALINE (ZOLOFT)',cls:'SSRI :: ANTIDEPRESSANT',c:['Nausea','Insomnia','Diarrhoea','Dry mouth','Dizziness'],s:['Suicidal thoughts (young adults)','Serotonin syndrome','Bleeding risk','Mania in bipolar patients']},
+  {name:'DIAZEPAM (VALIUM)',cls:'BENZODIAZEPINE :: ANXIOLYTIC',c:['Drowsiness','Confusion','Muscle weakness','Fatigue'],s:['Dependence and withdrawal','Respiratory depression','Memory impairment','Paradoxical aggression']},
+  {name:'WARFARIN (COUMADIN)',cls:'ANTICOAGULANT :: VITAMIN_K_ANTAGONIST',c:['Bruising easily','Bleeding gums','Prolonged bleeding from cuts'],s:['Severe internal bleeding','Skin necrosis','Haemorrhagic stroke','Drug interactions']},
+  {name:'CIPROFLOXACIN (CIPRO)',cls:'ANTIBIOTIC :: FLUOROQUINOLONE_CLASS',c:['Nausea','Diarrhoea','Headache','Dizziness'],s:['Tendon rupture','QT prolongation','Peripheral neuropathy','C. difficile infection']},
+  {name:'PREDNISOLONE',cls:'CORTICOSTEROID :: ANTI-INFLAMMATORY',c:['Weight gain','Mood changes','Increased appetite','Insomnia'],s:['Adrenal suppression','Osteoporosis','Immunosuppression','Cushing syndrome']},
+  {name:'CODEINE',cls:'OPIOID_ANALGESIC :: NARCOTIC',c:['Constipation','Drowsiness','Nausea','Dizziness'],s:['Respiratory depression','Dependence','Fatal in ultra-rapid metabolisers','Interaction with alcohol']},
+  {name:'AMLODIPINE (NORVASC)',cls:'CALCIUM_CHANNEL_BLOCKER :: ANTIHYPERTENSIVE',c:['Ankle swelling','Flushing','Headache','Fatigue'],s:['Severe hypotension','Worsening angina','Liver dysfunction (rare)']},
 ];
 const medTips={
   'Stomach upset':'Take with food or milk to reduce this',
@@ -1467,8 +1620,109 @@ const medTips={
   'Metallic taste':'Usually fades after first few doses',
   'Stomach irritation':'Always take with food',
   'Anaphylactic shock':'Use EpiPen if available — call 999',
+  'Dry cough':'Inform your doctor — may need to switch medication',
+  'Insomnia':'Take in the morning, avoid caffeine',
+  'Constipation':'Increase water and fibre intake',
+  'Weight gain':'Monitor diet, discuss with doctor',
+  'Bruising easily':'Avoid contact sports, use soft toothbrush',
+  'Ankle swelling':'Elevate legs when sitting',
+  'Flushing':'Usually harmless — avoid hot drinks after dose',
+  'Dependence and withdrawal':'Never stop abruptly — taper with doctor guidance',
 };
-document.getElementById('medsGrid').innerHTML=MD.map((m,i)=>`<div class="med-card reveal" onclick="openMedModal(${i})" style="cursor:pointer"><div class="med-name">// ${m.name}</div><div class="med-cls">${m.cls}</div><div class="fx-sec"><div class="fx-lbl c">COMMON_EFFECTS</div>${m.c.map(e=>`<div class="fx-item"><div class="fx-dot c"></div>${e}${medTips[e]?`<span class="fx-tip">💡 ${medTips[e]}</span>`:''}</div>`).join('')}</div><div class="fx-sec"><div class="fx-lbl s">SERIOUS — SEEK_MEDICAL_ATTENTION</div>${m.s.map(e=>`<div class="fx-item"><div class="fx-dot s"></div>${e}${medTips[e]?`<span class="fx-tip">⚠️ ${medTips[e]}</span>`:''}</div>`).join('')}</div><div class="med-ft">⚕ Always follow prescribed dosage. Consult a pharmacist or physician if unsure.</div><span class="click-hint">[ CLICK TO EXPAND ]</span></div>`).join('');
+
+function medCardHTML(m,i){
+  return `<div class="med-card" onclick="openMedModal(${i})" style="cursor:pointer"><div class="med-name">// ${m.name}</div><div class="med-cls">${m.cls}</div><div class="fx-sec"><div class="fx-lbl c">COMMON_EFFECTS</div>${m.c.map(e=>`<div class="fx-item"><div class="fx-dot c"></div>${e}${medTips[e]?`<span class="fx-tip">💡 ${medTips[e]}</span>`:''}</div>`).join('')}</div><div class="fx-sec"><div class="fx-lbl s">SERIOUS — SEEK_MEDICAL_ATTENTION</div>${m.s.map(e=>`<div class="fx-item"><div class="fx-dot s"></div>${e}${medTips[e]?`<span class="fx-tip">⚠️ ${medTips[e]}</span>`:''}</div>`).join('')}</div><div class="med-ft">⚕ Always follow prescribed dosage. Consult a pharmacist or physician if unsure.</div><span class="click-hint">[ CLICK TO EXPAND ]</span></div>`;
+}
+
+function renderMeds(list, showCount=false){
+  const grid=document.getElementById('medsGrid');
+  const countEl=document.getElementById('medCount');
+  if(!list.length){
+    grid.innerHTML=`<div class="search-no-result" style="grid-column:1/-1">// NO_RESULTS_FOUND — try <span>"ibuprofen"</span> or <span>"aspirin"</span></div>`;
+    countEl.textContent='';return;
+  }
+  grid.innerHTML=list.slice(0,4).map((m)=>medCardHTML(m,MD.indexOf(m))).join('');
+  countEl.textContent=showCount?`${list.length} RESULTS`:'';
+}
+
+let medActiveIdx=-1;
+
+function filterMeds(q){
+  const term=q.toLowerCase().trim();
+  const dropdown=document.getElementById('medDropdown');
+  medActiveIdx=-1;
+  if(!term){
+    dropdown.style.display='none';
+    renderMeds(MD);
+    document.getElementById('medCount').textContent='';
+    return;
+  }
+  const filtered=MD.filter(m=>
+    m.name.toLowerCase().includes(term)||
+    m.cls.toLowerCase().includes(term)||
+    m.c.some(e=>e.toLowerCase().includes(term))||
+    m.s.some(e=>e.toLowerCase().includes(term))
+  );
+  if(filtered.length){
+    dropdown.style.display='block';
+    dropdown.innerHTML=filtered.map(m=>{
+      const realIdx=MD.indexOf(m);
+      return `<div class="search-suggestion" data-index="${realIdx}" data-type="med">
+        <span class="sug-icon">💊</span>
+        <span class="sug-name">${m.name}</span>
+        <span class="sug-type">${m.cls}</span>
+        <span class="sug-open">[ OPEN ]</span>
+      </div>`;
+    }).join('');
+    dropdown.querySelectorAll('.search-suggestion').forEach(el=>{
+      el.addEventListener('mousedown', e=>{
+        e.preventDefault();
+        selectMed(parseInt(el.getAttribute('data-index')));
+      });
+    });
+  } else {
+    dropdown.style.display='block';
+    dropdown.innerHTML=`<div class="sug-empty">// NO_MATCH_FOUND</div>`;
+  }
+  renderMeds(filtered, true);
+}
+
+function selectMed(i){
+  document.getElementById('medDropdown').style.display='none';
+  document.getElementById('medSearch').value='';
+  document.getElementById('medCount').textContent='';
+  medActiveIdx=-1;
+  renderMeds(MD);
+  openMedModal(i);
+}
+
+// Keyboard navigation for med search
+document.getElementById('medSearch').addEventListener('keydown',function(e){
+  const dropdown=document.getElementById('medDropdown');
+  const items=dropdown.querySelectorAll('.search-suggestion');
+  if(!items.length) return;
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    medActiveIdx=Math.min(medActiveIdx+1,items.length-1);
+    items.forEach((el,i)=>el.classList.toggle('sug-active',i===medActiveIdx));
+    items[medActiveIdx]?.scrollIntoView({block:'nearest'});
+  } else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    medActiveIdx=Math.max(medActiveIdx-1,0);
+    items.forEach((el,i)=>el.classList.toggle('sug-active',i===medActiveIdx));
+    items[medActiveIdx]?.scrollIntoView({block:'nearest'});
+  } else if(e.key==='Enter'){
+    e.preventDefault();
+    if(medActiveIdx>=0 && items[medActiveIdx]){
+      selectMed(parseInt(items[medActiveIdx].getAttribute('data-index')));
+    }
+  } else if(e.key==='Escape'){
+    dropdown.style.display='none';
+    medActiveIdx=-1;
+  }
+});
+
+renderMeds(MD);
 
 /* ═══ KIT ═══ */
 const KD={'WOUND_CARE':{icon:'🩹',items:[{icon:'🩹',name:'Adhesive Bandages',use:'Cover small cuts, prevent infection',qty:'Assorted ×20',price:149},{icon:'🧻',name:'Sterile Gauze Pads',use:'Cover large wounds, absorb blood',qty:'4×4 inch ×10',price:89},{icon:'🩺',name:'Medical Adhesive Tape',use:'Secure dressings in place',qty:'×1 roll',price:59},{icon:'✂️',name:'Bandage Scissors',use:'Cut gauze and tape safely',qty:'×1 pair',price:199},{icon:'🧴',name:'Antiseptic Wipes',use:'Clean wounds to prevent infection',qty:'×20 wipes',price:99},{icon:'💦',name:'Saline Solution',use:'Flush wounds and eyes',qty:'100ml bottle',price:79}]},'MEDICATIONS':{icon:'💊',items:[{icon:'💊',name:'Paracetamol',use:'Pain relief and fever reduction',qty:'×20 tablets',price:49},{icon:'💊',name:'Ibuprofen',use:'Pain, inflammation and fever',qty:'×20 tablets',price:69},{icon:'💊',name:'Antihistamine',use:'Mild allergic reactions',qty:'×10 tablets',price:89},{icon:'🧴',name:'Antiseptic Cream',use:'Minor cuts, burns, bites',qty:'×1 tube',price:129},{icon:'💊',name:'Antacid Tablets',use:'Heartburn and indigestion',qty:'×10 tablets',price:59},{icon:'💉',name:'Oral Rehydration Salts',use:'Treat dehydration',qty:'×5 sachets',price:79}]},'TOOLS':{icon:'🩺',items:[{icon:'🌡️',name:'Digital Thermometer',use:'Check body temperature',qty:'×1',price:349},{icon:'🩺',name:'Disposable Gloves',use:'Protection when treating others',qty:'×5 pairs',price:119},{icon:'🔦',name:'Torch',use:'Examine wounds in low light',qty:'×1',price:249},{icon:'🪡',name:'Sterile Tweezers',use:'Remove splinters',qty:'×1',price:89},{icon:'📋',name:'First Aid Manual',use:'Step-by-step emergency reference',qty:'×1',price:199},{icon:'💉',name:'Sterile Syringe',use:'Irrigate wounds (no needle)',qty:'×2',price:49}]},'EMERGENCY':{icon:'🆘',items:[{icon:'🧊',name:'Instant Cold Pack',use:'Reduce swelling from injuries',qty:'×3',price:179},{icon:'🦺',name:'Emergency Foil Blanket',use:'Prevent shock, maintain warmth',qty:'×2',price:149},{icon:'💉',name:'EpiPen (if prescribed)',use:'Anaphylaxis emergency treatment',qty:'×1 (Rx)',price:2499},{icon:'🩸',name:'Tourniquet (CAT)',use:'Life-threatening limb bleeding',qty:'×1',price:899},{icon:'😷',name:'CPR Face Shield',use:'Rescue breaths during CPR',qty:'×2',price:249},{icon:'📱',name:'Emergency Contact Card',use:'Critical emergency numbers',qty:'×1',price:29}]}};
@@ -1509,7 +1763,15 @@ const nc={r:'n-r',b:'n-b',g:'n-g',o:'n-o'};
 document.getElementById('emgGrid').innerHTML=EG.map((em,i)=>`<div class="emg-card reveal" onclick="openEmgModal(${i})" style="cursor:pointer"><div class="emg-top"><div class="emg-icon">${em.icon}</div><div><div class="emg-title">${em.title}</div><div class="emg-sub">${em.sub}</div></div></div><div class="emg-div"></div><div class="emg-steps">${em.steps.map((s,si)=>`<div class="emg-step"><div class="emg-num ${nc[s.c]}">${si+1}</div><div class="emg-st">${s.t}<span class="step-tip">⚡ Step ${si+1} of ${em.steps.length}</span></div></div>`).join('')}</div><div class="emg-warn">${em.warn}</div><span class="click-hint">[ CLICK TO EXPAND ]</span></div>`).join('');
 
 /* ═══ CARD DETAIL MODAL ═══ */
-function closeCardModal(){document.getElementById('cardModal').classList.remove('open');document.body.style.overflow='';}
+function closeCardModal(){
+  document.getElementById('cardModal').classList.remove('open');
+  document.body.style.overflow='';
+  // Restore grids to full view if search is empty
+  const aSearch=document.getElementById('allergySearch');
+  const mSearch=document.getElementById('medSearch');
+  if(aSearch && !aSearch.value.trim()) renderAllergy(AL);
+  if(mSearch && !mSearch.value.trim()) renderMeds(MD);
+}
 function openCardModal(html,accentColor){
   document.getElementById('cardModalContent').innerHTML=html;
   const modal=document.getElementById('cardModal');
@@ -1935,6 +2197,18 @@ function showPaymentSuccess(paymentId){
   document.body.appendChild(ov);
   document.body.style.overflow='hidden';
 }
+
+// Close search dropdowns when clicking outside
+document.addEventListener('click', e => {
+  if(!e.target.closest('#allergySearch') && !e.target.closest('#allergyDropdown')){
+    const d=document.getElementById('allergyDropdown');
+    if(d) d.style.display='none';
+  }
+  if(!e.target.closest('#medSearch') && !e.target.closest('#medDropdown')){
+    const d=document.getElementById('medDropdown');
+    if(d) d.style.display='none';
+  }
+});
 
 /* ═══ SOS POPUP ═══ */
 function openSOS(){
