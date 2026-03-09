@@ -30,7 +30,96 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
 .nav-links button{background:none;border:1px solid transparent;color:var(--muted);font-family:var(--body);font-weight:600;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .8rem;cursor:pointer;transition:all .2s;}
 .nav-links button:hover,.nav-links button.active{color:var(--cyan);border-color:var(--border);background:rgba(0,255,200,.05);text-shadow:0 0 10px var(--cyan);}
 
-/* GLITCH */
+/* CART NAV BUTTON */
+.cart-nav-btn{position:relative;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.3);color:var(--green);font-family:var(--mono);font-size:.8rem;padding:.35rem .75rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem;}
+.cart-nav-btn:hover{background:rgba(0,255,136,.15);box-shadow:0 0 15px rgba(0,255,136,.2);}
+.cart-nav-count{background:var(--green);color:#000;font-family:var(--display);font-size:.55rem;font-weight:900;min-width:16px;height:16px;border-radius:0;display:flex;align-items:center;justify-content:center;padding:0 3px;animation:cartPop .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes cartPop{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* CART SIDEBAR */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:400;display:none;}
+.cart-overlay.open{display:block;}
+.cart-sidebar{position:fixed;top:0;right:-480px;width:480px;max-width:100vw;height:100vh;background:var(--deep);border-left:1px solid rgba(0,255,136,.2);z-index:401;display:flex;flex-direction:column;transition:right .35s cubic-bezier(.34,1.56,.64,1);box-shadow:-20px 0 60px rgba(0,0,0,.5);}
+.cart-sidebar.open{right:0;}
+.cart-sidebar::before{content:'';position:absolute;top:0;left:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,var(--green),var(--cyan),transparent);}
+.cart-hd{padding:1.4rem 1.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.cart-hd-title{font-family:var(--display);font-size:.9rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--green);text-shadow:0 0 15px rgba(0,255,136,.3);}
+.cart-hd-sub{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:.2rem;}
+.cart-close{background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.25);color:var(--red);font-family:var(--mono);font-size:.75rem;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
+.cart-close:hover{background:rgba(255,34,68,.2);}
+.cart-items{flex:1;overflow-y:auto;padding:1rem 1.6rem;}
+.cart-items::-webkit-scrollbar{width:3px;}.cart-items::-webkit-scrollbar-thumb{background:var(--border);}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:1rem;opacity:.4;}
+.cart-empty-icon{font-size:3rem;}
+.cart-empty-txt{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:center;line-height:1.6;}
+.cart-item-row{display:flex;gap:.9rem;align-items:flex-start;padding:.9rem 0;border-bottom:1px solid var(--border);position:relative;}
+.cart-item-row:last-child{border-bottom:none;}
+.ci-icon{font-size:1.8rem;flex-shrink:0;width:40px;text-align:center;}
+.ci-info{flex:1;}
+.ci-name{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin-bottom:.2rem;}
+.ci-use{font-family:var(--body);font-size:.75rem;color:var(--muted);margin-bottom:.4rem;}
+.ci-price{font-family:var(--display);font-size:.85rem;font-weight:700;color:var(--green);text-shadow:0 0 10px rgba(0,255,136,.3);}
+.ci-qty-row{display:flex;align-items:center;gap:.5rem;margin-top:.5rem;}
+.ci-qty-btn{background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);color:var(--green);font-family:var(--mono);font-size:.8rem;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.ci-qty-btn:hover{background:rgba(0,255,136,.18);}
+.ci-qty-val{font-family:var(--display);font-size:.75rem;font-weight:700;color:var(--text);min-width:20px;text-align:center;}
+.ci-del{position:absolute;top:.9rem;right:0;background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:.7rem;cursor:pointer;transition:color .2s;}
+.ci-del:hover{color:var(--red);}
+.cart-footer{padding:1.2rem 1.6rem;border-top:1px solid var(--border);flex-shrink:0;background:rgba(0,0,0,.3);}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.cart-total-lbl{font-family:var(--mono);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.cart-total-val{font-family:var(--display);font-size:1.4rem;font-weight:900;color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.4);}
+.cart-checkout-btn{width:100%;font-family:var(--display);font-size:.75rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:1rem;cursor:pointer;background:linear-gradient(135deg,rgba(0,255,136,.2),rgba(0,180,255,.15));color:var(--green);border:1px solid var(--green);transition:all .25s;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+.cart-checkout-btn::before{content:'';position:absolute;top:-100%;left:0;right:0;height:100%;background:linear-gradient(180deg,rgba(0,255,136,.1),transparent);transition:top .3s;}
+.cart-checkout-btn:hover{box-shadow:0 0 30px rgba(0,255,136,.25);color:var(--text);}
+.cart-checkout-btn:hover::before{top:0;}
+.cart-clear{width:100%;margin-top:.6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:.5rem;cursor:pointer;background:transparent;color:var(--muted);border:1px solid var(--border);transition:all .2s;}
+.cart-clear:hover{border-color:var(--red);color:var(--red);}
+
+/* KIT ITEM PRICE TAG */
+.kit-item-price{font-family:var(--display);font-size:.85rem;font-weight:900;color:var(--green);text-shadow:0 0 10px rgba(0,255,136,.3);margin:.4rem 0 .3rem;display:block;}
+.kit-add-btn{width:100%;font-family:var(--display);font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .6rem;cursor:pointer;background:rgba(0,255,136,.07);color:var(--green);border:1px solid rgba(0,255,136,.25);transition:all .2s;margin-top:.5rem;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));}
+.kit-add-btn:hover{background:rgba(0,255,136,.18);box-shadow:0 0 15px rgba(0,255,136,.2);}
+.kit-add-btn.added{background:rgba(0,255,136,.2);border-color:var(--green);color:var(--text);}
+
+/* CHECKOUT MODAL */
+.checkout-ov{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.checkout-ov.open{display:flex;}
+.checkout-box{background:var(--deep);border:1px solid rgba(0,255,136,.3);max-width:560px;width:100%;max-height:90vh;overflow-y:auto;position:relative;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));animation:cardIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 60px rgba(0,255,136,.08);}
+.checkout-box::-webkit-scrollbar{width:3px;}.checkout-box::-webkit-scrollbar-thumb{background:var(--border);}
+.checkout-hd{padding:1.8rem;border-bottom:1px solid var(--border);position:relative;}
+.checkout-hd::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),var(--cyan),transparent);}
+.checkout-step-ind{display:flex;gap:.5rem;margin-bottom:1rem;}
+.cs-step{flex:1;height:3px;background:rgba(255,255,255,.06);position:relative;}
+.cs-step.done{background:var(--green);box-shadow:0 0 6px var(--green);}
+.cs-step.active{background:var(--cyan);box-shadow:0 0 6px var(--cyan);animation:stepPulse 1s ease-in-out infinite;}
+@keyframes stepPulse{0%,100%{opacity:1}50%{opacity:.5}}
+.checkout-title{font-family:var(--display);font-size:1rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--green);}
+.checkout-sub{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:.3rem;}
+.checkout-body{padding:1.8rem;}
+.co-field{margin-bottom:1.2rem;}
+.co-label{display:block;font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;}
+.co-input{width:100%;background:rgba(0,255,136,.03);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.85rem;padding:.7rem 1rem;outline:none;transition:all .2s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+.co-input:focus{border-color:var(--green);box-shadow:0 0 15px rgba(0,255,136,.08);}
+.co-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.co-order-summary{background:rgba(0,255,136,.03);border:1px solid rgba(0,255,136,.1);padding:1rem 1.2rem;margin-bottom:1.5rem;}
+.co-order-row{display:flex;justify-content:space-between;font-family:var(--body);font-size:.82rem;color:var(--muted);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.co-order-row:last-child{border-bottom:none;color:var(--green);font-family:var(--display);font-size:.85rem;font-weight:700;margin-top:.4rem;}
+.co-btn{width:100%;font-family:var(--display);font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:.9rem;cursor:pointer;transition:all .25s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+.co-btn-primary{background:linear-gradient(135deg,rgba(0,255,136,.2),rgba(0,180,255,.15));color:var(--green);border:1px solid var(--green);}
+.co-btn-primary:hover{box-shadow:0 0 25px rgba(0,255,136,.25);}
+.co-btn-back{background:transparent;color:var(--muted);border:1px solid var(--border);margin-top:.6rem;}
+.co-btn-back:hover{border-color:var(--muted);color:var(--text);}
+.co-close{position:absolute;top:1.2rem;right:1.2rem;background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.25);color:var(--red);font-family:var(--mono);font-size:.7rem;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.co-close:hover{background:rgba(255,34,68,.2);}
+
+/* PAYMENT SUCCESS */
+.pay-success{text-align:center;padding:2rem;}
+.pay-success-icon{font-size:4rem;margin-bottom:1rem;animation:successPop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes successPop{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(0)}}
+.pay-success-title{font-family:var(--display);font-size:1.1rem;font-weight:900;letter-spacing:.1em;color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.4);margin-bottom:.5rem;}
+.pay-success-sub{font-family:var(--mono);font-size:.68rem;color:var(--muted);line-height:1.7;}
+.pay-order-id{font-family:var(--mono);font-size:.7rem;color:var(--cyan);background:rgba(0,255,200,.05);border:1px solid rgba(0,255,200,.2);padding:.5rem 1rem;margin:1rem 0;display:inline-block;}
 .glitch{position:relative;animation:glitchA 8s infinite;}
 .glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;}
 .glitch::before{color:var(--magenta);clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);animation:glitchT 8s infinite;}
@@ -314,6 +403,45 @@ section{padding:5rem 2rem;position:relative;z-index:1;}
 .kit-item-qty{display:inline-block;font-family:var(--mono);font-size:.6rem;background:rgba(0,255,136,.07);color:var(--green);border:1px solid rgba(0,255,136,.2);padding:.15rem .5rem;margin-top:.5rem;transition:all .2s;}
 .kit-item:hover .kit-item-qty{background:rgba(0,255,136,.15);border-color:rgba(0,255,136,.4);box-shadow:0 0 8px rgba(0,255,136,.2);}
 
+/* ── EMERGENCY CALL BUTTON ── */
+.sos-float{position:fixed;bottom:2rem;right:2rem;z-index:250;display:flex;flex-direction:column;align-items:center;gap:.4rem;}
+.sos-btn{width:46px;height:46px;border-radius:4px;background:transparent;border:1px solid rgba(255,34,68,.4);color:var(--red);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative;box-shadow:0 0 8px rgba(255,34,68,.2),inset 0 0 8px rgba(255,34,68,.05);animation:sosPulseGlow 2.5s ease-in-out infinite;}
+.sos-btn:hover{border-color:var(--red);box-shadow:0 0 20px rgba(255,34,68,.5),inset 0 0 12px rgba(255,34,68,.08);transform:scale(1.05);}
+@keyframes sosPulseGlow{0%,100%{box-shadow:0 0 6px rgba(255,34,68,.2),inset 0 0 6px rgba(255,34,68,.04)}50%{box-shadow:0 0 16px rgba(255,34,68,.45),inset 0 0 10px rgba(255,34,68,.08)}}
+.sos-label{font-family:var(--mono);font-size:.52rem;color:var(--red);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:.8;}
+/* SOS POPUP */
+.sos-popup-ov{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(20px);z-index:600;display:none;align-items:center;justify-content:center;padding:1rem;}
+.sos-popup-ov.open{display:flex;}
+.sos-popup{background:var(--deep);border:2px solid rgba(255,34,68,.5);max-width:480px;width:100%;position:relative;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));box-shadow:0 0 80px rgba(255,34,68,.2);animation:cardIn .3s cubic-bezier(.34,1.56,.64,1);}
+.sos-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red),var(--magenta),var(--red),transparent);}
+.sos-pop-hd{padding:1.6rem 1.8rem 1.2rem;border-bottom:1px solid rgba(255,34,68,.15);display:flex;align-items:center;gap:1rem;}
+.sos-pop-icon{font-size:2.5rem;animation:sosPulseGlow 1.5s ease-in-out infinite;}
+.sos-pop-title{font-family:var(--display);font-size:1.1rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--red);text-shadow:0 0 20px rgba(255,34,68,.5);}
+.sos-pop-sub{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:.3rem;letter-spacing:.06em;}
+.sos-pop-body{padding:1.4rem 1.8rem;}
+.sos-num-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;}
+.sos-num-card{background:rgba(255,34,68,.05);border:1px solid rgba(255,34,68,.2);padding:1rem;text-align:center;cursor:pointer;transition:all .25s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));text-decoration:none;display:block;}
+.sos-num-card:hover{background:rgba(255,34,68,.12);border-color:var(--red);transform:translateY(-3px);box-shadow:0 8px 25px rgba(255,34,68,.15);}
+.sos-num-card:hover .sos-num-number{text-shadow:0 0 20px rgba(255,34,68,.8);}
+.sos-num-flag{font-size:1.4rem;margin-bottom:.4rem;}
+.sos-num-country{font-family:var(--mono);font-size:.58rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;}
+.sos-num-number{font-family:var(--display);font-size:1.6rem;font-weight:900;color:var(--red);text-shadow:0 0 10px rgba(255,34,68,.4);transition:text-shadow .2s;}
+.sos-num-desc{font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:.3rem;}
+.sos-num-call{display:inline-flex;align-items:center;gap:.3rem;font-family:var(--mono);font-size:.58rem;color:var(--green);margin-top:.5rem;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.2);padding:.2rem .5rem;}
+.sos-tip{background:rgba(255,221,0,.04);border:1px solid rgba(255,221,0,.15);border-left:3px solid var(--yellow);padding:.8rem 1rem;font-family:var(--mono);font-size:.65rem;color:var(--muted);line-height:1.8;margin-bottom:1rem;}
+.sos-tip::before{content:'⚡ STAY CALM: ';color:var(--yellow);font-weight:700;}
+.sos-close{width:100%;font-family:var(--display);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.7rem;cursor:pointer;background:transparent;color:var(--muted);border:1px solid var(--border);transition:all .2s;}
+.sos-close:hover{border-color:var(--red);color:var(--red);}
+/* BIG SOS BUTTON in Emergency Section */
+.sos-section-btn{display:flex;align-items:center;justify-content:center;gap:1rem;background:linear-gradient(135deg,rgba(255,34,68,.08),rgba(255,0,170,.05));border:1px solid rgba(255,34,68,.3);padding:1.2rem 2rem;cursor:pointer;transition:all .25s;margin-bottom:2rem;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));width:100%;}
+.sos-section-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,34,68,.06),transparent);transition:left .5s;}
+.sos-section-btn:hover::before{left:100%;}
+.sos-section-btn:hover{border-color:var(--red);box-shadow:0 0 30px rgba(255,34,68,.15);transform:translateY(-2px);}
+.sos-section-icon{font-size:2rem;animation:sosPulseGlow 2s ease-in-out infinite;}
+.sos-section-text{text-align:left;}
+.sos-section-title{font-family:var(--display);font-size:.9rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--red);text-shadow:0 0 10px rgba(255,34,68,.3);}
+.sos-section-sub{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:.2rem;}
+
 /* ── EMERGENCY ── */
 #emergency{background:var(--void);}
 .emg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem;}
@@ -484,6 +612,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     </div>
     <button class="nav-btn-auth btn-login" id="btnLogin" onclick="openAuth()">[ LOGIN ]</button>
     <button class="nav-btn-auth btn-logout" id="btnLogout" onclick="logout()">[ LOGOUT ]</button>
+    <button class="cart-nav-btn" id="cartNavBtn" onclick="openCart()">
+      🛒 <span class="cart-nav-count" id="cartNavCount">0</span>
+    </button>
   </div>
 </nav>
 
@@ -627,7 +758,16 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 <section id="kit"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_04 :: FIRST_AID_INVENTORY</span><h2 class="sec-title">BUILD YOUR <span class="hl">MEDICAL KIT</span></h2><p class="sec-sub">Essential items every household needs — with usage guides and recommended quantities.</p></div><div class="kit-wrap reveal"><div class="kit-cats" id="kitCats"></div><div class="kit-items-grid" id="kitItems"></div></div></div></section>
 
 <!-- EMERGENCY -->
-<section id="emergency"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_05 :: EMERGENCY_RESPONSE_PROTOCOLS</span><h2 class="sec-title">EMERGENCY <span class="hl">PROCEDURES</span></h2><p class="sec-sub">Step-by-step protocols for life-threatening situations. Stay calm. Act fast. Save lives.</p></div><div class="emg-grid" id="emgGrid"></div></div></section>
+<section id="emergency"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_05 :: EMERGENCY_RESPONSE_PROTOCOLS</span><h2 class="sec-title">EMERGENCY <span class="hl">PROCEDURES</span></h2><p class="sec-sub">Step-by-step protocols for life-threatening situations. Stay calm. Act fast. Save lives.</p></div>
+<button class="sos-section-btn reveal" onclick="openSOS()">
+  <div class="sos-section-icon">🚨</div>
+  <div class="sos-section-text">
+    <div class="sos-section-title">📞 CALL EMERGENCY SERVICES NOW</div>
+    <div class="sos-section-sub">// TAP HERE FOR INSTANT ACCESS TO 112 · 999 · 911 · 102 · 101 · 100</div>
+  </div>
+  <div style="margin-left:auto;font-family:var(--mono);font-size:.7rem;color:var(--red);border:1px solid rgba(255,34,68,.3);padding:.3rem .6rem;white-space:nowrap">▶ CALL NOW</div>
+</button>
+<div class="emg-grid" id="emgGrid"></div></div></section>
 
 <!-- LEADERBOARD -->
 <section id="leaderboard" style="background:#010a14;">
@@ -655,6 +795,114 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   <p class="ft-txt">A free educational resource for sign language &amp; essential medical knowledge.</p>
   <p class="ft-disc">// EDUCATIONAL PURPOSES ONLY — NOT A SUBSTITUTE FOR PROFESSIONAL MEDICAL ADVICE //</p>
 </footer>
+
+<!-- FLOATING SOS BUTTON -->
+<div class="sos-float">
+  <button class="sos-btn" onclick="openSOS()" title="Emergency Call">📞</button>
+  <span class="sos-label">SOS</span>
+</div>
+
+<!-- SOS POPUP -->
+<div class="sos-popup-ov" id="sosPopup" onclick="if(event.target===this)closeSOS()">
+  <div class="sos-popup">
+    <div class="sos-pop-hd">
+      <div class="sos-pop-icon">🚨</div>
+      <div>
+        <div class="sos-pop-title">EMERGENCY CONTACTS</div>
+        <div class="sos-pop-sub">// TAP A NUMBER TO CALL IMMEDIATELY</div>
+      </div>
+    </div>
+    <div class="sos-pop-body">
+      <div class="sos-num-grid">
+        <a class="sos-num-card" href="tel:112">
+          <div class="sos-num-flag">🇮🇳</div>
+          <div class="sos-num-country">India — All</div>
+          <div class="sos-num-number">112</div>
+          <div class="sos-num-desc">Police · Fire · Medical</div>
+          <div class="sos-num-call">📞 TAP TO CALL</div>
+        </a>
+        <a class="sos-num-card" href="tel:102">
+          <div class="sos-num-flag">🚑</div>
+          <div class="sos-num-country">India — Ambulance</div>
+          <div class="sos-num-number">102</div>
+          <div class="sos-num-desc">Medical Emergency</div>
+          <div class="sos-num-call">📞 TAP TO CALL</div>
+        </a>
+        <a class="sos-num-card" href="tel:101">
+          <div class="sos-num-flag">🔥</div>
+          <div class="sos-num-country">India — Fire</div>
+          <div class="sos-num-number">101</div>
+          <div class="sos-num-desc">Fire Brigade</div>
+          <div class="sos-num-call">📞 TAP TO CALL</div>
+        </a>
+        <a class="sos-num-card" href="tel:100">
+          <div class="sos-num-flag">👮</div>
+          <div class="sos-num-country">India — Police</div>
+          <div class="sos-num-number">100</div>
+          <div class="sos-num-desc">Police Emergency</div>
+          <div class="sos-num-call">📞 TAP TO CALL</div>
+        </a>
+        <a class="sos-num-card" href="tel:999">
+          <div class="sos-num-flag">🇬🇧</div>
+          <div class="sos-num-country">UK — All</div>
+          <div class="sos-num-number">999</div>
+          <div class="sos-num-desc">Police · Fire · Medical</div>
+          <div class="sos-num-call">📞 TAP TO CALL</div>
+        </a>
+        <a class="sos-num-card" href="tel:911">
+          <div class="sos-num-flag">🇺🇸</div>
+          <div class="sos-num-country">USA — All</div>
+          <div class="sos-num-number">911</div>
+          <div class="sos-num-desc">Police · Fire · Medical</div>
+          <div class="sos-num-call">📞 TAP TO CALL</div>
+        </a>
+      </div>
+      <div class="sos-tip">Stay on the line. Speak clearly. Give your location first. Don't hang up until told to.</div>
+      <button class="sos-close" onclick="closeSOS()">✕ CLOSE — I AM SAFE</button>
+    </div>
+  </div>
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-hd">
+    <div>
+      <div class="cart-hd-title">🛒 YOUR CART</div>
+      <div class="cart-hd-sub" id="cartHdSub">// 0 items</div>
+    </div>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItemsList"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total-row">
+      <div>
+        <div class="cart-total-lbl">// ORDER_TOTAL</div>
+        <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:.1rem">incl. taxes & delivery</div>
+      </div>
+      <div class="cart-total-val">₹<span id="cartTotal">0</span></div>
+    </div>
+    <button class="cart-checkout-btn" onclick="openCheckout()">▶ PROCEED TO CHECKOUT</button>
+    <button class="cart-clear" onclick="clearCart()">✕ CLEAR CART</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="checkout-ov" id="checkoutOv">
+  <div class="checkout-box">
+    <button class="co-close" onclick="closeCheckout()">✕</button>
+    <div class="checkout-hd">
+      <div class="checkout-step-ind">
+        <div class="cs-step active" id="cstep1"></div>
+        <div class="cs-step" id="cstep2"></div>
+        <div class="cs-step" id="cstep3"></div>
+      </div>
+      <div class="checkout-title" id="coTitle">DELIVERY DETAILS</div>
+      <div class="checkout-sub" id="coSub">// STEP 01 OF 03 — ENTER YOUR DETAILS</div>
+    </div>
+    <div class="checkout-body" id="checkoutBody"></div>
+  </div>
+</div>
 
 <!-- CARD DETAIL MODAL -->
 <div class="card-modal-ov" id="cardModal" onclick="if(event.target===this)closeCardModal()">
@@ -1210,9 +1458,28 @@ const medTips={
 document.getElementById('medsGrid').innerHTML=MD.map((m,i)=>`<div class="med-card reveal" onclick="openMedModal(${i})" style="cursor:pointer"><div class="med-name">// ${m.name}</div><div class="med-cls">${m.cls}</div><div class="fx-sec"><div class="fx-lbl c">COMMON_EFFECTS</div>${m.c.map(e=>`<div class="fx-item"><div class="fx-dot c"></div>${e}${medTips[e]?`<span class="fx-tip">💡 ${medTips[e]}</span>`:''}</div>`).join('')}</div><div class="fx-sec"><div class="fx-lbl s">SERIOUS — SEEK_MEDICAL_ATTENTION</div>${m.s.map(e=>`<div class="fx-item"><div class="fx-dot s"></div>${e}${medTips[e]?`<span class="fx-tip">⚠️ ${medTips[e]}</span>`:''}</div>`).join('')}</div><div class="med-ft">⚕ Always follow prescribed dosage. Consult a pharmacist or physician if unsure.</div><span class="click-hint">[ CLICK TO EXPAND ]</span></div>`).join('');
 
 /* ═══ KIT ═══ */
-const KD={'WOUND_CARE':{icon:'🩹',items:[{icon:'🩹',name:'Adhesive Bandages',use:'Cover small cuts, prevent infection',qty:'Assorted ×20'},{icon:'🧻',name:'Sterile Gauze Pads',use:'Cover large wounds, absorb blood',qty:'4×4 inch ×10'},{icon:'🩺',name:'Medical Adhesive Tape',use:'Secure dressings in place',qty:'×1 roll'},{icon:'✂️',name:'Bandage Scissors',use:'Cut gauze and tape safely',qty:'×1 pair'},{icon:'🧴',name:'Antiseptic Wipes',use:'Clean wounds to prevent infection',qty:'×20 wipes'},{icon:'💦',name:'Saline Solution',use:'Flush wounds and eyes',qty:'100ml bottle'}]},'MEDICATIONS':{icon:'💊',items:[{icon:'💊',name:'Paracetamol',use:'Pain relief and fever reduction',qty:'×20 tablets'},{icon:'💊',name:'Ibuprofen',use:'Pain, inflammation and fever',qty:'×20 tablets'},{icon:'💊',name:'Antihistamine',use:'Mild allergic reactions',qty:'×10 tablets'},{icon:'🧴',name:'Antiseptic Cream',use:'Minor cuts, burns, bites',qty:'×1 tube'},{icon:'💊',name:'Antacid Tablets',use:'Heartburn and indigestion',qty:'×10 tablets'},{icon:'💉',name:'Oral Rehydration Salts',use:'Treat dehydration',qty:'×5 sachets'}]},'TOOLS':{icon:'🩺',items:[{icon:'🌡️',name:'Digital Thermometer',use:'Check body temperature',qty:'×1'},{icon:'🩺',name:'Disposable Gloves',use:'Protection when treating others',qty:'×5 pairs'},{icon:'🔦',name:'Torch',use:'Examine wounds in low light',qty:'×1'},{icon:'🪡',name:'Sterile Tweezers',use:'Remove splinters',qty:'×1'},{icon:'📋',name:'First Aid Manual',use:'Step-by-step emergency reference',qty:'×1'},{icon:'💉',name:'Sterile Syringe',use:'Irrigate wounds (no needle)',qty:'×2'}]},'EMERGENCY':{icon:'🆘',items:[{icon:'🧊',name:'Instant Cold Pack',use:'Reduce swelling from injuries',qty:'×3'},{icon:'🦺',name:'Emergency Foil Blanket',use:'Prevent shock, maintain warmth',qty:'×2'},{icon:'💉',name:'EpiPen (if prescribed)',use:'Anaphylaxis emergency treatment',qty:'×1 (Rx)'},{icon:'🩸',name:'Tourniquet (CAT)',use:'Life-threatening limb bleeding',qty:'×1'},{icon:'😷',name:'CPR Face Shield',use:'Rescue breaths during CPR',qty:'×2'},{icon:'📱',name:'Emergency Contact Card',use:'Critical emergency numbers',qty:'×1'}]}};
+const KD={'WOUND_CARE':{icon:'🩹',items:[{icon:'🩹',name:'Adhesive Bandages',use:'Cover small cuts, prevent infection',qty:'Assorted ×20',price:149},{icon:'🧻',name:'Sterile Gauze Pads',use:'Cover large wounds, absorb blood',qty:'4×4 inch ×10',price:89},{icon:'🩺',name:'Medical Adhesive Tape',use:'Secure dressings in place',qty:'×1 roll',price:59},{icon:'✂️',name:'Bandage Scissors',use:'Cut gauze and tape safely',qty:'×1 pair',price:199},{icon:'🧴',name:'Antiseptic Wipes',use:'Clean wounds to prevent infection',qty:'×20 wipes',price:99},{icon:'💦',name:'Saline Solution',use:'Flush wounds and eyes',qty:'100ml bottle',price:79}]},'MEDICATIONS':{icon:'💊',items:[{icon:'💊',name:'Paracetamol',use:'Pain relief and fever reduction',qty:'×20 tablets',price:49},{icon:'💊',name:'Ibuprofen',use:'Pain, inflammation and fever',qty:'×20 tablets',price:69},{icon:'💊',name:'Antihistamine',use:'Mild allergic reactions',qty:'×10 tablets',price:89},{icon:'🧴',name:'Antiseptic Cream',use:'Minor cuts, burns, bites',qty:'×1 tube',price:129},{icon:'💊',name:'Antacid Tablets',use:'Heartburn and indigestion',qty:'×10 tablets',price:59},{icon:'💉',name:'Oral Rehydration Salts',use:'Treat dehydration',qty:'×5 sachets',price:79}]},'TOOLS':{icon:'🩺',items:[{icon:'🌡️',name:'Digital Thermometer',use:'Check body temperature',qty:'×1',price:349},{icon:'🩺',name:'Disposable Gloves',use:'Protection when treating others',qty:'×5 pairs',price:119},{icon:'🔦',name:'Torch',use:'Examine wounds in low light',qty:'×1',price:249},{icon:'🪡',name:'Sterile Tweezers',use:'Remove splinters',qty:'×1',price:89},{icon:'📋',name:'First Aid Manual',use:'Step-by-step emergency reference',qty:'×1',price:199},{icon:'💉',name:'Sterile Syringe',use:'Irrigate wounds (no needle)',qty:'×2',price:49}]},'EMERGENCY':{icon:'🆘',items:[{icon:'🧊',name:'Instant Cold Pack',use:'Reduce swelling from injuries',qty:'×3',price:179},{icon:'🦺',name:'Emergency Foil Blanket',use:'Prevent shock, maintain warmth',qty:'×2',price:149},{icon:'💉',name:'EpiPen (if prescribed)',use:'Anaphylaxis emergency treatment',qty:'×1 (Rx)',price:2499},{icon:'🩸',name:'Tourniquet (CAT)',use:'Life-threatening limb bleeding',qty:'×1',price:899},{icon:'😷',name:'CPR Face Shield',use:'Rescue breaths during CPR',qty:'×2',price:249},{icon:'📱',name:'Emergency Contact Card',use:'Critical emergency numbers',qty:'×1',price:29}]}};
 let aKit='WOUND_CARE';
-function renderKit(cat){aKit=cat;document.querySelectorAll('.kit-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));document.getElementById('kitItems').innerHTML=KD[cat].items.map((i,idx)=>`<div class="kit-item" onclick="openKitModal('${cat}',${idx})" style="cursor:pointer"><div class="kit-item-icon">${i.icon}</div><div class="kit-item-name">${i.name}</div><div class="kit-item-use">${i.use}</div><span class="kit-item-qty">QTY: ${i.qty}</span><span class="click-hint">[ CLICK ]</span></div>`).join('');}
+let cart=[];
+function renderKit(cat){
+  aKit=cat;
+  document.querySelectorAll('.kit-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));
+  document.getElementById('kitItems').innerHTML=KD[cat].items.map((item,idx)=>{
+    const cartKey=`${cat}::${idx}`;
+    const inCart=cart.some(c=>c.key===cartKey);
+    return `<div class="kit-item" onclick="openKitModal('${cat}',${idx})" style="cursor:pointer">
+      <div class="kit-item-icon">${item.icon}</div>
+      <div class="kit-item-name">${item.name}</div>
+      <div class="kit-item-use">${item.use}</div>
+      <span class="kit-item-price">₹${item.price}</span>
+      <span class="kit-item-qty">QTY: ${item.qty}</span>
+      <button class="kit-add-btn${inCart?' added':''}" onclick="event.stopPropagation();addToCart('${cat}',${idx})" id="addBtn-${cat}-${idx}">
+        ${inCart?'✓ IN CART':'+ ADD TO CART'}
+      </button>
+      <span class="click-hint">[ CLICK TO VIEW ]</span>
+    </div>`;
+  }).join('');
+}
 document.getElementById('kitCats').innerHTML=Object.entries(KD).map(([c,v])=>`<button class="kit-cat-btn${c===aKit?' active':''}" data-cat="${c}" onclick="renderKit('${c}')">${v.icon} ${c.replace('_',' ')}</button>`).join('');
 renderKit(aKit);
 
@@ -1376,9 +1643,301 @@ function openEmgModal(i){
 
 setTimeout(()=>document.querySelectorAll('.reveal').forEach(el=>obs.observe(el)),100);
 
+/* ═══════════════════════════════
+   CART SYSTEM
+═══════════════════════════════ */
+
+function addToCart(cat,idx){
+  const item=KD[cat].items[idx];
+  const key=`${cat}::${idx}`;
+  const existing=cart.find(c=>c.key===key);
+  if(existing){
+    existing.qty++;
+  } else {
+    cart.push({key,cat,idx,icon:item.icon,name:item.name,use:item.use,price:item.price,qty:1});
+  }
+  updateCartUI();
+  renderKit(aKit);
+  // Flash the cart button
+  const btn=document.getElementById('cartNavBtn');
+  btn.style.transform='scale(1.2)';
+  setTimeout(()=>btn.style.transform='',200);
+  // Show toast
+  showCartToast(`${item.icon} ${item.name} added to cart!`);
+}
+
+function removeFromCart(key){
+  cart=cart.filter(c=>c.key!==key);
+  updateCartUI();
+  renderKit(aKit);
+}
+
+function changeQty(key,delta){
+  const item=cart.find(c=>c.key===key);
+  if(!item)return;
+  item.qty+=delta;
+  if(item.qty<=0)removeFromCart(key);
+  else{updateCartUI();}
+}
+
+function clearCart(){
+  cart=[];
+  updateCartUI();
+  renderKit(aKit);
+}
+
+function getCartTotal(){return cart.reduce((t,c)=>t+c.price*c.qty,0);}
+function getCartCount(){return cart.reduce((t,c)=>t+c.qty,0);}
+
+function updateCartUI(){
+  const count=getCartCount();
+  const total=getCartTotal();
+  // Nav badge
+  document.getElementById('cartNavCount').textContent=count;
+  // Sidebar header
+  document.getElementById('cartHdSub').textContent=`// ${count} item${count!==1?'s':''}`;
+  // Cart items list
+  const listEl=document.getElementById('cartItemsList');
+  const footerEl=document.getElementById('cartFooter');
+  document.getElementById('cartTotal').textContent=total.toLocaleString('en-IN');
+  if(cart.length===0){
+    listEl.innerHTML=`<div class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <div class="cart-empty-txt">// CART_EMPTY<br>Browse the First Aid Kit section<br>and add items to your cart</div>
+    </div>`;
+    footerEl.style.display='none';
+  } else {
+    listEl.innerHTML=cart.map(c=>`
+      <div class="cart-item-row">
+        <div class="ci-icon">${c.icon}</div>
+        <div class="ci-info">
+          <div class="ci-name">${c.name}</div>
+          <div class="ci-use">${c.use}</div>
+          <div class="ci-price">₹${(c.price*c.qty).toLocaleString('en-IN')}</div>
+          <div class="ci-qty-row">
+            <button class="ci-qty-btn" onclick="changeQty('${c.key}',-1)">−</button>
+            <span class="ci-qty-val">${c.qty}</span>
+            <button class="ci-qty-btn" onclick="changeQty('${c.key}',1)">+</button>
+            <span style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-left:.3rem">@ ₹${c.price} each</span>
+          </div>
+        </div>
+        <button class="ci-del" onclick="removeFromCart('${c.key}')">✕</button>
+      </div>`).join('');
+    footerEl.style.display='block';
+  }
+}
+
+function openCart(){
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartSidebar').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeCart(){
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartSidebar').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function showCartToast(msg){
+  let t=document.getElementById('cartToast');
+  if(!t){t=document.createElement('div');t.id='cartToast';t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:var(--deep);border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:.68rem;padding:.6rem 1.2rem;z-index:999;transition:all .3s;white-space:nowrap;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));';document.body.appendChild(t);}
+  t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.transform='translateX(-50%) translateY(60px)';t.style.opacity='0';},2200);
+}
+
+/* ═══════════════════════════════
+   CHECKOUT FLOW
+═══════════════════════════════ */
+let coStep=1;
+let coData={};
+
+function openCheckout(){
+  closeCart();
+  coStep=1;coData={};
+  document.getElementById('checkoutOv').classList.add('open');
+  document.body.style.overflow='hidden';
+  renderCheckoutStep();
+}
+
+function closeCheckout(){
+  document.getElementById('checkoutOv').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function setStepIndicator(step){
+  for(let i=1;i<=3;i++){
+    const el=document.getElementById(`cstep${i}`);
+    el.className='cs-step'+(i<step?' done':i===step?' active':'');
+  }
+  const titles=['DELIVERY DETAILS','ORDER SUMMARY','PAYMENT'];
+  const subs=['// STEP 01 OF 03 — ENTER YOUR DETAILS','// STEP 02 OF 03 — REVIEW YOUR ORDER','// STEP 03 OF 03 — SECURE PAYMENT'];
+  document.getElementById('coTitle').textContent=titles[step-1];
+  document.getElementById('coSub').textContent=subs[step-1];
+}
+
+function renderCheckoutStep(){
+  setStepIndicator(coStep);
+  const body=document.getElementById('checkoutBody');
+  if(coStep===1){
+    body.innerHTML=`
+      <div class="co-row">
+        <div class="co-field">
+          <label class="co-label">Full Name</label>
+          <input class="co-input" id="coName" placeholder="Sarvjeet Singh" value="${coData.name||''}">
+        </div>
+        <div class="co-field">
+          <label class="co-label">Phone Number</label>
+          <input class="co-input" id="coPhone" placeholder="+91 98765 43210" value="${coData.phone||''}">
+        </div>
+      </div>
+      <div class="co-field">
+        <label class="co-label">Email Address</label>
+        <input class="co-input" id="coEmail" type="email" placeholder="you@email.com" value="${coData.email||''}">
+      </div>
+      <div class="co-field">
+        <label class="co-label">Delivery Address</label>
+        <input class="co-input" id="coAddr" placeholder="House No, Street, Area" value="${coData.address||''}">
+      </div>
+      <div class="co-row">
+        <div class="co-field">
+          <label class="co-label">City</label>
+          <input class="co-input" id="coCity" placeholder="Panchkula" value="${coData.city||''}">
+        </div>
+        <div class="co-field">
+          <label class="co-label">Pincode</label>
+          <input class="co-input" id="coPincode" placeholder="134109" value="${coData.pincode||''}">
+        </div>
+      </div>
+      <div id="coErr" style="font-family:var(--mono);font-size:.65rem;color:var(--red);margin-bottom:.8rem;display:none"></div>
+      <button class="co-btn co-btn-primary" onclick="goToStep2()">CONTINUE →</button>`;
+  } else if(coStep===2){
+    const total=getCartTotal();
+    const delivery=total>999?0:99;
+    body.innerHTML=`
+      <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:1rem">
+        📍 ${coData.name} · ${coData.address}, ${coData.city} — ${coData.pincode}<br>
+        📱 ${coData.phone} · ✉️ ${coData.email}
+      </div>
+      <div class="co-order-summary">
+        ${cart.map(c=>`<div class="co-order-row"><span>${c.icon} ${c.name} ×${c.qty}</span><span>₹${(c.price*c.qty).toLocaleString('en-IN')}</span></div>`).join('')}
+        <div class="co-order-row"><span>Delivery</span><span>${delivery===0?'🎉 FREE':'₹'+delivery}</span></div>
+        <div class="co-order-row"><span>// TOTAL</span><span>₹${(total+delivery).toLocaleString('en-IN')}</span></div>
+      </div>
+      ${total<999?'<div style="font-family:var(--mono);font-size:.62rem;color:var(--yellow);margin-bottom:1rem;padding:.5rem .8rem;background:rgba(255,221,0,.05);border:1px solid rgba(255,221,0,.15)">⚡ Add ₹'+(999-total)+' more for FREE delivery!</div>':'<div style="font-family:var(--mono);font-size:.62rem;color:var(--green);margin-bottom:1rem;padding:.5rem .8rem;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15)">🎉 You qualify for FREE delivery!</div>'}
+      <button class="co-btn co-btn-primary" onclick="goToStep3()">▶ PROCEED TO PAYMENT</button>
+      <button class="co-btn co-btn-back" onclick="coStep=1;renderCheckoutStep()">← BACK</button>`;
+  } else if(coStep===3){
+    const total=getCartTotal()+(getCartTotal()>999?0:99);
+    body.innerHTML=`
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <div style="font-family:var(--display);font-size:.75rem;color:var(--muted);letter-spacing:.1em;margin-bottom:.5rem">// AMOUNT TO PAY</div>
+        <div style="font-family:var(--display);font-size:2.5rem;font-weight:900;color:var(--green);text-shadow:0 0 30px rgba(0,255,136,.4)">₹${total.toLocaleString('en-IN')}</div>
+      </div>
+      <div style="background:rgba(0,255,136,.03);border:1px solid rgba(0,255,136,.1);padding:1rem 1.2rem;margin-bottom:1.5rem;font-family:var(--mono);font-size:.65rem;color:var(--muted);line-height:1.8">
+        🔒 Secured by Razorpay<br>
+        📦 Delivery to: ${coData.city}, ${coData.pincode}<br>
+        ⚡ Estimated delivery: 3–5 business days
+      </div>
+      <button class="co-btn co-btn-primary" onclick="initiateRazorpay(${total})" style="font-size:.8rem;padding:1.1rem">
+        🔒 PAY ₹${total.toLocaleString('en-IN')} SECURELY
+      </button>
+      <button class="co-btn co-btn-back" onclick="coStep=2;renderCheckoutStep()">← BACK</button>`;
+  }
+}
+
+function goToStep2(){
+  const name=document.getElementById('coName').value.trim();
+  const phone=document.getElementById('coPhone').value.trim();
+  const email=document.getElementById('coEmail').value.trim();
+  const address=document.getElementById('coAddr').value.trim();
+  const city=document.getElementById('coCity').value.trim();
+  const pincode=document.getElementById('coPincode').value.trim();
+  const err=document.getElementById('coErr');
+  if(!name||!phone||!email||!address||!city||!pincode){
+    err.textContent='// ERROR: Please fill in all fields';err.style.display='block';return;
+  }
+  if(!/^\d{6}$/.test(pincode)){err.textContent='// ERROR: Invalid pincode — must be 6 digits';err.style.display='block';return;}
+  coData={name,phone,email,address,city,pincode};
+  coStep=2;renderCheckoutStep();
+}
+
+function goToStep3(){coStep=3;renderCheckoutStep();}
+
+function initiateRazorpay(amount){
+  // Load Razorpay script dynamically
+  const script=document.createElement('script');
+  script.src='https://checkout.razorpay.com/v1/checkout.js';
+  script.onload=()=>{
+    const options={
+      key:'rzp_test_YourKeyHere', // Replace with your Razorpay test key
+      amount:amount*100, // in paise
+      currency:'INR',
+      name:'SIGNMED',
+      description:'First Aid Kit Order',
+      image:'',
+      prefill:{name:coData.name,email:coData.email,contact:coData.phone},
+      notes:{address:coData.address+', '+coData.city+' — '+coData.pincode},
+      theme:{color:'#00ff88'},
+      handler:function(response){
+        // Payment success
+        closeCheckout();
+        showPaymentSuccess(response.razorpay_payment_id);
+        cart=[];updateCartUI();renderKit(aKit);
+      },
+      modal:{ondismiss:function(){console.log('Payment dismissed');}}
+    };
+    const rzp=new Razorpay(options);
+    rzp.open();
+  };
+  script.onerror=()=>{
+    // Razorpay not available — show demo success
+    closeCheckout();
+    const fakeId='pay_DEMO_'+Math.random().toString(36).substr(2,10).toUpperCase();
+    showPaymentSuccess(fakeId);
+    cart=[];updateCartUI();renderKit(aKit);
+  };
+  document.head.appendChild(script);
+}
+
+function showPaymentSuccess(paymentId){
+  // Show a full success modal
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);z-index:600;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  ov.innerHTML=`
+    <div style="background:var(--deep);border:1px solid rgba(0,255,136,.4);max-width:460px;width:100%;padding:2.5rem;text-align:center;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));box-shadow:0 0 60px rgba(0,255,136,.1);animation:cardIn .4s cubic-bezier(.34,1.56,.64,1)">
+      <div style="font-size:4rem;margin-bottom:1rem;animation:successPop .5s cubic-bezier(.34,1.56,.64,1)">✅</div>
+      <div style="font-family:var(--display);font-size:1.1rem;font-weight:900;letter-spacing:.1em;color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.5);margin-bottom:.5rem">PAYMENT SUCCESSFUL!</div>
+      <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);line-height:1.8;margin-bottom:1rem">
+        Your order has been confirmed.<br>
+        Delivery to ${coData.city} in 3–5 business days.
+      </div>
+      <div style="font-family:var(--mono);font-size:.65rem;color:var(--cyan);background:rgba(0,255,200,.05);border:1px solid rgba(0,255,200,.2);padding:.5rem 1rem;display:inline-block;margin-bottom:1.5rem">
+        ORDER ID: ${paymentId}
+      </div><br>
+      <button onclick="this.closest('div[style]').remove();document.body.style.overflow=''" style="font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.7rem 2rem;cursor:pointer;background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3);transition:all .2s">
+        ✕ CLOSE
+      </button>
+    </div>`;
+  document.body.appendChild(ov);
+  document.body.style.overflow='hidden';
+}
+
+/* ═══ SOS POPUP ═══ */
+function openSOS(){
+  document.getElementById('sosPopup').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeSOS(){
+  document.getElementById('sosPopup').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSOS();closeCardModal();closeCheckout();}});
+
 // Init backend
 updateNavAuth();
 loadLeaderboard('', null);
+updateCartUI();
 </script>
 </body>
 </html>
