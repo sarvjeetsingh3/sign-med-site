@@ -26,6 +26,7 @@ app.use('/api/auth',        require('./routes/auth'));
 app.use('/api/scores',      require('./routes/scores'));
 app.use('/api/leaderboard', require('./routes/leaderboard'));
 app.use('/api/admin',       require('./routes/admin'));
+app.use('/api/ai',          require('./routes/ai')); 
 
 // ── Serve Frontend ──────────────────────────────────────
 app.use(express.static(path.join(__dirname, '../frontend')));

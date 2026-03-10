@@ -338,6 +338,70 @@ section{padding:5rem 2rem;position:relative;z-index:1;}
 /* ── ALLERGY ── */
 #allergy{background:#010a14;}
 .allergy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+.allergy-tabs{display:flex;gap:0;margin-bottom:1.8rem;border:1px solid var(--border);overflow:hidden;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);}
+.allergy-tab{flex:1;padding:.75rem 1rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;text-align:center;cursor:pointer;background:transparent;color:var(--muted);border:none;border-right:1px solid var(--border);transition:all .2s;}
+.allergy-tab:last-child{border-right:none;}
+.allergy-tab:hover{background:rgba(0,255,200,.04);color:var(--cyan);}
+.allergy-tab.active{background:rgba(0,255,200,.08);color:var(--cyan);border-bottom:2px solid var(--cyan);}
+.allergy-tab-panel{display:none;}
+.allergy-tab-panel.active{display:block;}
+.sc-wrap{background:var(--panel);border:1px solid var(--border);padding:1.6rem;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));}
+.sc-label{font-family:var(--mono);font-size:.62rem;color:var(--cyan);letter-spacing:.1em;margin-bottom:.7rem;}
+.sc-input-row{display:flex;gap:.8rem;margin-bottom:1.2rem;}
+.sc-input{flex:1;background:rgba(0,255,200,.03);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.76rem;padding:.75rem 1rem;outline:none;transition:all .25s;letter-spacing:.04em;}
+.sc-input:focus{border-color:var(--cyan);box-shadow:0 0 16px rgba(0,255,200,.08);}
+.sc-input::placeholder{color:var(--muted);opacity:.5;}
+.sc-btn{background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;padding:.75rem 1.4rem;cursor:pointer;text-transform:uppercase;transition:all .2s;white-space:nowrap;}
+.sc-btn:hover{background:rgba(0,255,200,.1);box-shadow:0 0 20px rgba(0,255,200,.15);}
+.sc-pills-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.08em;margin-bottom:.6rem;}
+.sc-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.4rem;}
+.sc-pill{padding:.3rem .75rem;font-family:var(--mono);font-size:.62rem;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .18s;letter-spacing:.04em;border-radius:2px;}
+.sc-pill:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,200,.05);}
+.sc-pill.selected{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,200,.1);box-shadow:0 0 8px rgba(0,255,200,.15);}
+.sc-selected-wrap{margin-bottom:1.2rem;min-height:2rem;}
+.sc-selected-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.08em;margin-bottom:.5rem;}
+.sc-selected-pills{display:flex;flex-wrap:wrap;gap:.4rem;}
+.sc-sel-pill{display:flex;align-items:center;gap:.4rem;padding:.3rem .7rem;background:rgba(0,255,200,.08);border:1px solid rgba(0,255,200,.3);color:var(--cyan);font-family:var(--mono);font-size:.62rem;border-radius:2px;}
+.sc-sel-pill span{cursor:pointer;opacity:.6;font-size:.8rem;transition:opacity .15s;}.sc-sel-pill span:hover{opacity:1;}
+.sc-run{width:100%;padding:.85rem;background:linear-gradient(135deg,rgba(0,255,200,.08),rgba(0,180,255,.06));border:1px solid var(--cyan);color:var(--cyan);font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+.sc-run:hover{background:linear-gradient(135deg,rgba(0,255,200,.15),rgba(0,180,255,.1));box-shadow:0 0 30px rgba(0,255,200,.15);}
+.sc-run:disabled{opacity:.3;cursor:not-allowed;}
+.sc-results{margin-top:1.6rem;}
+.sc-results-hd{font-family:var(--mono);font-size:.65rem;color:var(--muted);letter-spacing:.1em;margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);}
+.sc-results-hd span{color:var(--cyan);}
+.sc-match{background:var(--panel);border:1px solid var(--border);margin-bottom:1rem;overflow:hidden;transition:all .3s;}
+.sc-match:hover{border-color:var(--magenta);}
+.sc-match-hd{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;border-bottom:1px solid var(--border);cursor:pointer;}
+.sc-match-icon{font-size:1.6rem;flex-shrink:0;}
+.sc-match-name{font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.08em;color:var(--text);text-transform:uppercase;}
+.sc-match-type{font-family:var(--mono);font-size:.6rem;color:var(--magenta);margin-top:.15rem;}
+.sc-confidence{margin-left:auto;text-align:right;flex-shrink:0;}
+.sc-conf-bar-wrap{width:80px;height:3px;background:rgba(255,255,255,.06);margin-bottom:.3rem;}
+.sc-conf-bar{height:100%;}
+.sc-conf-txt{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;}
+.sc-match-body{padding:1rem 1.2rem;display:none;}
+.sc-match.open .sc-match-body{display:block;}
+.sc-match-section{margin-bottom:.9rem;}
+.sc-match-section-lbl{font-family:var(--mono);font-size:.58rem;color:var(--muted);letter-spacing:.1em;margin-bottom:.4rem;}
+.sc-hit-pills{display:flex;flex-wrap:wrap;gap:.35rem;}
+.sc-hit-pill{padding:.2rem .6rem;font-family:var(--mono);font-size:.6rem;border-radius:2px;}
+.sc-hit-pill.match{background:rgba(0,255,200,.1);border:1px solid rgba(0,255,200,.3);color:var(--cyan);}
+.sc-hit-pill.other{background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--muted);}
+.sc-meds-list{display:flex;flex-wrap:wrap;gap:.35rem;}
+.sc-med-tag{padding:.2rem .6rem;font-family:var(--mono);font-size:.6rem;background:rgba(0,180,255,.08);border:1px solid rgba(0,180,255,.25);color:var(--blue);}
+.sc-emergency-box{padding:.8rem 1rem;border-left:3px solid var(--red);background:rgba(255,34,68,.06);margin-top:.8rem;}
+.sc-emergency-box .sc-match-section-lbl{color:var(--red);}
+.sc-emergency-steps{list-style:none;padding:0;margin:0;}
+.sc-emergency-steps li{font-family:var(--mono);font-size:.63rem;color:rgba(255,255,255,.7);padding:.2rem 0;padding-left:.9rem;position:relative;}
+.sc-emergency-steps li::before{content:"▶";position:absolute;left:0;color:var(--red);font-size:.5rem;top:.3rem;}
+.sc-no-results{text-align:center;padding:2rem;font-family:var(--mono);font-size:.7rem;color:var(--muted);}
+.sc-no-results span{color:var(--cyan);}
+.sc-sev-badge{padding:.2rem .6rem;font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;border-radius:2px;margin-left:.5rem;}
+.sc-sev-badge.high{background:rgba(255,34,68,.12);border:1px solid rgba(255,34,68,.3);color:var(--red);}
+.sc-sev-badge.med{background:rgba(255,221,0,.08);border:1px solid rgba(255,221,0,.3);color:var(--yellow);}
+.sc-sev-badge.low{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);color:var(--green);}
+.sc-clear{display:inline-block;margin-top:1rem;font-family:var(--mono);font-size:.6rem;color:var(--muted);cursor:pointer;letter-spacing:.06em;border-bottom:1px solid transparent;transition:all .2s;}
+.sc-clear:hover{color:var(--cyan);border-bottom-color:var(--cyan);}
 .allergy-card{background:var(--panel);border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:all .3s;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));}
 .allergy-card:hover{border-color:var(--magenta);transform:translateY(-4px);background:rgba(255,0,170,.04);box-shadow:0 0 30px rgba(255,0,170,.08);}
 .allergy-card::before{content:'';position:absolute;top:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--magenta),transparent);opacity:0;}
@@ -613,6 +677,82 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   .kit-cats{flex-direction:row;flex-wrap:wrap;}
   .options-grid{grid-template-columns:1fr;}
 }
+
+/* ══════════════════════════════════════════
+   AI MEDBOT — HOLOGRAPHIC STYLE
+══════════════════════════════════════════ */
+.ai-nav-btn{background:linear-gradient(135deg,rgba(0,180,255,.12),rgba(160,0,255,.1));border:1px solid rgba(0,180,255,.4);color:#00b4ff;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;padding:.38rem .85rem;cursor:pointer;transition:all .25s;text-transform:uppercase;position:relative;overflow:hidden;}
+.ai-nav-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,180,255,.15),rgba(160,0,255,.12));opacity:0;transition:opacity .2s;}
+.ai-nav-btn:hover::before{opacity:1;}
+.ai-nav-btn:hover{box-shadow:0 0 20px rgba(0,180,255,.3);border-color:rgba(0,180,255,.7);}
+
+/* Floating bubble */
+.ai-float-btn{position:fixed;bottom:7rem;right:2rem;z-index:999;display:flex;flex-direction:column;align-items:center;gap:.3rem;cursor:pointer;}
+.ai-float-orb{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(0,180,255,.5),rgba(160,0,255,.3),rgba(0,180,255,.1));border:1px solid rgba(0,180,255,.5);display:flex;align-items:center;justify-content:center;font-size:1.3rem;animation:aiOrbPulse 3s ease-in-out infinite;box-shadow:0 0 20px rgba(0,180,255,.3),0 0 40px rgba(0,180,255,.15),inset 0 0 20px rgba(0,180,255,.1);}
+@keyframes aiOrbPulse{0%,100%{box-shadow:0 0 20px rgba(0,180,255,.3),0 0 40px rgba(0,180,255,.15);transform:scale(1);}50%{box-shadow:0 0 30px rgba(0,180,255,.5),0 0 60px rgba(0,180,255,.25);transform:scale(1.05);}}
+.ai-float-lbl{font-family:var(--mono);font-size:.5rem;color:rgba(0,180,255,.7);letter-spacing:.1em;}
+
+/* Chat popup */
+.ai-popup{position:fixed;bottom:13rem;right:2rem;width:370px;max-height:560px;background:rgba(1,6,18,.97);border:1px solid rgba(0,180,255,.3);z-index:1000;display:none;flex-direction:column;box-shadow:0 0 60px rgba(0,180,255,.2),0 30px 80px rgba(0,0,0,.9);clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));}
+.ai-popup.open{display:flex;}
+.ai-popup-hd{display:flex;align-items:center;gap:.8rem;padding:.9rem 1.1rem;border-bottom:1px solid rgba(0,180,255,.15);background:linear-gradient(135deg,rgba(0,180,255,.06),rgba(160,0,255,.04));}
+.ai-avatar-sm{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(0,180,255,.6),rgba(160,0,255,.4),rgba(0,180,255,.15));border:1px solid rgba(0,180,255,.5);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;animation:aiOrbPulse 3s ease-in-out infinite;}
+.ai-popup-title{font-family:var(--display);font-size:.72rem;font-weight:700;color:#00b4ff;letter-spacing:.1em;}
+.ai-popup-sub{font-family:var(--mono);font-size:.55rem;color:var(--muted);letter-spacing:.06em;}
+.ai-popup-close{margin-left:auto;background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem .4rem;transition:color .2s;}
+.ai-popup-close:hover{color:var(--red);}
+.ai-popup-expand{background:none;border:1px solid rgba(0,180,255,.2);color:rgba(0,180,255,.6);font-family:var(--mono);font-size:.55rem;padding:.2rem .5rem;cursor:pointer;margin-left:.3rem;transition:all .2s;}
+.ai-popup-expand:hover{border-color:rgba(0,180,255,.5);color:#00b4ff;}
+.ai-messages{flex:1;overflow-y:auto;padding:.9rem;display:flex;flex-direction:column;gap:.7rem;scrollbar-width:thin;scrollbar-color:rgba(0,180,255,.2) transparent;}
+.ai-msg{display:flex;gap:.6rem;align-items:flex-start;}
+.ai-msg.user{flex-direction:row-reverse;}
+.ai-msg-avatar{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;}
+.ai-msg.bot .ai-msg-avatar{background:radial-gradient(circle at 35% 35%,rgba(0,180,255,.5),rgba(160,0,255,.3));border:1px solid rgba(0,180,255,.4);}
+.ai-msg.user .ai-msg-avatar{background:rgba(0,255,200,.1);border:1px solid rgba(0,255,200,.3);}
+.ai-msg-bubble{max-width:80%;padding:.6rem .85rem;font-family:var(--mono);font-size:.65rem;line-height:1.6;letter-spacing:.02em;}
+.ai-msg.bot .ai-msg-bubble{background:rgba(0,180,255,.06);border:1px solid rgba(0,180,255,.15);color:rgba(255,255,255,.85);border-radius:0 8px 8px 8px;}
+.ai-msg.user .ai-msg-bubble{background:rgba(0,255,200,.06);border:1px solid rgba(0,255,200,.2);color:var(--cyan);border-radius:8px 0 8px 8px;text-align:right;}
+.ai-typing{display:flex;gap:4px;align-items:center;padding:.4rem .6rem;}
+.ai-typing span{width:6px;height:6px;border-radius:50%;background:rgba(0,180,255,.6);animation:aiTyping 1.2s ease-in-out infinite;}
+.ai-typing span:nth-child(2){animation-delay:.2s;}
+.ai-typing span:nth-child(3){animation-delay:.4s;}
+@keyframes aiTyping{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-6px);opacity:1;}}
+.ai-quick-btns{display:flex;flex-wrap:wrap;gap:.35rem;padding:.6rem .9rem;border-top:1px solid rgba(0,180,255,.08);}
+.ai-quick-btn{background:rgba(0,180,255,.06);border:1px solid rgba(0,180,255,.2);color:rgba(0,180,255,.8);font-family:var(--mono);font-size:.56rem;padding:.3rem .65rem;cursor:pointer;letter-spacing:.05em;transition:all .18s;border-radius:2px;}
+.ai-quick-btn:hover{background:rgba(0,180,255,.14);border-color:rgba(0,180,255,.5);}
+.ai-input-row{display:flex;gap:0;border-top:1px solid rgba(0,180,255,.15);}
+.ai-input{flex:1;background:rgba(0,180,255,.03);border:none;color:var(--text);font-family:var(--mono);font-size:.68rem;padding:.75rem 1rem;outline:none;letter-spacing:.03em;}
+.ai-input::placeholder{color:var(--muted);opacity:.4;}
+.ai-send-btn{background:rgba(0,180,255,.1);border:none;border-left:1px solid rgba(0,180,255,.2);color:#00b4ff;font-size:1rem;padding:.75rem 1rem;cursor:pointer;transition:all .2s;}
+.ai-send-btn:hover{background:rgba(0,180,255,.2);}
+
+/* Dedicated section */
+.ai-section-wrap{display:grid;grid-template-columns:320px 1fr;gap:2.5rem;align-items:start;}
+@media(max-width:900px){.ai-section-wrap{grid-template-columns:1fr;}}
+.ai-holo-panel{position:relative;display:flex;flex-direction:column;align-items:center;padding:2rem 1.5rem;background:rgba(0,180,255,.03);border:1px solid rgba(0,180,255,.15);clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));}
+.ai-holo-ring{position:relative;width:140px;height:140px;margin-bottom:1.5rem;}
+.ai-holo-ring-outer{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(0,180,255,.3);animation:holoSpin 8s linear infinite;}
+.ai-holo-ring-mid{position:absolute;inset:12px;border-radius:50%;border:1px solid rgba(160,0,255,.3);animation:holoSpin 5s linear infinite reverse;}
+.ai-holo-ring-inner{position:absolute;inset:24px;border-radius:50%;border:1px solid rgba(0,255,200,.2);animation:holoSpin 3s linear infinite;}
+@keyframes holoSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.ai-holo-core{position:absolute;inset:32px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(0,180,255,.6),rgba(160,0,255,.4),rgba(0,180,255,.05));display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 0 30px rgba(0,180,255,.4),0 0 60px rgba(0,180,255,.2),inset 0 0 30px rgba(0,180,255,.1);animation:holoBreath 4s ease-in-out infinite;}
+@keyframes holoBreath{0%,100%{box-shadow:0 0 30px rgba(0,180,255,.4),0 0 60px rgba(0,180,255,.2);}50%{box-shadow:0 0 50px rgba(0,180,255,.7),0 0 90px rgba(0,180,255,.35);}}
+.ai-holo-name{font-family:var(--display);font-size:1rem;font-weight:900;color:#00b4ff;letter-spacing:.2em;text-shadow:0 0 20px rgba(0,180,255,.6);margin-bottom:.3rem;}
+.ai-holo-sub{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em;text-align:center;margin-bottom:1.2rem;}
+.ai-holo-stats{width:100%;display:flex;flex-direction:column;gap:.5rem;}
+.ai-holo-stat{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;padding:.4rem .7rem;background:rgba(0,180,255,.04);border:1px solid rgba(0,180,255,.1);}
+.ai-holo-stat span:first-child{color:var(--muted);}
+.ai-holo-stat span:last-child{color:#00b4ff;}
+.ai-full-chat{display:flex;flex-direction:column;background:rgba(0,180,255,.02);border:1px solid rgba(0,180,255,.12);clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,0 100%);}
+.ai-full-chat-hd{padding:1rem 1.4rem;border-bottom:1px solid rgba(0,180,255,.12);font-family:var(--mono);font-size:.65rem;color:rgba(0,180,255,.7);letter-spacing:.1em;}
+.ai-full-messages{height:380px;overflow-y:auto;padding:1.2rem;display:flex;flex-direction:column;gap:.8rem;scrollbar-width:thin;scrollbar-color:rgba(0,180,255,.2) transparent;}
+.ai-full-quick{display:flex;flex-wrap:wrap;gap:.4rem;padding:.8rem 1.2rem;border-top:1px solid rgba(0,180,255,.08);border-bottom:1px solid rgba(0,180,255,.08);}
+.ai-full-input-row{display:flex;gap:0;}
+.ai-full-input{flex:1;background:rgba(0,180,255,.03);border:none;border-top:1px solid rgba(0,180,255,.1);color:var(--text);font-family:var(--mono);font-size:.72rem;padding:.9rem 1.2rem;outline:none;letter-spacing:.03em;}
+.ai-full-input::placeholder{color:var(--muted);opacity:.4;}
+.ai-full-send{background:rgba(0,180,255,.1);border:none;border-top:1px solid rgba(0,180,255,.1);border-left:1px solid rgba(0,180,255,.15);color:#00b4ff;font-size:1.1rem;padding:.9rem 1.2rem;cursor:pointer;transition:all .2s;}
+.ai-full-send:hover{background:rgba(0,180,255,.2);}
+
 </style>
 </head>
 <body>
@@ -626,12 +766,14 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <button onclick="gotoSec('meds')" id="n-meds">[ MEDICATIONS ]</button>
     <button onclick="gotoSec('kit')" id="n-kit">[ FIRST_AID ]</button>
     <button onclick="gotoSec('emergency')" id="n-emg">[ EMERGENCY ]</button>
+    <button onclick="gotoSec('aibot')" id="n-ai" style="color:#00b4ff;border-color:rgba(0,180,255,.3);">[ AI_MEDBOT ]</button>
   </div>
   <div class="nav-auth">
     <div class="nav-user" id="navUser">
       <span id="navUsername">USER</span>
       <span class="usr-xp" id="navXP">0 XP</span>
     </div>
+    <button class="ai-nav-btn" onclick="toggleAIPopup()">🤖 AI_MEDBOT</button>
     <button class="nav-btn-auth btn-login" id="btnLogin" onclick="openAuth()">[ LOGIN ]</button>
     <button class="nav-btn-auth btn-logout" id="btnLogout" onclick="logout()">[ LOGOUT ]</button>
     <button class="cart-nav-btn" id="cartNavBtn" onclick="openCart()">
@@ -639,6 +781,31 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     </button>
   </div>
 </nav>
+
+<!-- AI FLOAT BUTTON -->
+<div class="ai-float-btn" onclick="toggleAIPopup()">
+  <div class="ai-float-orb">🤖</div>
+  <div class="ai-float-lbl">AI_MEDBOT</div>
+</div>
+
+<!-- AI POPUP -->
+<div class="ai-popup" id="aiPopup">
+  <div class="ai-popup-hd">
+    <div class="ai-avatar-sm">🤖</div>
+    <div>
+      <div class="ai-popup-title">MEDI // AI ASSISTANT</div>
+      <div class="ai-popup-sub">// ONLINE :: Medical + Sign Language Expert</div>
+    </div>
+    <button class="ai-popup-expand" onclick="gotoSec('aibot')">⤢ EXPAND</button>
+    <button class="ai-popup-close" onclick="toggleAIPopup()">✕</button>
+  </div>
+  <div class="ai-messages" id="aiPopupMessages"></div>
+  <div class="ai-quick-btns" id="aiPopupQuick"></div>
+  <div class="ai-input-row">
+    <input class="ai-input" id="aiPopupInput" placeholder="Ask about symptoms, medications, signs..." onkeydown="if(event.key==='Enter')aiSend('popup')"/>
+    <button class="ai-send-btn" onclick="aiSend('popup')">➤</button>
+  </div>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -785,23 +952,71 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 <!-- ALLERGY -->
 <section id="allergy"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_02 :: ALLERGEN_DATABASE</span><h2 class="sec-title">ALLERGIES &amp; <span class="hl">SYMPTOM ANALYSIS</span></h2><p class="sec-sub">Know your allergens. Recognise symptoms early. Understand what to do.</p></div>
-<div class="search-wrap reveal">
+<div class="allergy-tabs">
+  <button class="allergy-tab active" onclick="switchAllergyTab('browse',this)">⬡ BROWSE DATABASE</button>
+  <button class="allergy-tab" onclick="switchAllergyTab('checker',this)">⚕ SYMPTOM CHECKER</button>
+</div>
+<div class="allergy-tab-panel active" id="allergyPanel-browse">
+<div class="search-wrap">
   <span class="search-icon">🔍</span>
   <input class="search-input" id="allergySearch" type="text" placeholder="SEARCH_ALLERGEN :: e.g. peanut, dust, latex..." oninput="filterAllergy(this.value)" autocomplete="off"/>
   <span class="search-count" id="allergyCount"></span>
   <div class="search-dropdown" id="allergyDropdown" style="display:none;"></div>
 </div>
-<div class="allergy-grid" id="allergyGrid"></div></div></section>
+<div class="allergy-grid" id="allergyGrid"></div>
+</div>
+<div class="allergy-tab-panel" id="allergyPanel-checker">
+<div class="sc-wrap">
+  <div class="sc-label">// TYPE_SYMPTOMS :: or select from list below</div>
+  <div class="sc-input-row">
+    <input class="sc-input" id="scTyped" type="text" placeholder="e.g. hives, swelling, itchy eyes..." autocomplete="off" onkeydown="if(event.key==='Enter')scAddTyped()"/>
+    <button class="sc-btn" onclick="scAddTyped()">+ ADD</button>
+  </div>
+  <div class="sc-pills-label">// QUICK_SELECT :: tap to add symptoms</div>
+  <div class="sc-pills" id="scPills"></div>
+  <div class="sc-selected-wrap" id="scSelectedWrap" style="display:none;">
+    <div class="sc-selected-label">// SELECTED_SYMPTOMS</div>
+    <div class="sc-selected-pills" id="scSelectedPills"></div>
+  </div>
+  <button class="sc-run" id="scRunBtn" onclick="runSymptomChecker()" disabled>⚕ ANALYSE SYMPTOMS</button>
+</div>
+<div class="sc-results" id="scResults" style="display:none;"></div>
+</div>
+</div></section>
 
 <!-- MEDS -->
 <section id="meds"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_03 :: PHARMACOLOGICAL_SIDE_EFFECTS</span><h2 class="sec-title">MEDICATION <span class="hl">SIDE EFFECTS</span></h2><p class="sec-sub">Commonly prescribed medications and their documented side effects. Always consult a healthcare professional.</p></div>
-<div class="search-wrap reveal">
+<div class="allergy-tabs">
+  <button class="allergy-tab active" onclick="switchMedTab('browse',this)">⬡ BROWSE DATABASE</button>
+  <button class="allergy-tab" onclick="switchMedTab('checker',this)">💊 DISEASE CHECKER</button>
+</div>
+<div class="allergy-tab-panel active" id="medPanel-browse">
+<div class="search-wrap">
   <span class="search-icon">🔍</span>
   <input class="search-input" id="medSearch" type="text" placeholder="SEARCH_MEDICATION :: e.g. ibuprofen, aspirin, metformin..." oninput="filterMeds(this.value)" autocomplete="off"/>
   <span class="search-count" id="medCount"></span>
   <div class="search-dropdown" id="medDropdown" style="display:none;"></div>
 </div>
-<div class="meds-grid" id="medsGrid"></div></div></section>
+<div class="meds-grid" id="medsGrid"></div>
+</div>
+<div class="allergy-tab-panel" id="medPanel-checker">
+<div class="sc-wrap">
+  <div class="sc-label">// TYPE_DISEASE_OR_CONDITION :: or select from list below</div>
+  <div class="sc-input-row">
+    <input class="sc-input" id="mcTyped" type="text" placeholder="e.g. diabetes, hypertension, fever..." autocomplete="off" onkeydown="if(event.key==='Enter')mcAddTyped()"/>
+    <button class="sc-btn" onclick="mcAddTyped()">+ ADD</button>
+  </div>
+  <div class="sc-pills-label">// QUICK_SELECT :: common conditions</div>
+  <div class="sc-pills" id="mcPills"></div>
+  <div class="sc-selected-wrap" id="mcSelectedWrap" style="display:none;">
+    <div class="sc-selected-label">// SELECTED_CONDITIONS</div>
+    <div class="sc-selected-pills" id="mcSelectedPills"></div>
+  </div>
+  <button class="sc-run" id="mcRunBtn" onclick="runMedChecker()" disabled>💊 FIND MEDICATIONS</button>
+</div>
+<div class="sc-results" id="mcResults" style="display:none;"></div>
+</div>
+</div></section>
 
 <!-- KIT -->
 <section id="kit"><div class="sec-con"><div class="sec-hd reveal"><span class="eyebrow">// MODULE_04 :: FIRST_AID_INVENTORY</span><h2 class="sec-title">BUILD YOUR <span class="hl">MEDICAL KIT</span></h2><p class="sec-sub">Essential items every household needs — with usage guides and recommended quantities.</p></div><div class="kit-wrap reveal"><div class="kit-cats" id="kitCats"></div><div class="kit-items-grid" id="kitItems"></div></div></div></section>
@@ -817,6 +1032,43 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   <div style="margin-left:auto;font-family:var(--mono);font-size:.7rem;color:var(--red);border:1px solid rgba(255,34,68,.3);padding:.3rem .6rem;white-space:nowrap">▶ CALL NOW</div>
 </button>
 <div class="emg-grid" id="emgGrid"></div></div></section>
+
+<!-- AI MEDBOT SECTION -->
+<section id="aibot"><div class="sec-con">
+  <div class="sec-hd reveal">
+    <span class="eyebrow">// MODULE_07 :: AI_MEDICAL_ASSISTANT</span>
+    <h2 class="sec-title">MEDI <span class="hl">AI ASSISTANT</span></h2>
+    <p class="sec-sub">Holographic AI powered by Claude. Ask anything about allergies, medications, symptoms, or sign language.</p>
+  </div>
+  <div class="ai-section-wrap">
+    <div class="ai-holo-panel">
+      <div class="ai-holo-ring">
+        <div class="ai-holo-ring-outer"></div>
+        <div class="ai-holo-ring-mid"></div>
+        <div class="ai-holo-ring-inner"></div>
+        <div class="ai-holo-core">🤖</div>
+      </div>
+      <div class="ai-holo-name">MEDI</div>
+      <div class="ai-holo-sub">// AI_MEDICAL_ASSISTANT v1.0<br>Powered by Claude · SignMed Learn</div>
+      <div class="ai-holo-stats">
+        <div class="ai-holo-stat"><span>SPECIALITY</span><span>Medical + Sign Lang</span></div>
+        <div class="ai-holo-stat"><span>LANGUAGES</span><span>ASL · BSL · ISL · Universal</span></div>
+        <div class="ai-holo-stat"><span>ALLERGENS</span><span>18 in database</span></div>
+        <div class="ai-holo-stat"><span>MEDICATIONS</span><span>18 in database</span></div>
+        <div class="ai-holo-stat"><span>STATUS</span><span style="color:var(--green)">● ONLINE</span></div>
+      </div>
+    </div>
+    <div class="ai-full-chat">
+      <div class="ai-full-chat-hd">// CHAT_INTERFACE :: type your question below or use quick prompts</div>
+      <div class="ai-full-messages" id="aiFullMessages"></div>
+      <div class="ai-full-quick" id="aiFullQuick"></div>
+      <div class="ai-full-input-row">
+        <input class="ai-full-input" id="aiFullInput" placeholder="e.g. What are symptoms of peanut allergy? How do I sign 'help' in ASL?..." onkeydown="if(event.key==='Enter')aiSend('full')"/>
+        <button class="ai-full-send" onclick="aiSend('full')">➤</button>
+      </div>
+    </div>
+  </div>
+</div></section>
 
 <!-- LEADERBOARD -->
 <section id="leaderboard" style="background:#010a14;">
@@ -1493,7 +1745,7 @@ function renderAllergy(list, showCount=false){
     grid.innerHTML=`<div class="search-no-result" style="grid-column:1/-1">// NO_RESULTS_FOUND — try <span>"peanut"</span> or <span>"dust"</span></div>`;
     countEl.textContent='';return;
   }
-  grid.innerHTML=list.slice(0,4).map((a)=>allergyCardHTML(a,AL.indexOf(a))).join('');
+  grid.innerHTML=list.slice(0,3).map((a)=>allergyCardHTML(a,AL.indexOf(a))).join('');
   countEl.textContent=showCount?`${list.length} RESULTS`:'';
 }
 
@@ -1575,6 +1827,221 @@ document.getElementById('allergySearch').addEventListener('keydown',function(e){
   }
 });
 
+/* ═══ SYMPTOM CHECKER ═══ */
+function switchAllergyTab(name, btn) {
+  document.querySelectorAll('.allergy-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.allergy-tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('allergyPanel-' + name).classList.add('active');
+}
+
+const SC_ALL_SYMPTOMS = [
+  'Hives','Swelling','Itching','Rash','Sneezing','Runny nose','Watery eyes',
+  'Breathing difficulty','Anaphylaxis','Throat tightening','Nausea','Vomiting',
+  'Stomach cramps','Diarrhoea','Skin redness','Coughing','Chest tightness',
+  'Wheezing','Headache','Dizziness','Fatigue','Facial swelling','Tingling lips',
+  'Skin peeling','Fever','Itchy eyes','Bloating','Joint pain','Shortness of breath'
+];
+
+const SC_MED_MAP = {
+  'Hives':              ['Cetirizine (Zyrtec)','Loratadine','Diphenhydramine','Fexofenadine'],
+  'Swelling':           ['Cetirizine (Zyrtec)','Ibuprofen','Prednisolone'],
+  'Itching':            ['Cetirizine (Zyrtec)','Hydrocortisone cream','Calamine lotion'],
+  'Anaphylaxis':        ['EpiPen (Epinephrine)','Prednisolone','Cetirizine (Zyrtec)'],
+  'Breathing difficulty':['Salbutamol inhaler','Prednisolone','EpiPen if severe'],
+  'Sneezing':           ['Cetirizine (Zyrtec)','Loratadine','Nasal corticosteroid spray'],
+  'Runny nose':         ['Cetirizine (Zyrtec)','Pseudoephedrine','Nasal saline spray'],
+  'Nausea':             ['Ondansetron','Domperidone','Metoclopramide'],
+  'Stomach cramps':     ['Buscopan','Omeprazole','Antacids'],
+  'Diarrhoea':          ['ORS','Loperamide','Probiotics'],
+  'Rash':               ['Hydrocortisone cream','Cetirizine','Calamine lotion'],
+  'Chest tightness':    ['Salbutamol inhaler','Prednisolone'],
+  'Wheezing':           ['Salbutamol inhaler','Ipratropium','Prednisolone'],
+  'Fever':              ['Paracetamol','Ibuprofen'],
+  'Headache':           ['Paracetamol','Ibuprofen'],
+  'Dizziness':          ['Betahistine','Cinnarizine'],
+  'Facial swelling':    ['EpiPen (Epinephrine)','Cetirizine','Prednisolone'],
+  'Throat tightening':  ['EpiPen (Epinephrine) — EMERGENCY','Prednisolone'],
+  'Tingling lips':      ['EpiPen (Epinephrine)','Cetirizine'],
+};
+
+const SC_EMERGENCY_MAP = {
+  'Anaphylaxis':         ['Call 112 / 911 immediately','Use EpiPen if available','Lay flat — raise legs','Do NOT give food or water','Second EpiPen after 5 min if no improvement'],
+  'Throat tightening':   ['Call emergency services NOW','Use EpiPen immediately','Keep airway open — do not swallow','Stay upright if breathing easier'],
+  'Breathing difficulty':['Call 112 immediately if severe','Use Salbutamol inhaler','Sit upright — lean slightly forward','Loosen tight clothing','If unresponsive — begin CPR'],
+  'Facial swelling':     ['Monitor airway closely','Call 112 if spreads to throat','Use EpiPen if prescribed','Antihistamine for mild cases'],
+  'Chest tightness':     ['Sit upright — do not lie down','Use reliever inhaler','Call 112 if no improvement in 10 min'],
+};
+
+let scSelected = [];
+
+function scInitPills() {
+  const wrap = document.getElementById('scPills');
+  if (!wrap) return;
+  wrap.innerHTML = SC_ALL_SYMPTOMS.map(s =>
+    `<div class="sc-pill" onclick="scTogglePill(this,'${s}')">${s}</div>`
+  ).join('');
+}
+
+function scAddTyped() {
+  const inp = document.getElementById('scTyped');
+  const val = inp.value.trim();
+  if (!val) return;
+  const terms = val.split(',').map(v => v.trim()).filter(Boolean);
+  terms.forEach(t => {
+    const capitalised = t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+    if (!scSelected.includes(capitalised)) scSelected.push(capitalised);
+  });
+  inp.value = '';
+  scRenderSelected();
+}
+
+function scTogglePill(el, sym) {
+  if (scSelected.includes(sym)) {
+    scSelected = scSelected.filter(s => s !== sym);
+    el.classList.remove('selected');
+  } else {
+    scSelected.push(sym);
+    el.classList.add('selected');
+  }
+  scRenderSelected();
+}
+
+function scRemove(sym) {
+  scSelected = scSelected.filter(s => s !== sym);
+  // Deselect pill if present
+  document.querySelectorAll('.sc-pill').forEach(p => {
+    if (p.textContent === sym) p.classList.remove('selected');
+  });
+  scRenderSelected();
+}
+
+function scRenderSelected() {
+  const wrap = document.getElementById('scSelectedWrap');
+  const pills = document.getElementById('scSelectedPills');
+  const btn   = document.getElementById('scRunBtn');
+  if (!scSelected.length) {
+    wrap.style.display = 'none';
+    btn.disabled = true;
+    // Hide results too when no symptoms left
+    const results = document.getElementById('scResults');
+    results.style.display = 'none';
+    results.innerHTML = '';
+    return;
+  }
+  wrap.style.display = 'block';
+  btn.disabled = false;
+  pills.innerHTML = scSelected.map(s =>
+    `<div class="sc-sel-pill">${s}<span onclick="scRemove('${s}')">✕</span></div>`
+  ).join('');
+}
+
+function runSymptomChecker() {
+  if (!scSelected.length) return;
+  const resultsWrap = document.getElementById('scResults');
+  resultsWrap.style.display = 'block';
+
+  // Score each allergy
+  const scored = AL.map(a => {
+    const hits = scSelected.filter(sym =>
+      a.syms.some(s => s.toLowerCase().includes(sym.toLowerCase()) || sym.toLowerCase().includes(s.toLowerCase()))
+    );
+    return { a, hits, score: hits.length };
+  }).filter(r => r.score > 0).sort((a,b) => b.score - a.score);
+
+  if (!scored.length) {
+    resultsWrap.innerHTML = `<div class="sc-no-results">// NO_MATCHES_FOUND — try symptoms like <span>"hives"</span>, <span>"swelling"</span> or <span>"itching"</span><br><br><span class="sc-clear" onclick="scClear()">← CLEAR & TRY AGAIN</span></div>`;
+    return;
+  }
+
+  const html = scored.map((r, idx) => {
+    const pct = Math.round((r.score / r.a.syms.length) * 100);
+    const confColor = pct >= 60 ? 'var(--red)' : pct >= 35 ? 'var(--yellow)' : 'var(--green)';
+    const sevClass  = r.a.sc === 'sev-high' ? 'high' : r.a.sc === 'sev-med' ? 'med' : 'low';
+    const sevLabel  = r.a.sc === 'sev-high' ? 'SEVERE' : r.a.sc === 'sev-med' ? 'MODERATE' : 'MILD';
+
+    // Medications
+    const meds = new Set();
+    r.hits.forEach(sym => {
+      (SC_MED_MAP[sym] || []).forEach(m => meds.add(m));
+    });
+    r.a.syms.forEach(sym => {
+      (SC_MED_MAP[sym] || []).forEach(m => meds.add(m));
+    });
+    const medHTML = [...meds].slice(0,5).map(m => `<span class="sc-med-tag">${m}</span>`).join('');
+
+    // Emergency steps
+    const emergencySyms = r.hits.filter(s => SC_EMERGENCY_MAP[s]);
+    let emergencyHTML = '';
+    if (emergencySyms.length || r.a.sc === 'sev-high') {
+      const steps = emergencySyms.length
+        ? SC_EMERGENCY_MAP[emergencySyms[0]]
+        : ['Call emergency services if symptoms worsen','Use prescribed medications','Do not ignore — seek medical advice'];
+      emergencyHTML = `<div class="sc-emergency-box">
+        <div class="sc-match-section-lbl">⚠ EMERGENCY_PROTOCOL</div>
+        <ul class="sc-emergency-steps">${steps.map(s=>`<li>${s}</li>`).join('')}</ul>
+      </div>`;
+    }
+
+    const allSymHTML = r.a.syms.map(s => {
+      const isHit = r.hits.some(h => s.toLowerCase().includes(h.toLowerCase()) || h.toLowerCase().includes(s.toLowerCase()));
+      return `<span class="sc-hit-pill ${isHit?'match':'other'}">${s}</span>`;
+    }).join('');
+
+    return `<div class="sc-match" id="scm-${idx}">
+      <div class="sc-match-hd" onclick="document.getElementById('scm-${idx}').classList.toggle('open')">
+        <div class="sc-match-icon">${r.a.icon}</div>
+        <div>
+          <div class="sc-match-name">${r.a.name}<span class="sc-sev-badge ${sevClass}">${sevLabel}</span></div>
+          <div class="sc-match-type">${r.a.type}</div>
+        </div>
+        <div class="sc-confidence">
+          <div class="sc-conf-bar-wrap"><div class="sc-conf-bar" style="width:${pct}%;background:${confColor};box-shadow:0 0 6px ${confColor};"></div></div>
+          <div class="sc-conf-txt" style="color:${confColor}">${r.score}/${r.a.syms.length} SYMPTOMS MATCHED</div>
+        </div>
+      </div>
+      <div class="sc-match-body">
+        <div class="sc-match-section">
+          <div class="sc-match-section-lbl">// SYMPTOM_OVERLAP — cyan = matched yours</div>
+          <div class="sc-hit-pills">${allSymHTML}</div>
+        </div>
+        ${meds.size ? `<div class="sc-match-section">
+          <div class="sc-match-section-lbl">// COMMON_MEDICATIONS</div>
+          <div class="sc-meds-list">${medHTML}</div>
+        </div>` : ''}
+        ${emergencyHTML}
+        <div class="sc-match-section" style="margin-bottom:0">
+          <div class="sc-match-section-lbl">// MANAGEMENT_TIP</div>
+          <div style="font-family:var(--mono);font-size:.63rem;color:rgba(255,255,255,.6);">⚡ ${r.a.tip}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  resultsWrap.innerHTML = `
+    <div class="sc-results-hd">// ANALYSIS_COMPLETE — <span>${scored.length} POTENTIAL MATCH${scored.length>1?'ES':''}</span> FOUND FOR ${scSelected.length} SYMPTOM${scSelected.length>1?'S':''} — click any result to expand</div>
+    ${html}
+    <span class="sc-clear" onclick="scClear()">← CLEAR & RUN NEW ANALYSIS</span>
+  `;
+
+  // Auto-open top result
+  setTimeout(() => {
+    const top = document.getElementById('scm-0');
+    if (top) top.classList.add('open');
+  }, 100);
+}
+
+function scClear() {
+  scSelected = [];
+  document.querySelectorAll('.sc-pill').forEach(p => p.classList.remove('selected'));
+  scRenderSelected();
+  document.getElementById('scResults').style.display = 'none';
+  document.getElementById('scResults').innerHTML = '';
+}
+
+scInitPills();
+
+
 renderAllergy(AL);
 
 /* ═══ MEDICATIONS ═══ */
@@ -1592,7 +2059,7 @@ const MD=[
   {name:'LISINOPRIL (ZESTRIL)',cls:'ACE_INHIBITOR :: ANTIHYPERTENSIVE',c:['Dry cough','Dizziness','Headache','Fatigue'],s:['Angioedema (life-threatening)','Kidney impairment','High potassium levels','Low blood pressure']},
   {name:'SERTRALINE (ZOLOFT)',cls:'SSRI :: ANTIDEPRESSANT',c:['Nausea','Insomnia','Diarrhoea','Dry mouth','Dizziness'],s:['Suicidal thoughts (young adults)','Serotonin syndrome','Bleeding risk','Mania in bipolar patients']},
   {name:'DIAZEPAM (VALIUM)',cls:'BENZODIAZEPINE :: ANXIOLYTIC',c:['Drowsiness','Confusion','Muscle weakness','Fatigue'],s:['Dependence and withdrawal','Respiratory depression','Memory impairment','Paradoxical aggression']},
-  {name:'WARFARIN (COUMADIN)',cls:'ANTICOAGULANT :: VITAMIN_K_ANTAGONIST',c:['Bruising easily','Bleeding gums','Prolonged bleeding from cuts'],s:['Severe internal bleeding','Skin necrosis','Haemorrhagic stroke','Drug interactions']},
+  {name:'WARFARIN (COUMADIN)',cls:'ANTICOAGULANT :: VITAMIN_K_ANTAGONIST',c:['Bruising easily','Bleeding gums','Prolonged bleeding from cuts'],s:['Severe internal bleeding','Skin necrosis','Haemorrhagic stroke','Medication interactions']},
   {name:'CIPROFLOXACIN (CIPRO)',cls:'ANTIBIOTIC :: FLUOROQUINOLONE_CLASS',c:['Nausea','Diarrhoea','Headache','Dizziness'],s:['Tendon rupture','QT prolongation','Peripheral neuropathy','C. difficile infection']},
   {name:'PREDNISOLONE',cls:'CORTICOSTEROID :: ANTI-INFLAMMATORY',c:['Weight gain','Mood changes','Increased appetite','Insomnia'],s:['Adrenal suppression','Osteoporosis','Immunosuppression','Cushing syndrome']},
   {name:'CODEINE',cls:'OPIOID_ANALGESIC :: NARCOTIC',c:['Constipation','Drowsiness','Nausea','Dizziness'],s:['Respiratory depression','Dependence','Fatal in ultra-rapid metabolisers','Interaction with alcohol']},
@@ -1641,7 +2108,7 @@ function renderMeds(list, showCount=false){
     grid.innerHTML=`<div class="search-no-result" style="grid-column:1/-1">// NO_RESULTS_FOUND — try <span>"ibuprofen"</span> or <span>"aspirin"</span></div>`;
     countEl.textContent='';return;
   }
-  grid.innerHTML=list.slice(0,4).map((m)=>medCardHTML(m,MD.indexOf(m))).join('');
+  grid.innerHTML=list.slice(0,3).map((m)=>medCardHTML(m,MD.indexOf(m))).join('');
   countEl.textContent=showCount?`${list.length} RESULTS`:'';
 }
 
@@ -1721,6 +2188,241 @@ document.getElementById('medSearch').addEventListener('keydown',function(e){
     medActiveIdx=-1;
   }
 });
+
+/* ═══ MEDICATION / DISEASE CHECKER ═══ */
+function switchMedTab(name, btn) {
+  btn.closest('.allergy-tabs').querySelectorAll('.allergy-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('medPanel-browse').classList.remove('active');
+  document.getElementById('medPanel-checker').classList.remove('active');
+  btn.classList.add('active');
+  document.getElementById('medPanel-' + name).classList.add('active');
+  if (name === 'browse') mcClear();
+}
+
+const MC_ALL_CONDITIONS = [
+  'Diabetes','Hypertension','Fever','Pain','Headache','Migraine','Infection',
+  'Bacterial infection','Allergies','Asthma','Acid reflux','GERD','High cholesterol',
+  'Heart disease','Anxiety','Depression','Insomnia','Inflammation','Blood clot',
+  'Arthritis','Muscle spasm','Cough','Cold','Flu','UTI','Pneumonia','Epilepsy',
+  'Thyroid disorder','Kidney disease','Liver disease'
+];
+
+// Disease → medication mapping
+const MC_DISEASE_MAP = {
+  'Diabetes':            [{name:'METFORMIN',cls:'BIGUANIDE_ANTIDIABETIC',icon:'💊',common:['Nausea','Diarrhoea','Stomach upset'],serious:['Lactic acidosis (rare)','B12 deficiency'],tip:'Take with food to reduce stomach upset. Monitor blood glucose regularly.'}],
+  'Hypertension':        [{name:'LISINOPRIL',cls:'ACE_INHIBITOR',icon:'💊',common:['Dry cough','Dizziness','Headache'],serious:['Angioedema','Kidney impairment','Hyperkalemia'],tip:'Monitor blood pressure daily. Avoid NSAIDs which can reduce effectiveness.'},
+                          {name:'AMLODIPINE',cls:'CALCIUM_CHANNEL_BLOCKER',icon:'💊',common:['Ankle swelling','Flushing','Headache'],serious:['Severe hypotension','Liver dysfunction'],tip:'Take at same time daily. Grapefruit juice may increase medication levels.'}],
+  'Fever':               [{name:'PARACETAMOL (TYLENOL)',cls:'ANALGESIC / ANTIPYRETIC',icon:'💊',common:['Nausea (rare)','Skin rash (rare)'],serious:['Liver damage on overdose','Severe skin reaction'],tip:'Do not exceed 4g per day. Avoid alcohol while taking paracetamol.'}],
+  'Pain':                [{name:'IBUPROFEN (ADVIL)',cls:'NSAID_PAIN_RELIEVER',icon:'💊',common:['Stomach upset','Nausea','Heartburn'],serious:['GI bleeding','Kidney impairment','Elevated blood pressure'],tip:'Always take with food. Avoid on empty stomach.'},
+                          {name:'PARACETAMOL (TYLENOL)',cls:'ANALGESIC / ANTIPYRETIC',icon:'💊',common:['Nausea (rare)','Skin rash (rare)'],serious:['Liver damage on overdose'],tip:'Safe for most patients. Preferred over NSAIDs for elderly.'}],
+  'Headache':            [{name:'IBUPROFEN (ADVIL)',cls:'NSAID_PAIN_RELIEVER',icon:'💊',common:['Stomach upset','Nausea'],serious:['GI bleeding','Kidney impairment'],tip:'Take at first sign of headache for best effect.'},
+                          {name:'PARACETAMOL (TYLENOL)',cls:'ANALGESIC / ANTIPYRETIC',icon:'💊',common:['Nausea (rare)'],serious:['Liver damage on overdose'],tip:'Preferred choice for tension headaches.'}],
+  'Migraine':            [{name:'IBUPROFEN (ADVIL)',cls:'NSAID_PAIN_RELIEVER',icon:'💊',common:['Stomach upset','Nausea'],serious:['GI bleeding'],tip:'Take early in migraine attack. Lie in dark quiet room.'},
+                          {name:'ASPIRIN',cls:'NSAID / ANTIPLATELET',icon:'💊',common:['Stomach upset','Heartburn'],serious:['GI bleeding','Reye syndrome in children'],tip:'Effective for migraines. Do not use in children under 16.'}],
+  'Infection':           [{name:'AMOXICILLIN',cls:'ANTIBIOTIC :: PENICILLIN_CLASS',icon:'💊',common:['Diarrhoea','Nausea','Skin rash'],serious:['Anaphylactic shock','Stevens-Johnson Syndrome'],tip:'Complete the full course even if feeling better.'},
+                          {name:'AZITHROMYCIN',cls:'MACROLIDE_ANTIBIOTIC',icon:'💊',common:['Nausea','Diarrhoea','Stomach pain'],serious:['Cardiac arrhythmia','Liver dysfunction'],tip:'Take on empty stomach for better absorption.'}],
+  'Bacterial infection': [{name:'AMOXICILLIN',cls:'ANTIBIOTIC :: PENICILLIN_CLASS',icon:'💊',common:['Diarrhoea','Nausea','Rash'],serious:['Anaphylaxis','C. difficile infection'],tip:'Always complete full antibiotic course to prevent resistance.'},
+                          {name:'CIPROFLOXACIN',cls:'FLUOROQUINOLONE_ANTIBIOTIC',icon:'💊',common:['Nausea','Diarrhoea','Headache'],serious:['Tendon rupture','QT prolongation','C. difficile'],tip:'Avoid dairy and antacids within 2 hours. Stay well hydrated.'}],
+  'Allergies':           [{name:'CETIRIZINE (ZYRTEC)',cls:'ANTIHISTAMINE_H1_CLASS',icon:'💊',common:['Drowsiness','Dry mouth','Headache'],serious:['Severe allergic reaction (rare)'],tip:'Non-drowsy option. Take once daily, preferably at night.'}],
+  'Asthma':              [{name:'SALBUTAMOL (VENTOLIN)',cls:'SHORT_ACTING_BETA_AGONIST',icon:'💊',common:['Tremor','Headache','Fast heartbeat'],serious:['Paradoxical bronchospasm','Hypokalaemia'],tip:'Shake well before use. Rinse mouth after inhaler use.'}],
+  'Acid reflux':         [{name:'OMEPRAZOLE',cls:'PROTON_PUMP_INHIBITOR',icon:'💊',common:['Headache','Nausea','Diarrhoea'],serious:['C. difficile infection','Magnesium deficiency','Bone fractures'],tip:'Take 30 minutes before meals for maximum effect.'}],
+  'GERD':                [{name:'OMEPRAZOLE',cls:'PROTON_PUMP_INHIBITOR',icon:'💊',common:['Headache','Nausea','Diarrhoea'],serious:['C. difficile infection','Magnesium deficiency'],tip:'Elevate head of bed. Avoid large meals before bedtime.'}],
+  'High cholesterol':    [{name:'ATORVASTATIN',cls:'HMG_COA_REDUCTASE_INHIBITOR',icon:'💊',common:['Muscle pain','Headache','Nausea'],serious:['Rhabdomyolysis','Liver enzyme elevation','Myopathy'],tip:'Take at night for best effect. Avoid grapefruit juice.'}],
+  'Heart disease':       [{name:'ASPIRIN',cls:'NSAID / ANTIPLATELET',icon:'💊',common:['Stomach upset','Heartburn'],serious:['GI bleeding','Reye syndrome in children'],tip:'Low-dose aspirin for heart protection. Take with food.'},
+                          {name:'ATORVASTATIN',cls:'HMG_COA_REDUCTASE_INHIBITOR',icon:'💊',common:['Muscle pain','Headache'],serious:['Rhabdomyolysis','Liver dysfunction'],tip:'Essential for cholesterol management in heart disease.'}],
+  'Anxiety':             [{name:'DIAZEPAM',cls:'BENZODIAZEPINE_ANXIOLYTIC',icon:'💊',common:['Drowsiness','Dizziness','Fatigue'],serious:['Dependence','Respiratory depression','Memory impairment'],tip:'Short-term use only. Do not stop suddenly — taper under medical guidance.'},
+                          {name:'SERTRALINE',cls:'SSRI_ANTIDEPRESSANT',icon:'💊',common:['Nausea','Insomnia','Dry mouth'],serious:['Suicidal ideation (young adults)','Serotonin syndrome','Bleeding risk'],tip:'Takes 2-6 weeks for full effect. Do not stop abruptly.'}],
+  'Depression':          [{name:'SERTRALINE',cls:'SSRI_ANTIDEPRESSANT',icon:'💊',common:['Nausea','Insomnia','Sexual dysfunction'],serious:['Suicidal ideation','Serotonin syndrome'],tip:'Take in the morning. Therapeutic effects seen after 4-6 weeks.'}],
+  'Inflammation':        [{name:'IBUPROFEN (ADVIL)',cls:'NSAID_PAIN_RELIEVER',icon:'💊',common:['Stomach upset','Nausea'],serious:['GI bleeding','Kidney impairment'],tip:'Take with food and water. Short courses preferred.'},
+                          {name:'PREDNISOLONE',cls:'CORTICOSTEROID',icon:'💊',common:['Weight gain','Mood changes','Insomnia'],serious:['Adrenal suppression','Osteoporosis','Immunosuppression'],tip:'Take in morning with food. Never stop suddenly after long-term use.'}],
+  'Blood clot':          [{name:'WARFARIN',cls:'VITAMIN_K_ANTAGONIST_ANTICOAGULANT',icon:'💊',common:['Bruising','Bleeding gums','Nosebleeds'],serious:['Severe bleeding','Stroke if undertreated','Skin necrosis'],tip:'Regular INR monitoring essential. Consistent Vitamin K intake important.'}],
+  'Arthritis':           [{name:'IBUPROFEN (ADVIL)',cls:'NSAID_PAIN_RELIEVER',icon:'💊',common:['Stomach upset','Nausea'],serious:['GI bleeding','Kidney impairment'],tip:'Use lowest effective dose. Long-term use requires regular monitoring.'},
+                          {name:'PREDNISOLONE',cls:'CORTICOSTEROID',icon:'💊',common:['Weight gain','Mood changes'],serious:['Osteoporosis','Immunosuppression'],tip:'Short-term courses for flares. Exercise and physio are essential alongside.'}],
+  'Cough':               [{name:'CODEINE',cls:'OPIOID_ANTITUSSIVE',icon:'💊',common:['Drowsiness','Constipation','Nausea'],serious:['Respiratory depression','Dependence','Fatal in CYP2D6 ultra-metabolisers'],tip:'Short-term use only. Avoid in children under 12. Do not combine with alcohol.'}],
+  'Cold':                [{name:'PARACETAMOL (TYLENOL)',cls:'ANALGESIC / ANTIPYRETIC',icon:'💊',common:['Nausea (rare)'],serious:['Liver damage on overdose'],tip:'Stay hydrated. Rest is key — antibiotics do not work for viral colds.'}],
+  'Flu':                 [{name:'PARACETAMOL (TYLENOL)',cls:'ANALGESIC / ANTIPYRETIC',icon:'💊',common:['Nausea (rare)'],serious:['Liver damage on overdose'],tip:'Rest, fluids, and paracetamol for symptom relief.'},
+                          {name:'IBUPROFEN (ADVIL)',cls:'NSAID_PAIN_RELIEVER',icon:'💊',common:['Stomach upset'],serious:['GI bleeding'],tip:'Helps with fever and body aches. Take with food.'}],
+  'UTI':                 [{name:'CIPROFLOXACIN',cls:'FLUOROQUINOLONE_ANTIBIOTIC',icon:'💊',common:['Nausea','Diarrhoea'],serious:['Tendon rupture','QT prolongation'],tip:'Drink plenty of water. Complete full antibiotic course.'},
+                          {name:'AMOXICILLIN',cls:'ANTIBIOTIC :: PENICILLIN_CLASS',icon:'💊',common:['Diarrhoea','Nausea','Rash'],serious:['Anaphylaxis'],tip:'Avoid caffeine and alcohol during treatment.'}],
+  'Pneumonia':           [{name:'AZITHROMYCIN',cls:'MACROLIDE_ANTIBIOTIC',icon:'💊',common:['Nausea','Diarrhoea'],serious:['Cardiac arrhythmia'],tip:'Complete full course. Rest and fluids essential alongside antibiotics.'},
+                          {name:'AMOXICILLIN',cls:'ANTIBIOTIC :: PENICILLIN_CLASS',icon:'💊',common:['Diarrhoea','Nausea'],serious:['Anaphylaxis'],tip:'Seek emergency care if breathing worsens.'}],
+  'Insomnia':            [{name:'DIAZEPAM',cls:'BENZODIAZEPINE_ANXIOLYTIC',icon:'💊',common:['Drowsiness','Dizziness'],serious:['Dependence','Respiratory depression'],tip:'Short-term use only. Good sleep hygiene is more effective long term.'}],
+  'Epilepsy':            [{name:'DIAZEPAM',cls:'BENZODIAZEPINE_ANXIOLYTIC',icon:'💊',common:['Drowsiness','Dizziness'],serious:['Respiratory depression','Dependence'],tip:'Emergency use for seizures. Do not stop seizure medications without doctor guidance.'}],
+  'Muscle spasm':        [{name:'DIAZEPAM',cls:'BENZODIAZEPINE_ANXIOLYTIC',icon:'💊',common:['Drowsiness','Dizziness'],serious:['Dependence'],tip:'Short course only. Combine with physiotherapy for best results.'}],
+  'Thyroid disorder':    [{name:'LISINOPRIL',cls:'ACE_INHIBITOR',icon:'💊',common:['Dry cough','Dizziness'],serious:['Angioedema'],tip:'Thyroid conditions often require specialist management. Regular TSH monitoring essential.'}],
+  'Kidney disease':      [{name:'LISINOPRIL',cls:'ACE_INHIBITOR',icon:'💊',common:['Dry cough','Dizziness'],serious:['Hyperkalemia','Kidney impairment'],tip:'Monitor kidney function (eGFR) and potassium regularly. Avoid NSAIDs.'}],
+  'Liver disease':       [{name:'PARACETAMOL (TYLENOL)',cls:'ANALGESIC / ANTIPYRETIC',icon:'💊',common:['Nausea (rare)'],serious:['Liver damage on overdose'],tip:'Use lowest effective dose. Avoid alcohol completely. Consult hepatologist for dosing.'}],
+};
+
+const MC_EMERGENCY_CONDITIONS = ['Blood clot','Pneumonia','Epilepsy','Heart disease','Asthma'];
+
+let mcSelected = [];
+
+function mcInitPills() {
+  const wrap = document.getElementById('mcPills');
+  if (!wrap) return;
+  wrap.innerHTML = MC_ALL_CONDITIONS.map(c =>
+    `<div class="sc-pill" onclick="mcTogglePill(this,'${c}')">${c}</div>`
+  ).join('');
+}
+
+function mcAddTyped() {
+  const inp = document.getElementById('mcTyped');
+  const val = inp.value.trim();
+  if (!val) return;
+  const terms = val.split(',').map(v => v.trim()).filter(Boolean);
+  terms.forEach(t => {
+    const cap = t.charAt(0).toUpperCase() + t.slice(1);
+    if (!mcSelected.includes(cap)) mcSelected.push(cap);
+  });
+  inp.value = '';
+  mcRenderSelected();
+}
+
+function mcTogglePill(el, cond) {
+  if (mcSelected.includes(cond)) {
+    mcSelected = mcSelected.filter(c => c !== cond);
+    el.classList.remove('selected');
+  } else {
+    mcSelected.push(cond);
+    el.classList.add('selected');
+  }
+  mcRenderSelected();
+}
+
+function mcRemove(cond) {
+  mcSelected = mcSelected.filter(c => c !== cond);
+  document.querySelectorAll('#mcPills .sc-pill').forEach(p => {
+    if (p.textContent === cond) p.classList.remove('selected');
+  });
+  mcRenderSelected();
+}
+
+function mcRenderSelected() {
+  const wrap  = document.getElementById('mcSelectedWrap');
+  const pills = document.getElementById('mcSelectedPills');
+  const btn   = document.getElementById('mcRunBtn');
+  if (!mcSelected.length) {
+    wrap.style.display = 'none';
+    btn.disabled = true;
+    const res = document.getElementById('mcResults');
+    res.style.display = 'none';
+    res.innerHTML = '';
+    return;
+  }
+  wrap.style.display = 'block';
+  btn.disabled = false;
+  pills.innerHTML = mcSelected.map(c =>
+    `<div class="sc-sel-pill">${c}<span onclick="mcRemove('${c}')">✕</span></div>`
+  ).join('');
+}
+
+function runMedChecker() {
+  if (!mcSelected.length) return;
+  const resultsWrap = document.getElementById('mcResults');
+  resultsWrap.style.display = 'block';
+
+  // Gather all matching meds across selected conditions
+  const medMap = {};
+  mcSelected.forEach(cond => {
+    const key = Object.keys(MC_DISEASE_MAP).find(k => k.toLowerCase() === cond.toLowerCase());
+    if (key) {
+      MC_DISEASE_MAP[key].forEach(med => {
+        if (!medMap[med.name]) medMap[med.name] = { med, conditions: [] };
+        medMap[med.name].conditions.push(cond);
+      });
+    }
+  });
+
+  const results = Object.values(medMap).sort((a,b) => b.conditions.length - a.conditions.length);
+
+  if (!results.length) {
+    resultsWrap.innerHTML = `<div class="sc-no-results">// NO_MEDICATIONS_FOUND — try conditions like <span>"diabetes"</span>, <span>"hypertension"</span> or <span>"infection"</span><br><br><span class="sc-clear" onclick="mcClear()">← CLEAR & TRY AGAIN</span></div>`;
+    return;
+  }
+
+  const html = results.map((r, idx) => {
+    const isEmergency = mcSelected.some(c => MC_EMERGENCY_CONDITIONS.includes(c));
+    const emergencyHTML = isEmergency && r.conditions.some(c => MC_EMERGENCY_CONDITIONS.includes(c))
+      ? `<div class="sc-emergency-box">
+          <div class="sc-match-section-lbl">⚠ IMPORTANT_WARNING</div>
+          <ul class="sc-emergency-steps">
+            <li>Always consult a doctor before starting this medication</li>
+            <li>Do not self-medicate for serious conditions</li>
+            <li>Report any side effects to your healthcare provider immediately</li>
+            <li>Keep emergency contacts accessible</li>
+          </ul>
+        </div>` : '';
+
+    const condBadges = r.conditions.map(c =>
+      `<span class="sc-hit-pill match">${c}</span>`
+    ).join('');
+
+    const commonHTML = r.med.common.map(e =>
+      `<div class="fx-item"><div class="fx-dot c"></div>${e}</div>`
+    ).join('');
+
+    const seriousHTML = r.med.serious.map(e =>
+      `<div class="fx-item"><div class="fx-dot s"></div>${e}</div>`
+    ).join('');
+
+    return `<div class="sc-match" id="mcm-${idx}">
+      <div class="sc-match-hd" onclick="document.getElementById('mcm-${idx}').classList.toggle('open')">
+        <div class="sc-match-icon">${r.med.icon}</div>
+        <div>
+          <div class="sc-match-name">// ${r.med.name}</div>
+          <div class="sc-match-type">${r.med.cls}</div>
+        </div>
+        <div class="sc-confidence">
+          <div class="sc-conf-bar-wrap"><div class="sc-conf-bar" style="width:${Math.min(100,r.conditions.length*50)}%;background:var(--blue);box-shadow:0 0 6px var(--blue);"></div></div>
+          <div class="sc-conf-txt" style="color:var(--blue)">USED FOR ${r.conditions.length} CONDITION${r.conditions.length>1?'S':''}</div>
+        </div>
+      </div>
+      <div class="sc-match-body">
+        <div class="sc-match-section">
+          <div class="sc-match-section-lbl">// TREATS_CONDITIONS</div>
+          <div class="sc-hit-pills">${condBadges}</div>
+        </div>
+        <div class="sc-match-section">
+          <div class="sc-match-section-lbl">// COMMON_SIDE_EFFECTS</div>
+          <div class="fx-sec" style="padding:0">${commonHTML}</div>
+        </div>
+        <div class="sc-match-section">
+          <div class="sc-match-section-lbl" style="color:var(--red)">// SERIOUS_SIDE_EFFECTS</div>
+          <div class="fx-sec" style="padding:0">${seriousHTML}</div>
+        </div>
+        ${emergencyHTML}
+        <div class="sc-match-section" style="margin-bottom:0">
+          <div class="sc-match-section-lbl">// USAGE_TIP</div>
+          <div style="font-family:var(--mono);font-size:.63rem;color:rgba(255,255,255,.6);">⚡ ${r.med.tip}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  resultsWrap.innerHTML = `
+    <div class="sc-results-hd">// MEDICATIONS_FOUND — <span>${results.length} MEDICATION${results.length>1?'S':''}</span> MATCH YOUR ${mcSelected.length} CONDITION${mcSelected.length>1?'S':''} — click to expand</div>
+    ${html}
+    <div style="font-family:var(--mono);font-size:.6rem;color:var(--red);padding:.8rem 0;border-top:1px solid var(--border);margin-top:.5rem;">⚕ DISCLAIMER :: This is for educational purposes only. Always consult a qualified healthcare professional before taking any medication.</div>
+    <span class="sc-clear" onclick="mcClear()">← CLEAR & RUN NEW ANALYSIS</span>
+  `;
+
+  setTimeout(() => {
+    const top = document.getElementById('mcm-0');
+    if (top) top.classList.add('open');
+  }, 100);
+}
+
+function mcClear() {
+  mcSelected = [];
+  document.querySelectorAll('#mcPills .sc-pill').forEach(p => p.classList.remove('selected'));
+  mcRenderSelected();
+  const res = document.getElementById('mcResults');
+  if (res) { res.style.display = 'none'; res.innerHTML = ''; }
+}
+
+mcInitPills();
+
 
 renderMeds(MD);
 
@@ -2560,6 +3262,157 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSOS();closeCar
 updateNavAuth();
 loadLeaderboard('', null);
 updateCartUI();
+
+/* ═══ AI MEDBOT ═══ */
+const AI_QUICK = [
+  'What are signs of anaphylaxis?',
+  'How to sign HELP in ASL?',
+  'Side effects of Ibuprofen?',
+  'What causes pollen allergy?',
+  'How to sign EMERGENCY?',
+  'Medications for diabetes?',
+  'What is a severe allergic reaction?',
+  'How to do CPR?',
+];
+
+const AI_SYSTEM = `You are MEDI, a holographic AI medical assistant on the SignMed Learn platform. You are an expert in:
+1. Medical allergies — symptoms, severity, triggers, emergency response
+2. Medication side effects, uses, and safety tips
+3. Sign language — ASL, BSL, ISL and Universal signs especially for medical emergencies
+4. First aid and emergency procedures
+
+Keep responses concise, clear and helpful. Use medical terminology but explain it simply.
+Format responses with short paragraphs. Use ⚕ for medical tips, 🤟 for sign language tips, ⚠ for warnings.
+Never diagnose — always recommend consulting a doctor for serious concerns.
+You are part of a cyberpunk-themed educational platform — be informative but keep a slightly futuristic tone.`;
+
+let aiPopupHistory = [];
+let aiFullHistory  = [];
+let aiPopupReady   = false;
+let aiFullReady    = false;
+
+function toggleAIPopup() {
+  const popup = document.getElementById('aiPopup');
+  popup.classList.toggle('open');
+  if (popup.classList.contains('open') && !aiPopupReady) {
+    aiPopupReady = true;
+    aiInitChat('popup');
+  }
+}
+
+function aiInitChat(mode) {
+  const welcome = {role:'assistant', content:'👋 Hello! I\'m **MEDI**, your holographic AI medical assistant.\n\nI can help you with:\n⚕ Allergy symptoms & emergency response\n💊 Medication side effects & safety\n🤟 Sign language for medical situations\n🚨 First aid & emergency procedures\n\nWhat would you like to know?'};
+  if (mode === 'popup') {
+    aiPopupHistory = [welcome];
+    aiRenderMessages('popup');
+    aiRenderQuick('popup');
+  } else {
+    aiFullHistory = [welcome];
+    aiRenderMessages('full');
+    aiRenderQuick('full');
+  }
+}
+
+function aiRenderMessages(mode) {
+  const history = mode === 'popup' ? aiPopupHistory : aiFullHistory;
+  const el = document.getElementById(mode === 'popup' ? 'aiPopupMessages' : 'aiFullMessages');
+  el.innerHTML = history.map(m => {
+    const isBot = m.role === 'assistant';
+    const text  = m.content.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    return `<div class="ai-msg ${isBot?'bot':'user'}">
+      <div class="ai-msg-avatar">${isBot?'🤖':'👤'}</div>
+      <div class="ai-msg-bubble">${text}</div>
+    </div>`;
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function aiRenderQuick(mode) {
+  const el = document.getElementById(mode === 'popup' ? 'aiPopupQuick' : 'aiFullQuick');
+  el.innerHTML = AI_QUICK.slice(0, mode === 'popup' ? 4 : 8).map(q =>
+    `<button class="ai-quick-btn" onclick="aiQuickSend('${q.replace(/'/g,"\\'")}','${mode}')">${q}</button>`
+  ).join('');
+}
+
+function aiQuickSend(text, mode) {
+  const inp = document.getElementById(mode === 'popup' ? 'aiPopupInput' : 'aiFullInput');
+  inp.value = text;
+  aiSend(mode);
+}
+
+async function aiSend(mode) {
+  const inp     = document.getElementById(mode === 'popup' ? 'aiPopupInput' : 'aiFullInput');
+  const text    = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+
+  const history = mode === 'popup' ? aiPopupHistory : aiFullHistory;
+  history.push({role:'user', content: text});
+  aiRenderMessages(mode);
+
+  // Show typing indicator
+  const messagesEl = document.getElementById(mode === 'popup' ? 'aiPopupMessages' : 'aiFullMessages');
+  const typingEl = document.createElement('div');
+  typingEl.className = 'ai-msg bot';
+  typingEl.id = 'aiTyping-' + mode;
+  typingEl.innerHTML = `<div class="ai-msg-avatar">🤖</div><div class="ai-msg-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+  messagesEl.appendChild(typingEl);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  try {
+    const messages = history.map(m => ({role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content}));
+
+    const response = await fetch('/api/ai/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ messages })
+    });
+
+    const data = await response.json();
+    const reply = data.reply || data.error || 'Sorry, I could not process that. Please try again.';
+
+    typingEl.remove();
+    history.push({role:'assistant', content: reply});
+    // Keep history manageable
+    if (history.length > 20) history.splice(1, 2);
+    aiRenderMessages(mode);
+
+  } catch(err) {
+    typingEl.remove();
+    history.push({role:'assistant', content:'⚠ Connection error. Please check your network and try again.'});
+    aiRenderMessages(mode);
+  }
+}
+
+// Init full chat when section is visited
+function aiInitFull() {
+  if (!aiFullReady) {
+    aiFullReady = true;
+    aiInitChat('full');
+  }
+}
+
+// Auto-init full chat on scroll into view
+const aiObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) aiInitFull(); });
+}, {threshold: 0.2});
+const aiBotSection = document.getElementById('aibot');
+if (aiBotSection) aiObserver.observe(aiBotSection);
+
+// Also init on gotoSec
+const _origGoto = window.gotoSec;
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Patch navbar aibot link
+  const origGoto = window.gotoSec;
+  if (origGoto) {
+    window.gotoSec = function(id) {
+      origGoto(id);
+      if (id === 'aibot') aiInitFull();
+    };
+  }
+});
+
 </script>
 </body>
 </html>
