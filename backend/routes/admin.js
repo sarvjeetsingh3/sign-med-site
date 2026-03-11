@@ -106,5 +106,27 @@ router.patch('/users/:id/ban', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// PATCH /api/admin/users/:id/promote
+router.patch('/users/:id/promote', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found.' });
+    user.role = 'admin';
+    await user.save();
+    res.json({ message: `${user.username} promoted to admin.` });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// PATCH /api/admin/users/:id/demote
+router.patch('/users/:id/demote', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found.' });
+    if (user.email === 'admin@signmed.com') return res.status(403).json({ error: 'Cannot demote root admin.' });
+    user.role = 'user';
+    await user.save();
+    res.json({ message: `${user.username} demoted to user.` });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
 
 module.exports = router;
