@@ -85,9 +85,10 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
 /* CHECKOUT MODAL */
 .checkout-ov{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
 .checkout-ov.open{display:flex;}
-.checkout-box{background:var(--deep);border:1px solid rgba(0,255,136,.3);max-width:560px;width:100%;max-height:90vh;overflow-y:auto;position:relative;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));animation:cardIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 60px rgba(0,255,136,.08);}
+.checkout-wrap{position:relative;max-width:560px;width:100%;}
+.checkout-box{background:var(--deep);border:1px solid rgba(0,255,136,.3);width:100%;max-height:90vh;overflow-y:auto;position:relative;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));animation:cardIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 60px rgba(0,255,136,.08);}
 .checkout-box::-webkit-scrollbar{width:3px;}.checkout-box::-webkit-scrollbar-thumb{background:var(--border);}
-.checkout-hd{padding:1.8rem;border-bottom:1px solid var(--border);position:relative;}
+.checkout-hd{padding:1.8rem;border-bottom:1px solid var(--border);position:relative;padding-right:3.5rem;}
 .checkout-hd::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),var(--cyan),transparent);}
 .checkout-step-ind{display:flex;gap:.5rem;margin-bottom:1rem;}
 .cs-step{flex:1;height:3px;background:rgba(255,255,255,.06);position:relative;}
@@ -110,8 +111,8 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
 .co-btn-primary:hover{box-shadow:0 0 25px rgba(0,255,136,.25);}
 .co-btn-back{background:transparent;color:var(--muted);border:1px solid var(--border);margin-top:.6rem;}
 .co-btn-back:hover{border-color:var(--muted);color:var(--text);}
-.co-close{position:absolute;top:1.2rem;right:1.2rem;background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.25);color:var(--red);font-family:var(--mono);font-size:.7rem;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.co-close:hover{background:rgba(255,34,68,.2);}
+.co-close{position:absolute;top:-14px;right:-14px;z-index:10;background:rgba(255,34,68,.15);border:1px solid rgba(255,34,68,.5);color:var(--red);font-family:var(--mono);font-size:.7rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:2px;}
+.co-close:hover{background:rgba(255,34,68,.35);}
 
 /* PAYMENT SUCCESS */
 .pay-success{text-align:center;padding:2rem;}
@@ -1299,9 +1300,10 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 <!-- CHECKOUT MODAL -->
 <div class="checkout-ov" id="checkoutOv">
-  <div class="checkout-box">
+  <div class="checkout-wrap">
     <button class="co-close" onclick="closeCheckout()">✕</button>
-    <div class="checkout-hd">
+    <div class="checkout-box">
+      <div class="checkout-hd">
       <div class="checkout-step-ind">
         <div class="cs-step active" id="cstep1"></div>
         <div class="cs-step" id="cstep2"></div>
@@ -1311,6 +1313,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <div class="checkout-sub" id="coSub">// STEP 01 OF 03 — ENTER YOUR DETAILS</div>
     </div>
     <div class="checkout-body" id="checkoutBody"></div>
+  </div>
   </div>
 </div>
 
@@ -2968,12 +2971,12 @@ function closeCheckout(){
 function setStepIndicator(step){
   for(let i=1;i<=3;i++){
     const el=document.getElementById(`cstep${i}`);
-    el.className='cs-step'+(i<step?' done':i===step?' active':'');
+    if(el) el.className='cs-step'+(i<step?' done':i===step?' active':'');
   }
   const titles=['DELIVERY DETAILS','ORDER SUMMARY','PAYMENT'];
   const subs=['// STEP 01 OF 03 — ENTER YOUR DETAILS','// STEP 02 OF 03 — REVIEW YOUR ORDER','// STEP 03 OF 03 — SECURE PAYMENT'];
-  document.getElementById('coTitle').textContent=titles[step-1];
-  document.getElementById('coSub').textContent=subs[step-1];
+  const t=document.getElementById('coTitle'); if(t) t.textContent=titles[step-1];
+  const s=document.getElementById('coSub');   if(s) s.textContent=subs[step-1];
 }
 
 function renderCheckoutStep(){
@@ -3069,58 +3072,104 @@ function initiateRazorpay(amount){
   const script=document.createElement('script');
   script.src='https://checkout.razorpay.com/v1/checkout.js';
   script.onload=()=>{
+    const key = 'rzp_test_YourKeyHere'; // Replace with your actual Razorpay key
+    if(key.includes('YourKey')){
+      // No real key — use demo mode
+      const fakeId='pay_DEMO_'+Math.random().toString(36).substr(2,10).toUpperCase();
+      saveOrderToDB(fakeId);
+      closeCheckout();
+      showPaymentSuccess(fakeId);
+      cart=[];updateCartUI();renderKit(aKit);
+      return;
+    }
     const options={
-      key:'rzp_test_YourKeyHere', // Replace with your Razorpay test key
-      amount:amount*100, // in paise
+      key,
+      amount:amount*100,
       currency:'INR',
       name:'SIGNMED',
-      description:'First Aid Kit Order',
-      image:'',
+      description:'Medical Equipment Order',
       prefill:{name:coData.name,email:coData.email,contact:coData.phone},
       notes:{address:coData.address+', '+coData.city+' — '+coData.pincode},
       theme:{color:'#00ff88'},
       handler:function(response){
-        // Payment success
+        saveOrderToDB(response.razorpay_payment_id);
         closeCheckout();
         showPaymentSuccess(response.razorpay_payment_id);
         cart=[];updateCartUI();renderKit(aKit);
       },
       modal:{ondismiss:function(){console.log('Payment dismissed');}}
     };
-    const rzp=new Razorpay(options);
-    rzp.open();
+    try{
+      const rzp=new Razorpay(options);
+      rzp.open();
+    }catch(e){
+      const fakeId='pay_DEMO_'+Math.random().toString(36).substr(2,10).toUpperCase();
+      saveOrderToDB(fakeId);
+      closeCheckout();
+      showPaymentSuccess(fakeId);
+      cart=[];updateCartUI();renderKit(aKit);
+    }
   };
   script.onerror=()=>{
-    // Razorpay not available — show demo success
-    closeCheckout();
+    // Razorpay script failed to load — demo mode
     const fakeId='pay_DEMO_'+Math.random().toString(36).substr(2,10).toUpperCase();
+    saveOrderToDB(fakeId);
+    closeCheckout();
     showPaymentSuccess(fakeId);
     cart=[];updateCartUI();renderKit(aKit);
   };
   document.head.appendChild(script);
 }
 
+async function saveOrderToDB(paymentId){
+  try {
+    const items = cart.map(c => ({ name: c.name, price: c.price, quantity: c.quantity || 1, category: c.category || '' }));
+    const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
+    const body  = {
+      email:     coData.email   || '',
+      phone:     coData.phone   || '',
+      address:   coData.address || '',
+      city:      coData.city    || '',
+      pincode:   coData.pincode || '',
+      items, total, paymentId
+    };
+    const headers = { 'Content-Type': 'application/json' };
+    if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+    const res = await fetch(`${API}/orders`, { method: 'POST', headers, body: JSON.stringify(body) });
+    const data = await res.json();
+    if (data.orderId) console.log('Order saved:', data.orderId);
+  } catch(e) { console.warn('Order save failed:', e); }
+}
+
 function showPaymentSuccess(paymentId){
-  // Show a full success modal
+  // Remove any existing success modal
+  const existing = document.getElementById('paySuccessOv');
+  if(existing) existing.remove();
+
   const ov=document.createElement('div');
+  ov.id='paySuccessOv';
   ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);z-index:600;display:flex;align-items:center;justify-content:center;padding:1rem;';
   ov.innerHTML=`
     <div style="background:var(--deep);border:1px solid rgba(0,255,136,.4);max-width:460px;width:100%;padding:2.5rem;text-align:center;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));box-shadow:0 0 60px rgba(0,255,136,.1);animation:cardIn .4s cubic-bezier(.34,1.56,.64,1)">
       <div style="font-size:4rem;margin-bottom:1rem;animation:successPop .5s cubic-bezier(.34,1.56,.64,1)">✅</div>
-      <div style="font-family:var(--display);font-size:1.1rem;font-weight:900;letter-spacing:.1em;color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.5);margin-bottom:.5rem">PAYMENT SUCCESSFUL!</div>
+      <div style="font-family:var(--display);font-size:1.1rem;font-weight:900;letter-spacing:.1em;color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.5);margin-bottom:.5rem">ORDER PLACED!</div>
       <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);line-height:1.8;margin-bottom:1rem">
         Your order has been confirmed.<br>
-        Delivery to ${coData.city} in 3–5 business days.
+        Delivery to ${coData.city||'your address'} in 3–5 business days.
       </div>
       <div style="font-family:var(--mono);font-size:.65rem;color:var(--cyan);background:rgba(0,255,200,.05);border:1px solid rgba(0,255,200,.2);padding:.5rem 1rem;display:inline-block;margin-bottom:1.5rem">
         ORDER ID: ${paymentId}
       </div><br>
-      <button onclick="this.closest('div[style]').remove();document.body.style.overflow=''" style="font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.7rem 2rem;cursor:pointer;background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3);transition:all .2s">
+      <button id="paySuccessClose" style="font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.7rem 2rem;cursor:pointer;background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3);">
         ✕ CLOSE
       </button>
     </div>`;
   document.body.appendChild(ov);
   document.body.style.overflow='hidden';
+  document.getElementById('paySuccessClose').onclick = () => {
+    ov.remove();
+    document.body.style.overflow='';
+  };
 }
 
 // Close search dropdowns when clicking outside

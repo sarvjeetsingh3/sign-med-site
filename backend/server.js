@@ -27,7 +27,7 @@ app.use('/api/scores',      require('./routes/scores'));
 app.use('/api/leaderboard', require('./routes/leaderboard'));
 app.use('/api/admin',       require('./routes/admin'));
 app.use('/api/ai',          require('./routes/ai'));
-
+app.use('/api/orders', require('./routes/orders'));
 // ── Serve Admin Panel → http://localhost:5000/admin ───────────────────
 app.use('/admin', express.static(path.join(__dirname, '../admin')));
 app.get('/admin', (req, res) =>

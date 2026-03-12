@@ -170,6 +170,30 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
         </table>
       </div>
     </div>
+    <!-- ORDERS SECTION -->
+    <div class="admin-section">
+      <div class="admin-section-hd">
+        <div class="admin-section-title">// ORDERS :: CUSTOMER PURCHASES</div>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <select id="orderStatusFilter" onchange="loadOrders()" style="background:var(--deep);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.6rem;padding:.3rem .6rem;cursor:pointer;">
+            <option value="">ALL STATUS</option>
+            <option value="pending">PENDING</option>
+            <option value="confirmed">CONFIRMED</option>
+            <option value="shipped">SHIPPED</option>
+            <option value="delivered">DELIVERED</option>
+            <option value="cancelled">CANCELLED</option>
+          </select>
+          <button class="refresh-btn" onclick="loadOrders()">↻ REFRESH</button>
+        </div>
+      </div>
+      <div id="orderStatsBar" style="display:flex;gap:1rem;padding:.8rem 1.2rem;border-bottom:1px solid var(--border);flex-wrap:wrap;"></div>
+      <div class="admin-section-body" style="padding:0;overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>#</th><th>ORDER ID</th><th>CUSTOMER</th><th>EMAIL</th><th>ITEMS</th><th>TOTAL</th><th>STATUS</th><th>PLACED AT</th><th>ACTION</th></tr></thead>
+          <tbody id="ordersBody"><tr><td colspan="9" class="admin-empty">// Loading orders...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -219,7 +243,7 @@ function showDashboard(){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminWrap').style.display='block';
   document.getElementById('adminUsername').textContent='// ADMIN';
-  loadStats(); loadUsers(); loadScores();
+  loadStats(); loadUsers(); loadScores(); loadOrders();
 }
 
 async function loadStats(){
@@ -331,6 +355,93 @@ async function loadScores(){
     `).join('');
   }catch(e){showToast('Failed to load scores',true);}
 }
+
+const ORDER_STATUS_COLORS = {
+  pending:   '#ffaa00',
+  confirmed: '#00b4ff',
+  shipped:   '#aa88ff',
+  delivered: '#00ff88',
+  cancelled: '#ff4466'
+};
+
+async function loadOrders(){
+  try{
+    const filter = document.getElementById('orderStatusFilter')?.value || '';
+    const url    = `${API}/orders${filter ? '?status='+filter : ''}`;
+    const [ordersRes, statsRes] = await Promise.all([
+      fetch(url,                    {headers:{Authorization:'Bearer '+adminToken}}),
+      fetch(`${API}/orders/stats`,  {headers:{Authorization:'Bearer '+adminToken}})
+    ]);
+    const orders = await ordersRes.json();
+    const stats  = await statsRes.json();
+
+    // Stats bar
+    const sBar = document.getElementById('orderStatsBar');
+    if(sBar && stats){
+      sBar.innerHTML = [
+        {label:'TOTAL',    val: stats.total,     color:'var(--cyan)'},
+        {label:'PENDING',  val: stats.pending,   color:'#ffaa00'},
+        {label:'SHIPPED',  val: stats.shipped,   color:'#aa88ff'},
+        {label:'DELIVERED',val: stats.delivered, color:'var(--green)'},
+        {label:'REVENUE',  val: '₹'+(stats.revenue||0).toLocaleString('en-IN'), color:'var(--yellow)'}
+      ].map(s=>`<div style="font-family:var(--mono);font-size:.6rem;">
+        <span style="color:var(--muted)">${s.label}: </span>
+        <span style="color:${s.color};font-weight:700">${s.val}</span>
+      </div>`).join('');
+    }
+
+    const tbody = document.getElementById('ordersBody');
+    if(!orders.length){
+      tbody.innerHTML='<tr><td colspan="9" class="admin-empty">// No orders yet</td></tr>';
+      return;
+    }
+    tbody.innerHTML = orders.map((o,i)=>{
+      const color  = ORDER_STATUS_COLORS[o.status] || 'var(--muted)';
+      const items  = (o.items||[]).map(it=>`${it.name} ×${it.quantity}`).join(', ');
+      const nextStatuses = {
+        pending:   ['confirmed','cancelled'],
+        confirmed: ['shipped','cancelled'],
+        shipped:   ['delivered','cancelled'],
+        delivered: [],
+        cancelled: []
+      }[o.status] || [];
+      const btns = nextStatuses.map(s=>
+        `<button onclick="updateOrderStatus('${o._id}','${s}')" style="
+          background:transparent;border:1px solid ${ORDER_STATUS_COLORS[s]};
+          color:${ORDER_STATUS_COLORS[s]};font-family:var(--mono);font-size:.55rem;
+          padding:.25rem .5rem;cursor:pointer;margin:.1rem;text-transform:uppercase;letter-spacing:.05em;">
+          → ${s}
+        </button>`
+      ).join('');
+      return `<tr>
+        <td style="color:var(--muted)">${i+1}</td>
+        <td style="color:var(--muted);font-size:.6rem">${o._id.toString().slice(-8).toUpperCase()}</td>
+        <td style="color:var(--cyan)">${o.username||'Guest'}</td>
+        <td style="color:var(--muted);font-size:.65rem">${o.email}</td>
+        <td style="font-size:.65rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${items}">${items||'—'}</td>
+        <td style="color:var(--yellow);font-weight:700">₹${(o.total||0).toLocaleString('en-IN')}</td>
+        <td><span style="color:${color};font-family:var(--mono);font-size:.65rem;font-weight:700;text-transform:uppercase;">● ${o.status}</span></td>
+        <td style="color:var(--muted);font-size:.65rem">${new Date(o.placedAt).toLocaleString()}</td>
+        <td>${btns||'<span style="color:var(--muted);font-size:.6rem">—</span>'}</td>
+      </tr>`;
+    }).join('');
+  }catch(e){ console.error(e); showToast('Failed to load orders',true); }
+}
+
+async function updateOrderStatus(orderId, status){
+  try{
+    const res = await fetch(`${API}/orders/${orderId}/status`,{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json', Authorization:'Bearer '+adminToken},
+      body: JSON.stringify({status})
+    });
+    const data = await res.json();
+    if(!res.ok) return showToast(data.error||'Failed',true);
+    showToast(`Order updated → ${status.toUpperCase()}`);
+    loadOrders();
+  }catch(e){ showToast('Failed to update order',true); }
+}
+
 
 function showToast(msg,isErr=false){
   const t=document.getElementById('adminToast');
