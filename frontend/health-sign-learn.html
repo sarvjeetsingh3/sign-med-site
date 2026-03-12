@@ -1468,14 +1468,20 @@ function logout() {
 async function saveScoreToBackend(language, mode, score, xpEarned, streak) {
   if (!authToken) return;
   try {
-    await fetch(`${API}/scores`, {
+    const res  = await fetch(`${API}/scores`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},
       body: JSON.stringify({language, mode, score, xpEarned, streak})
     });
-    authXP += xpEarned;
-    localStorage.setItem('signmed_xp', authXP);
-    updateNavAuth();
+    const data = await res.json();
+    if (res.ok) {
+      authXP = data.totalXP ?? (authXP + xpEarned);
+      localStorage.setItem('signmed_xp', authXP);
+      updateNavAuth();
+      console.log(`Score saved! Total XP: ${authXP}`);
+    } else {
+      console.warn('Score save error:', data.error);
+    }
   } catch(e) { console.warn('Score save failed:', e); }
 }
 
@@ -1848,8 +1854,8 @@ function spawnScorePop(text,refEl){
 function showResult(){
   hideFeedback();
   const win=gLives>0;
-  // Save to backend if logged in
-  if(win) saveScoreToBackend(gLang, gMode, gScore, gXP, gStreak);
+  // Save to backend if logged in (win or lose)
+  if (authToken && gScore > 0) saveScoreToBackend(gLang, gMode, gScore, gXP, gStreak);
   const acc=gQ.length>0?Math.round((gScore/(gQ.length*10))*100):0;
   document.getElementById('arenaContent').innerHTML=`
     <div class="result-screen">
