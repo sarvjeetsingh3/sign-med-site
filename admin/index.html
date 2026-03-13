@@ -41,7 +41,7 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
 .login-msg.err{color:var(--red);background:rgba(255,34,68,.06);border-left:2px solid var(--red);}
 .login-msg.ok{color:var(--cyan);background:rgba(0,255,200,.06);border-left:2px solid var(--cyan);}
 .admin-wrap{display:none;padding-top:60px;min-height:100vh;}
-.admin-inner{max-width:1400px;margin:0 auto;padding:2rem;}
+.admin-inner{padding:2rem;max-width:1400px;margin:0 auto;}
 .page-hd{margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
 .page-hd .eyebrow{font-family:var(--mono);font-size:.6rem;color:var(--red);letter-spacing:.12em;}
 .page-hd h1{font-family:var(--display);font-size:1.4rem;font-weight:900;color:var(--text);letter-spacing:.1em;margin-top:.3rem;}
@@ -89,6 +89,71 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
 .top-score-box{background:rgba(255,221,0,.04);border:1px solid rgba(255,221,0,.2);padding:.8rem 1rem;display:inline-flex;gap:1.5rem;align-items:center;}
 .top-score-box span{font-family:var(--mono);font-size:.65rem;}
 .tsv{color:var(--yellow);font-size:.9rem;font-weight:700;}
+/* ══ MOBILE RESPONSIVE ══ */
+@media(max-width:768px){
+  nav{padding:0 1rem;height:52px;}
+  .nav-right{gap:.5rem;}
+  .nav-right button{font-size:.6rem;padding:.3rem .6rem;}
+  .admin-logo{font-size:.85rem;letter-spacing:.15em;}
+
+  .admin-wrap{padding-top:52px;}
+  .admin-inner{padding:1rem;}
+
+  /* Stats grid — 2 col on mobile */
+  .stats-grid{grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;}
+  .stat-val{font-size:1.4rem;}
+  .stat-lbl{font-size:.52rem;}
+
+  /* Section headers */
+  .admin-section-hd{flex-wrap:wrap;gap:.5rem;padding:.8rem 1rem;}
+  .admin-section-title{font-size:.62rem;}
+  .admin-section-body{padding:.8rem 1rem;}
+
+  /* Search bar */
+  .search-bar{flex-direction:column;gap:.4rem;}
+  .search-bar input{width:100%;font-size:.7rem;}
+
+  /* Tables — hide non-essential columns */
+  .admin-table{font-size:.58rem;}
+  .admin-table th,.admin-table td{padding:.4rem .5rem;}
+
+  /* Users table — hide joined, streak on mobile */
+  #usersBody td:nth-child(8), thead tr th:nth-child(8),
+  #usersBody td:nth-child(6), thead tr th:nth-child(6){display:none;}
+
+  /* Scores table — hide mode, streak */
+  #scoresBody td:nth-child(5), #scoresBody td:nth-child(7){display:none;}
+
+  /* Orders table — hide city, pincode */
+  #ordersBody td:nth-child(9){display:none;}
+
+  /* Action buttons — smaller */
+  .admin-table button{font-size:.5rem;padding:.2rem .35rem;margin:.1rem .05rem;}
+
+  /* Order stats bar */
+  #orderStatsBar{gap:.6rem;padding:.6rem 1rem;font-size:.58rem;}
+
+  /* Status filter */
+  #orderStatusFilter{font-size:.55rem;padding:.25rem .4rem;}
+
+  /* Top score box */
+  .top-score-box{flex-direction:column;gap:.5rem;font-size:.6rem;}
+
+  /* Login screen */
+  .login-box{padding:2rem 1.5rem;margin:1rem;max-width:100%;}
+  .login-box input{font-size:.8rem;}
+}
+
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .stat-val{font-size:1.2rem;}
+  nav{padding:0 .8rem;}
+  .admin-inner{padding:.8rem;}
+  .admin-section-hd{padding:.7rem .8rem;}
+  .admin-section-body{padding:.6rem .8rem;}
+  .admin-table{font-size:.52rem;}
+  .admin-table th,.admin-table td{padding:.3rem .4rem;}
+}
 </style>
 </head>
 <body>

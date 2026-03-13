@@ -26,7 +26,13 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
 @keyframes navGlow{0%,100%{opacity:.5}50%{opacity:1}}
 .nav-logo{font-family:var(--display);font-size:1rem;font-weight:900;color:var(--cyan);text-shadow:0 0 20px var(--cyan),0 0 40px rgba(0,255,200,.3);letter-spacing:.2em;}
 .nav-logo span{color:var(--magenta);text-shadow:0 0 20px var(--magenta);}
-.nav-links{display:flex;gap:.2rem;}
+.nav-hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.4rem;background:none;border:1px solid var(--border);}
+.nav-hamburger span{display:block;width:20px;height:2px;background:var(--cyan);transition:all .3s;}
+.nav-mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(1,6,18,.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:998;flex-direction:column;padding:.8rem 1rem;gap:.3rem;}
+.nav-mobile-menu.open{display:flex;}
+.nav-mobile-menu button{background:none;border:none;color:var(--muted);font-family:var(--body);font-weight:600;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;padding:.6rem .8rem;cursor:pointer;text-align:left;border-bottom:1px solid rgba(0,255,200,.05);transition:color .2s;}
+.nav-mobile-menu button:hover{color:var(--cyan);}
+@media(max-width:768px){.nav-hamburger{display:flex;}}
 .nav-links button{background:none;border:1px solid transparent;color:var(--muted);font-family:var(--body);font-weight:600;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .8rem;cursor:pointer;transition:all .2s;}
 .nav-links button:hover,.nav-links button.active{color:var(--cyan);border-color:var(--border);background:rgba(0,255,200,.05);text-shadow:0 0 10px var(--cyan);}
 
@@ -761,11 +767,117 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 .lb-empty{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:center;padding:2rem;opacity:.6;}
 .lb-loading{text-align:center;padding:2rem;font-family:var(--mono);font-size:.72rem;color:var(--cyan);animation:blink .8s step-end infinite;}
 
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVE — Full Coverage
+══════════════════════════════════════════ */
 @media(max-width:768px){
-  .hero-inner,.kit-wrap{grid-template-columns:1fr;}
-  .hero-stats,.nav-links{display:none;}
-  .kit-cats{flex-direction:row;flex-wrap:wrap;}
+
+  /* ── NAV ── */
+  nav{padding:.7rem 1rem;gap:.4rem;}
+  .nav-links{display:none;}
+  .nav-logo{font-size:.9rem;letter-spacing:.2em;}
+  .nav-auth{gap:.3rem;flex-wrap:wrap;}
+  .nav-user{font-size:.52rem;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .nav-xp{font-size:.52rem;padding:.2rem .45rem;}
+  .nav-auth button{font-size:.52rem;padding:.28rem .55rem;}
+  .ai-nav-btn{font-size:.65rem;padding:.28rem .4rem;}
+
+  /* ── SECTIONS ── */
+  section{padding:4rem 1rem 2rem;}
+  .section-tag{font-size:.52rem;}
+  .section-title{font-size:1.5rem;letter-spacing:.05em;}
+  .section-sub{font-size:.62rem;}
+
+  /* ── HERO ── */
+  .hero-inner{grid-template-columns:1fr;gap:2rem;}
+  .hero-stats{display:none;}
+  .hero-title{font-size:2rem;}
+  .hero-sub{font-size:.68rem;}
+  .hero-btns{flex-direction:column;gap:.6rem;}
+  .hero-btns .btn-p,.hero-btns .btn-s{width:100%;text-align:center;justify-content:center;padding:.9rem 1rem;}
+  .hero-visual{display:none;}
+
+  /* ── GAME ── */
+  .mode-grid{grid-template-columns:1fr 1fr;gap:.8rem;}
+  .mode-card{padding:.9rem;}
+  .mode-icon{font-size:1.4rem;}
+  .mode-name{font-size:.65rem;}
+  .mode-desc{font-size:.58rem;}
+  .game-hud{gap:.4rem;flex-wrap:wrap;justify-content:center;}
+  .hud-item{font-size:.52rem;padding:.28rem .55rem;}
+  .options-grid{grid-template-columns:1fr 1fr;gap:.5rem;}
+  .option-btn{font-size:.65rem;padding:.55rem .4rem;}
+  .sign-display{font-size:3.5rem;}
+  .sign-hint{font-size:.6rem;}
+
+  /* ── ALLERGY / MEDS ── */
+  .allergy-grid,.med-grid{grid-template-columns:1fr;}
+  .allergy-card,.med-card{padding:1.2rem;}
+
+  /* ── KIT ── */
+  .kit-wrap{grid-template-columns:1fr;}
+  .kit-cats{flex-direction:row;flex-wrap:wrap;gap:.35rem;}
+  .kit-cat-btn{font-size:.52rem;padding:.35rem .65rem;}
+  .kit-items{grid-template-columns:1fr 1fr;gap:.8rem;}
+  .kit-item{padding:.8rem;}
+
+  /* ── EMERGENCY ── */
+  .emg-grid{grid-template-columns:1fr;}
+  .emg-card{padding:1.2rem;}
+
+  /* ── PROFILE ── */
+  .profile-wrap{grid-template-columns:1fr;}
+  .profile-card{padding:1.2rem;}
+  .profile-stats{grid-template-columns:1fr 1fr;gap:.6rem;}
+  .profile-username{font-size:1rem;}
+  .score-row{gap:.4rem;font-size:.6rem;}
+  .sr-lang,.sr-mode{font-size:.52rem;}
+  .sr-score,.sr-xp,.sr-date{font-size:.58rem;}
+
+  /* ── LEADERBOARD ── */
+  .lb-table th:nth-child(4),.lb-table td:nth-child(4),
+  .lb-table th:nth-child(5),.lb-table td:nth-child(5){display:none;}
+  .lb-tabs{gap:.3rem;}
+  .lb-tab{font-size:.52rem;padding:.28rem .55rem;}
+  .lb-table th,.lb-table td{padding:.45rem .55rem;font-size:.75rem;}
+
+  /* ── CART ── */
+  .cart-sidebar{width:100%;right:-100%;}
+  .cart-hd{padding:1rem 1.2rem;}
+  .cart-items{padding:.8rem 1rem;}
+
+  /* ── CHECKOUT ── */
+  .checkout-wrap{margin:0 .3rem;max-width:100%;}
+  .checkout-box{max-height:96vh;}
+  .checkout-hd{padding:1rem;padding-right:3rem;}
+  .checkout-body{padding:1rem;}
+  .co-row{grid-template-columns:1fr !important;}
+  .co-btn{font-size:.62rem;padding:.75rem;}
+  .co-input{font-size:.75rem;padding:.55rem .8rem;}
+
+  /* ── AI ── */
+  .ai-popup{width:calc(100vw - 1.5rem);right:.75rem;bottom:9rem;max-height:70vh;}
+  .ai-float-btn{bottom:4.5rem;right:.8rem;}
+  .ai-section-wrap{grid-template-columns:1fr;}
+
+  /* ── SOS / MISC ── */
+  .sos-btn{bottom:.8rem;left:.8rem;font-size:.58rem;padding:.45rem .9rem;}
+  .card-modal-box{padding:1.2rem;margin:.8rem;}
+  .card-modal-ov{padding:.5rem;}
+}
+
+@media(max-width:480px){
+  .section-title{font-size:1.2rem;}
+  .hero-title{font-size:1.6rem;}
+  .mode-grid{grid-template-columns:1fr;}
   .options-grid{grid-template-columns:1fr;}
+  .kit-items{grid-template-columns:1fr;}
+  .profile-stats{grid-template-columns:1fr 1fr;}
+  .nav-logo{font-size:.8rem;}
+  .nav-auth button,.nav-xp,.nav-user{font-size:.5rem;}
+  .checkout-hd{padding:.8rem;padding-right:2.8rem;}
+  .checkout-body{padding:.8rem;}
+  .co-close{top:-12px;right:-12px;width:28px;height:28px;font-size:.6rem;}
 }
 
 /* ══════════════════════════════════════════
@@ -867,6 +979,9 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <button onclick="gotoSec('emergency')" id="n-emg">[ EMERGENCY ]</button>
   </div>
   <div class="nav-auth">
+    <button class="nav-hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
     <div class="nav-user" id="navUser">
       <span id="navUsername">USER</span>
       <span class="usr-xp" id="navXP">0 XP</span>
@@ -880,6 +995,16 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     </button>
   </div>
 </nav>
+
+<!-- MOBILE NAV MENU -->
+<div class="nav-mobile-menu" id="mobileMenu">
+  <button onclick="gotoSec('sign');toggleMobileMenu()">[ SIGN ]</button>
+  <button onclick="gotoSec('allergy');toggleMobileMenu()">[ ALLERGY ]</button>
+  <button onclick="gotoSec('meds');toggleMobileMenu()">[ MEDS ]</button>
+  <button onclick="gotoSec('kit');toggleMobileMenu()">[ FIRST_AID ]</button>
+  <button onclick="gotoSec('emergency');toggleMobileMenu()">[ EMERGENCY ]</button>
+  <button onclick="gotoSec('profile');toggleMobileMenu()">[ PROFILE ]</button>
+</div>
 
 <!-- AI FLOAT BUTTON -->
 <div class="ai-float-btn" onclick="toggleAIPopup()">
@@ -1621,6 +1746,21 @@ async function renderProfile() {
 
 /* ═══ UTILS ═══ */
 function gotoSec(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+function toggleMobileMenu(){
+  const m=document.getElementById('mobileMenu');
+  const b=document.getElementById('hamburgerBtn');
+  m.classList.toggle('open');
+  const open=m.classList.contains('open');
+  b.querySelectorAll('span')[0].style.transform=open?'rotate(45deg) translate(4px,4px)':'';
+  b.querySelectorAll('span')[1].style.opacity=open?'0':'1';
+  b.querySelectorAll('span')[2].style.transform=open?'rotate(-45deg) translate(4px,-4px)':'';
+}
+// Close mobile menu on outside click
+document.addEventListener('click',e=>{
+  const m=document.getElementById('mobileMenu');
+  if(m?.classList.contains('open')&&!e.target.closest('#mobileMenu')&&!e.target.closest('#hamburgerBtn'))
+    toggleMobileMenu();
+});
 const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.08});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 const nmap={sign:'n-sign',allergy:'n-allergy',meds:'n-meds',kit:'n-kit',emergency:'n-emg'};
