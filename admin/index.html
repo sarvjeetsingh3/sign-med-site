@@ -238,7 +238,7 @@ nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;backg
     <!-- ORDERS SECTION -->
     <div class="admin-section">
       <div class="admin-section-hd">
-        <div class="admin-section-title">// ORDERS :: CUSTOMER PURCHASES</div>
+        <div class="admin-section-title">// ORDERS :: CUSTOMER PURCHASES <span style="color:var(--green);font-size:.55rem;animation:blink .8s step-end infinite;">● LIVE</span></div>
         <div style="display:flex;gap:.5rem;align-items:center;">
           <select id="orderStatusFilter" onchange="loadOrders()" style="background:var(--deep);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.6rem;padding:.3rem .6rem;cursor:pointer;">
             <option value="">ALL STATUS</option>
@@ -309,6 +309,8 @@ function showDashboard(){
   document.getElementById('adminWrap').style.display='block';
   document.getElementById('adminUsername').textContent='// ADMIN';
   loadStats(); loadUsers(); loadScores(); loadOrders();
+  // Auto-refresh orders + stats every 5 seconds
+  setInterval(() => { loadOrders(); loadStats(); }, 5000);
 }
 
 async function loadStats(){

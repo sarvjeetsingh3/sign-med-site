@@ -741,6 +741,28 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 .score-row .sr-mode{color:var(--muted);text-transform:uppercase;font-size:.55rem;}
 .score-row .sr-score{color:var(--yellow);font-weight:700;}
 .score-row .sr-xp{color:var(--green);font-size:.58rem;}
+/* Profile tabs */
+.profile-tabs{display:flex;gap:.4rem;margin-bottom:1rem;}
+.profile-tab{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:.6rem;padding:.35rem .8rem;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;}
+.profile-tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,200,.05);}
+/* Order history */
+.order-history-list{display:flex;flex-direction:column;gap:.6rem;max-height:340px;overflow-y:auto;}
+.order-history-list::-webkit-scrollbar{width:3px;}
+.order-history-list::-webkit-scrollbar-thumb{background:rgba(0,255,136,.2);}
+.order-row{background:rgba(0,0,0,.2);border:1px solid rgba(0,255,136,.08);padding:.7rem 1rem;font-family:var(--mono);font-size:.62rem;transition:border-color .2s;}
+.order-row:hover{border-color:rgba(0,255,136,.25);}
+.order-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;}
+.order-id{color:var(--muted);font-size:.55rem;}
+.order-status{font-size:.58rem;font-weight:700;text-transform:uppercase;padding:.15rem .4rem;border-radius:2px;}
+.order-status.pending{color:#ffaa00;border:1px solid rgba(255,170,0,.3);background:rgba(255,170,0,.05);}
+.order-status.confirmed{color:#00b4ff;border:1px solid rgba(0,180,255,.3);background:rgba(0,180,255,.05);}
+.order-status.shipped{color:#aa88ff;border:1px solid rgba(170,136,255,.3);background:rgba(170,136,255,.05);}
+.order-status.delivered{color:var(--green);border:1px solid rgba(0,255,136,.3);background:rgba(0,255,136,.05);}
+.order-status.cancelled{color:var(--red);border:1px solid rgba(255,34,68,.3);background:rgba(255,34,68,.05);}
+.order-items-preview{color:var(--muted);font-size:.58rem;margin-bottom:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.order-row-bottom{display:flex;justify-content:space-between;}
+.order-total{color:var(--yellow);font-weight:700;}
+.order-date{color:var(--muted);font-size:.55rem;}
 .score-row .sr-date{color:var(--muted);font-size:.55rem;}
 .profile-empty{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-align:center;padding:2rem;}
 .profile-login-prompt{text-align:center;padding:3rem 2rem;}
@@ -1672,14 +1694,16 @@ async function renderProfile() {
   if (!el || !authToken) return;
   el.innerHTML = `<div class="profile-empty">// Loading profile...</div>`;
   try {
-    const [meRes, scoresRes, statsRes] = await Promise.all([
+    const [meRes, scoresRes, statsRes, ordersRes] = await Promise.all([
       fetch(`${API}/auth/me`,        { headers: { Authorization: 'Bearer ' + authToken } }),
       fetch(`${API}/scores/me?limit=20`, { headers: { Authorization: 'Bearer ' + authToken } }),
-      fetch(`${API}/scores/stats`,   { headers: { Authorization: 'Bearer ' + authToken } })
+      fetch(`${API}/scores/stats`,   { headers: { Authorization: 'Bearer ' + authToken } }),
+      fetch(`${API}/orders/my`,      { headers: { Authorization: 'Bearer ' + authToken } })
     ]);
     const me    = await meRes.json();
     const scoreData = await scoresRes.json();
     const stats = await statsRes.json();
+    const orders = ordersRes.ok ? await ordersRes.json() : [];
 
     const xp         = me.xp || 0;
     const rank        = getRank(xp);
@@ -1719,22 +1743,50 @@ async function renderProfile() {
             <div class="xp-bar-labels"><span>${xp.toLocaleString()} XP</span><span>${nextXP === Infinity ? '∞' : nextXP.toLocaleString()} XP</span></div>
           </div>
           <div class="profile-card" style="padding:1.4rem;">
-            <div class="profile-section-title">// RECENT_SCORES :: LAST 20 GAMES</div>
-            ${scoreList.length === 0
-              ? '<div class="profile-empty">// No games played yet — login and play to see your scores here!</div>'
-              : `<div class="score-history-list">
-                  ${scoreList.map(s => `
-                    <div class="score-row">
-                      <div>
-                        <div class="sr-lang">${(s.language||'').toUpperCase()}</div>
-                        <div class="sr-mode">${(s.mode||'').toUpperCase()}</div>
-                      </div>
-                      <div class="sr-score">${s.score}</div>
-                      <div class="sr-xp">+${s.xpEarned} XP</div>
-                      <div class="sr-date">${new Date(s.playedAt).toLocaleDateString()}</div>
-                    </div>`).join('')}
-                </div>`
-            }
+            <div class="profile-tabs">
+              <button class="profile-tab active" id="ptab-scores" onclick="switchProfileTab('scores')">🎮 SCORES</button>
+              <button class="profile-tab" id="ptab-orders" onclick="switchProfileTab('orders')">📦 ORDERS (${orders.length})</button>
+            </div>
+            <!-- SCORES TAB -->
+            <div id="ptab-scores-content">
+              <div class="profile-section-title">// RECENT_SCORES :: LAST 20 GAMES</div>
+              ${scoreList.length === 0
+                ? '<div class="profile-empty">// No games played yet — login and play!</div>'
+                : `<div class="score-history-list">
+                    ${scoreList.map(s => `
+                      <div class="score-row">
+                        <div>
+                          <div class="sr-lang">${(s.language||'').toUpperCase()}</div>
+                          <div class="sr-mode">${(s.mode||'').toUpperCase()}</div>
+                        </div>
+                        <div class="sr-score">${s.score}</div>
+                        <div class="sr-xp">+${s.xpEarned} XP</div>
+                        <div class="sr-date">${new Date(s.playedAt).toLocaleDateString()}</div>
+                      </div>`).join('')}
+                  </div>`
+              }
+            </div>
+            <!-- ORDERS TAB -->
+            <div id="ptab-orders-content" style="display:none;">
+              <div class="profile-section-title">// ORDER_HISTORY :: YOUR PURCHASES</div>
+              ${orders.length === 0
+                ? '<div class="profile-empty">// No orders yet — visit the First Aid Kit section to shop!</div>'
+                : `<div class="order-history-list">
+                    ${orders.map(o => `
+                      <div class="order-row">
+                        <div class="order-row-top">
+                          <span class="order-id">// ORDER: ${o._id.toString().slice(-8).toUpperCase()}</span>
+                          <span class="order-status ${o.status}">● ${o.status}</span>
+                        </div>
+                        <div class="order-items-preview">${(o.items||[]).map(i=>i.name+'×'+i.quantity).join(', ')}</div>
+                        <div class="order-row-bottom">
+                          <span class="order-total">₹${(o.total||0).toLocaleString('en-IN')}</span>
+                          <span class="order-date">${new Date(o.placedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span>
+                        </div>
+                      </div>`).join('')}
+                  </div>`
+              }
+            </div>
           </div>
         </div>
       </div>`;
@@ -1742,10 +1794,67 @@ async function renderProfile() {
     console.error('Profile error:', e);
     el.innerHTML = `<div class="profile-empty">// Failed to load profile — is server running?</div>`;
   }
+  // Start polling for order status updates automatically
+  startOrderPolling();
+}
+
+function switchProfileTab(tab){
+  ['scores','orders'].forEach(t => {
+    document.getElementById(`ptab-${t}`)?.classList.toggle('active', t===tab);
+    const c = document.getElementById(`ptab-${t}-content`);
+    if(c) c.style.display = t===tab ? 'block' : 'none';
+  });
+  // Start/stop order polling based on active tab
+  if(tab === 'orders') startOrderPolling();
+  else stopOrderPolling();
+}
+
+let _orderPollTimer = null;
+function startOrderPolling(){
+  stopOrderPolling();
+  _orderPollTimer = setInterval(async () => {
+    if(!authToken) return;
+    try {
+      const res = await fetch(`${API}/orders/my`, { headers:{ Authorization:'Bearer '+authToken } });
+      if(!res.ok) return;
+      const orders = await res.json();
+      renderOrdersList(orders);
+    } catch(e){}
+  }, 5000);
+}
+function stopOrderPolling(){ if(_orderPollTimer){ clearInterval(_orderPollTimer); _orderPollTimer=null; } }
+
+function renderOrdersList(orders){
+  const el = document.getElementById('ptab-orders-content');
+  if(!el) return;
+  // Update tab badge count
+  const tab = document.getElementById('ptab-orders');
+  if(tab) tab.textContent = `📦 ORDERS (${orders.length})`;
+  const list = el.querySelector('.order-history-list');
+  if(!list) return;
+  if(!orders.length){
+    list.innerHTML = '<div class="profile-empty">// No orders yet — visit the First Aid Kit section to shop!</div>';
+    return;
+  }
+  list.innerHTML = orders.map(o => `
+    <div class="order-row">
+      <div class="order-row-top">
+        <span class="order-id">// ORDER: ${o._id.toString().slice(-8).toUpperCase()}</span>
+        <span class="order-status ${o.status}">● ${o.status}</span>
+      </div>
+      <div class="order-items-preview">${(o.items||[]).map(i=>i.name+'×'+i.quantity).join(', ')}</div>
+      <div class="order-row-bottom">
+        <span class="order-total">₹${(o.total||0).toLocaleString('en-IN')}</span>
+        <span class="order-date">${new Date(o.placedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span>
+      </div>
+    </div>`).join('');
 }
 
 /* ═══ UTILS ═══ */
-function gotoSec(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+function gotoSec(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+  if(id !== 'profile') stopOrderPolling();
+}
 function toggleMobileMenu(){
   const m=document.getElementById('mobileMenu');
   const b=document.getElementById('hamburgerBtn');
