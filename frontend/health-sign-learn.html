@@ -249,6 +249,24 @@ section{padding:5rem 2rem;position:relative;z-index:1;}
 /* Big sign display */
 .sign-display{text-align:center;margin:1.5rem 0;}
 .big-emoji{font-size:5rem;display:block;animation:floatSign 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(0,255,200,.3));}
+/* SVG sign card */
+.sign-svg-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:.6rem;}
+.sign-svg-card{background:rgba(0,255,200,.04);border:1px solid rgba(0,255,200,.2);padding:1rem 1.5rem;border-radius:4px;animation:floatSign 3s ease-in-out infinite;filter:drop-shadow(0 0 16px rgba(0,255,200,.2));display:inline-flex;align-items:center;justify-content:center;}
+.sign-desc{font-family:var(--mono);font-size:.6rem;color:var(--cyan);margin-top:.2rem;text-align:center;}
+.sign-label{font-family:var(--display);font-size:2rem;font-weight:900;color:var(--cyan);text-shadow:0 0 20px rgba(0,255,200,.5);}
+/* Speed mode timer */
+.speed-timer-bar{width:100%;height:6px;background:rgba(255,255,255,.06);margin:1rem 0;border-radius:3px;overflow:hidden;}
+.speed-timer-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .1s linear;box-shadow:0 0 8px var(--cyan);}
+.speed-timer-fill.warning{background:linear-gradient(90deg,var(--red),#ff8800);}
+.speed-time-display{font-family:var(--display);font-size:1.8rem;font-weight:900;color:var(--cyan);text-align:center;text-shadow:0 0 20px rgba(0,255,200,.5);}
+.speed-time-display.warning{color:var(--red);text-shadow:0 0 20px rgba(255,34,68,.5);}
+/* Sentence builder */
+.sentence-target{font-family:var(--display);font-size:1.4rem;font-weight:900;color:var(--yellow);letter-spacing:.3em;text-align:center;margin:1rem 0;text-shadow:0 0 20px rgba(255,221,0,.3);}
+.sentence-progress{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin:.8rem 0;}
+.sentence-letter{width:36px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:1rem;font-weight:900;transition:all .3s;}
+.sentence-letter.done{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.08);box-shadow:0 0 8px rgba(0,255,136,.2);}
+.sentence-letter.current{border-color:var(--cyan);color:var(--cyan);animation:stepPulse 1s ease-in-out infinite;}
+.sentence-letter.pending{color:var(--muted);}
 @keyframes floatSign{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .big-letter{font-family:var(--display);font-size:4rem;font-weight:900;color:var(--cyan);text-shadow:0 0 40px rgba(0,255,200,.5),0 0 80px rgba(0,255,200,.2);display:block;letter-spacing:.1em;}
 .sign-hint{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:.5rem;}
@@ -1124,15 +1142,26 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
         <div class="mode-desc">See a hand sign — pick the right letter from 4 choices</div>
       </div>
       <div class="mode-card" onclick="startGame('reverse')">
-        <span class="mode-badge badge-new">NEW</span>
         <div class="mode-icon">🔄</div>
         <div class="mode-name">REVERSE QUIZ</div>
-        <div class="mode-desc">See a letter — pick which emoji shows the correct hand sign</div>
+        <div class="mode-desc">See a letter — pick which hand sign is correct</div>
       </div>
       <div class="mode-card" onclick="startGame('type')">
         <div class="mode-icon">⌨️</div>
         <div class="mode-name">TYPE IT</div>
         <div class="mode-desc">See a hand sign — type the letter from memory</div>
+      </div>
+      <div class="mode-card" onclick="startGame('speed')">
+        <span class="mode-badge badge-new">NEW</span>
+        <div class="mode-icon">⚡</div>
+        <div class="mode-name">SPEED MODE</div>
+        <div class="mode-desc">Answer before the timer runs out — 5 seconds per sign!</div>
+      </div>
+      <div class="mode-card" onclick="startGame('sentence')">
+        <span class="mode-badge badge-new">NEW</span>
+        <div class="mode-icon">🏥</div>
+        <div class="mode-name">SPELL IT</div>
+        <div class="mode-desc">Spell medical words letter by letter using hand signs</div>
       </div>
       <div class="mode-card" onclick="startGame('study')">
         <div class="mode-icon">📖</div>
@@ -1898,6 +1927,141 @@ const SD={
 let gLang='asl', gMode='', gQ=[], gIdx=0, gLives=3, gScore=0, gStreak=0, gXP=0, gAnswered=false, learnedSet=new Set();
 const TOTAL_Q=10, XP_PER_Q=10, XP_LEVEL=100;
 
+/* ═══ SIGN DISPLAY ═══ */
+function getSignSVG(letter){
+  const l = letter.toUpperCase().charAt(0);
+  const data = SD[gLang];
+  const item = data?.alpha?.find(a => a.l.toUpperCase().charAt(0) === l);
+  return `<span style="font-size:3rem">${item?.e || '✋'}</span>`;
+}
+
+function signDisplay(letter, hint){
+  const l = letter.toUpperCase().charAt(0);
+  const data = SD[gLang];
+  const item = data?.alpha?.find(a => a.l.toUpperCase().charAt(0) === l);
+  const emoji = item?.e || '✋';
+  const desc  = item?.w || '';
+  return `<div class="sign-svg-wrap">
+    <div class="sign-svg-card" style="padding:1rem 1.5rem;">
+      <span class="big-emoji">${emoji}</span>
+    </div>
+    <div class="sign-label">${l}</div>
+    ${hint ? `<div class="sign-hint">${hint}</div>` : ''}
+    ${desc ? `<div class="sign-hint" style="color:var(--cyan);margin-top:.3rem;">// ${desc}</div>` : ''}
+  </div>`;
+}
+
+const MEDICAL_WORDS = ['PULSE','FEVER','ALLERGY','INHALER','BANDAGE','DOCTOR','NURSE','TABLET','OXYGEN','WOUND','DOSAGE','CLINIC','TRAUMA','ASTHMA','VOMIT','BLEED','SWELLING'];
+
+/* ═══ SPEED MODE TIMER ═══ */
+let speedTimer = null, speedTimeLeft = 5;
+const SPEED_TIME = 5;
+
+function clearSpeedTimer(){ if(speedTimer){ clearInterval(speedTimer); speedTimer=null; } }
+
+function startSpeedTimer(correctLetter){
+  clearSpeedTimer();
+  speedTimeLeft = SPEED_TIME;
+  updateSpeedUI();
+  speedTimer = setInterval(()=>{
+    speedTimeLeft -= 0.1;
+    updateSpeedUI();
+    if(speedTimeLeft <= 0){
+      clearSpeedTimer();
+      if(!gAnswered){
+        gAnswered = true;
+        gLives--;
+        updateHUD();
+        showFeedback(false, '⏱ TIME UP!', 'The answer was: ' + correctLetter);
+        setTimeout(()=>{ nextQuestion(); }, 1400);
+      }
+    }
+  }, 100);
+}
+
+function updateSpeedUI(){
+  const fill = document.getElementById('speedFill');
+  const time = document.getElementById('speedTime');
+  if(!fill || !time) return;
+  const pct = (speedTimeLeft / SPEED_TIME) * 100;
+  fill.style.width = pct + '%';
+  const warn = speedTimeLeft < 2;
+  fill.className = 'speed-timer-fill' + (warn ? ' warning' : '');
+  time.className  = 'speed-time-display' + (warn ? ' warning' : '');
+  time.textContent = speedTimeLeft.toFixed(1) + 's';
+}
+
+/* ═══ SENTENCE MODE ═══ */
+let sentenceWord = '', sentenceIdx = 0;
+
+function buildSentenceQuestion(){
+  sentenceWord = MEDICAL_WORDS[Math.floor(Math.random()*MEDICAL_WORDS.length)];
+  sentenceIdx  = 0;
+}
+
+function renderSentenceQuestion(){
+  const letter = sentenceWord[sentenceIdx];
+  const data   = SD[gLang];
+  const item   = data.alpha.find(a => a.l.toUpperCase() === letter) || {l:letter, e:'?', w:letter};
+  const wrongs = shuffle(data.alpha.filter(x=>x.l.toUpperCase()!==letter)).slice(0,3);
+  const opts   = shuffle([item,...wrongs]);
+
+  document.getElementById('arenaContent').innerHTML = `
+    <div class="q-header">
+      <div class="q-mode-tag">// MODE: SPELL_IT :: WORD ${gIdx+1} of ${TOTAL_Q}</div>
+      <div class="q-instruction">Spell the medical word — sign letter <span style="color:var(--cyan);font-family:var(--display)">${sentenceIdx+1}/${sentenceWord.length}</span></div>
+    </div>
+    <div class="sentence-target">${sentenceWord}</div>
+    <div class="sentence-progress">
+      ${sentenceWord.split('').map((l,i)=>`
+        <div class="sentence-letter ${i<sentenceIdx?'done':i===sentenceIdx?'current':'pending'}">${i<sentenceIdx?'✓':i===sentenceIdx?l:'_'}</div>
+      `).join('')}
+    </div>
+    <div class="sign-display">${signDisplay(letter, '// FIND THIS SIGN')}</div>
+    <div class="options-grid">
+      ${opts.map((o,i)=>`
+        <button class="option-btn" onclick="checkSentenceAnswer(this,'${o.l.toUpperCase().charAt(0)}','${letter}')">
+          <span class="opt-letter">${o.l.toUpperCase().charAt(0)}</span>
+          <span class="opt-text">${o.w}</span>
+          <span class="opt-key">${['A','B','C','D'][i]}</span>
+        </button>`).join('')}
+    </div>`;
+}
+
+function checkSentenceAnswer(btn, chosen, correct){
+  if(gAnswered) return;
+  gAnswered = true;
+  const right = chosen === correct.toUpperCase();
+  if(right){
+    sentenceIdx++;
+    gScore += 10;
+    gStreak++;
+    gXP += XP_PER_Q;
+    if(sentenceIdx >= sentenceWord.length){
+      // Word complete!
+      showFeedback(true, `🏥 WORD COMPLETE! +${XP_PER_Q*sentenceWord.length} XP`, sentenceWord + ' spelled correctly!');
+      setTimeout(()=>{
+        gIdx++;
+        if(gIdx >= TOTAL_Q){ showResult(); return; }
+        buildSentenceQuestion();
+        gAnswered = false;
+        renderSentenceQuestion();
+      }, 1200);
+    } else {
+      showFeedback(true, `✓ CORRECT — keep going!`, `Next letter: ${sentenceWord[sentenceIdx]}`);
+      setTimeout(()=>{ gAnswered=false; renderSentenceQuestion(); }, 900);
+    }
+  } else {
+    gLives--;
+    gStreak=0;
+    updateHUD();
+    showFeedback(false, 'WRONG LETTER', 'Correct was: ' + correct);
+    if(gLives <= 0){ setTimeout(()=>showResult(), 1200); return; }
+    setTimeout(()=>{ gAnswered=false; renderSentenceQuestion(); }, 1200);
+  }
+}
+
+
 function pickLang(l,btn){
   gLang=l;
   document.querySelectorAll('.lang-sel-btn').forEach(b=>b.classList.remove('active'));
@@ -1907,7 +2071,7 @@ function pickLang(l,btn){
 function buildQuestions(mode){
   const data=SD[gLang];
   const pool=shuffle(data.alpha).slice(0,TOTAL_Q);
-  if(mode==='quiz'||mode==='reverse'){
+  if(mode==='quiz'||mode==='reverse'||mode==='speed'){
     return pool.map(item=>{
       const wrongs=shuffle(data.alpha.filter(x=>x.l!==item.l)).slice(0,3);
       const opts=shuffle([item,...wrongs]);
@@ -1915,13 +2079,17 @@ function buildQuestions(mode){
     });
   } else if(mode==='type'){
     return pool.map(item=>({item,mode}));
+  } else if(mode==='sentence'){
+    return Array(TOTAL_Q).fill(null).map(()=>({mode:'sentence'}));
   }
   return [];
 }
 
 function startGame(mode){
   if(mode==='study'){showStudy();return;}
+  clearSpeedTimer();
   gMode=mode; gQ=buildQuestions(mode); gIdx=0; gLives=3; gScore=0; gStreak=0; gAnswered=false;
+  if(mode==='sentence'){ buildSentenceQuestion(); }
   document.getElementById('gameModes').style.display='none';
   document.getElementById('gameHUD').style.display='flex';
   document.getElementById('gameArena').style.display='block';
@@ -1956,20 +2124,27 @@ function renderQuestion(){
   if(gIdx>=gQ.length){showResult();return;}
   hideFeedback();
   gAnswered=false;
+  clearSpeedTimer();
   const q=gQ[gIdx];
   const pct=Math.round(gIdx/TOTAL_Q*100);
   document.getElementById('progFill').style.width=pct+'%';
 
-  if(q.mode==='quiz'){
+  if(q.mode==='sentence'){
+    renderSentenceQuestion();
+    return;
+  }
+
+  if(q.mode==='quiz'||q.mode==='speed'){
+    const timerHTML = q.mode==='speed' ? `
+      <div class="speed-timer-bar"><div class="speed-timer-fill" id="speedFill" style="width:100%"></div></div>
+      <div class="speed-time-display" id="speedTime">${SPEED_TIME}.0s</div>` : '';
     document.getElementById('arenaContent').innerHTML=`
       <div class="q-header">
-        <div class="q-mode-tag">// MODE: SIGN_QUIZ :: Q${gIdx+1} of ${TOTAL_Q}</div>
+        <div class="q-mode-tag">// MODE: ${q.mode==='speed'?'SPEED_QUIZ':'SIGN_QUIZ'} :: Q${gIdx+1} of ${TOTAL_Q}</div>
         <div class="q-instruction">What letter does this hand sign represent?</div>
       </div>
-      <div class="sign-display">
-        <span class="big-emoji">${q.item.e}</span>
-        <div class="sign-hint">// ${SD[gLang].label} HAND SIGN — SELECT THE CORRECT LETTER</div>
-      </div>
+      ${timerHTML}
+      <div class="sign-display">${signDisplay(q.item.l, '// '+SD[gLang].label+' HAND SIGN — SELECT THE CORRECT LETTER')}</div>
       <div class="options-grid">
         ${q.opts.map((o,i)=>`
           <button class="option-btn" onclick="checkAnswer(this,'${o.l}','${q.item.l}')">
@@ -1978,6 +2153,7 @@ function renderQuestion(){
             <span class="opt-key">${['A','B','C','D'][i]}</span>
           </button>`).join('')}
       </div>`;
+    if(q.mode==='speed') startSpeedTimer(q.item.l);
   } else if(q.mode==='reverse'){
     document.getElementById('arenaContent').innerHTML=`
       <div class="q-header">
@@ -1987,8 +2163,8 @@ function renderQuestion(){
       <div class="options-grid" style="grid-template-columns:1fr 1fr;gap:1rem;max-width:500px;margin:1.5rem auto 0">
         ${q.opts.map((o,i)=>`
           <button class="option-btn" style="flex-direction:column;text-align:center;padding:1.3rem;justify-content:center" onclick="checkAnswer(this,'${o.l}','${q.item.l}')">
-            <span class="opt-emoji" style="font-size:2.5rem;display:block;margin-bottom:.4rem">${o.e}</span>
-            <span class="opt-text" style="font-family:var(--mono);font-size:.65rem;color:var(--muted)">${o.w}</span>
+            ${getSignSVG(o.l)}
+            <span class="opt-text" style="font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-top:.4rem">${o.w}</span>
             <span class="opt-key">${['A','B','C','D'][i]}</span>
           </button>`).join('')}
       </div>`;
@@ -1998,10 +2174,7 @@ function renderQuestion(){
         <div class="q-mode-tag">// MODE: TYPE_IT :: Q${gIdx+1} of ${TOTAL_Q}</div>
         <div class="q-instruction">Type the letter this hand sign represents</div>
       </div>
-      <div class="sign-display">
-        <span class="big-emoji">${q.item.e}</span>
-        <div class="sign-hint">// ${q.item.w.toUpperCase()}</div>
-      </div>
+      <div class="sign-display">${signDisplay(q.item.l, '// '+q.item.w.toUpperCase())}</div>
       <div class="type-area">
         <input class="type-input" id="typeInput" maxlength="3" autocomplete="off" placeholder="?" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')submitType('${q.item.l}')">
         <button class="type-submit" onclick="submitType('${q.item.l}')">▶ SUBMIT ANSWER</button>
@@ -2013,6 +2186,7 @@ function renderQuestion(){
 function checkAnswer(btn,chosen,correct){
   if(gAnswered)return;
   gAnswered=true;
+  clearSpeedTimer();
   const allBtns=document.querySelectorAll('.option-btn');
   allBtns.forEach(b=>b.classList.add('disabled'));
   if(chosen===correct){
@@ -2139,12 +2313,15 @@ function showStudy(){
       SYS:// <strong style="color:var(--cyan)">${d.label} — ${['American Sign Language','British Sign Language','Indian Sign Language','Universal Signs'][['asl','bsl','isl','gen'].indexOf(gLang)]}</strong> — ${d.note}
       <button class="btn-c btn-s" style="font-size:.6rem;padding:.4rem .8rem;float:right;margin-top:-.1rem" onclick="exitGame()">← BACK</button>
     </div>
-    <div class="study-grid">${d.alpha.map(i=>`
-      <div class="study-card${learnedSet.has(i.l)?' learned':''}">
-        <span class="sc-emoji">${i.e}</span>
+    <div class="study-grid">${d.alpha.map(i=>{
+      const l = i.l.toUpperCase().charAt(0);
+      const spriteHtml = `<span class="sc-emoji">${i.e}</span>`;
+      return `<div class="study-card${learnedSet.has(i.l)?' learned':''}">
+        ${spriteHtml}
         <div class="sc-letter">${i.l}</div>
         <div class="sc-word">${i.w}</div>
-      </div>`).join('')}
+      </div>`;
+    }).join('')}
     </div>
     <div style="font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin:2.5rem 0 1.2rem;display:flex;align-items:center;gap:.8rem;">
       ▶ COMMON PHRASES <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);display:block"></span>
@@ -4114,7 +4291,6 @@ function animateCount(el, target, duration=1200){
     });
   });
 })();
-
 
 </script>
 </body>
