@@ -278,6 +278,20 @@ section{padding:5rem 2rem;position:relative;z-index:1;}
 .option-btn.correct{border-color:var(--green)!important;background:rgba(0,255,136,.12)!important;animation:correctPulse .4s ease;}
 .option-btn.wrong{border-color:var(--red)!important;background:rgba(255,34,68,.1)!important;animation:wrongShake .3s ease;}
 .option-btn.disabled{cursor:not-allowed;}
+/* Correct answer reveal */
+.correct-reveal{margin-top:1rem;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.3);padding:.8rem 1.2rem;font-family:var(--mono);font-size:.7rem;color:var(--green);text-align:center;animation:cardIn .3s ease;}
+.correct-reveal .reveal-emoji{font-size:2.5rem;display:block;margin-bottom:.3rem;}
+/* Difficulty selector */
+.diff-selector{display:flex;gap:.6rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+.diff-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:.62rem;padding:.4rem 1rem;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;}
+.diff-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.diff-btn.active.easy{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.08);}
+.diff-btn.active.medium{border-color:var(--yellow);color:var(--yellow);background:rgba(255,221,0,.08);}
+.diff-btn.active.hard{border-color:var(--red);color:var(--red);background:rgba(255,34,68,.08);}
+.diff-badge{font-family:var(--mono);font-size:.55rem;padding:.15rem .5rem;border-radius:2px;margin-left:.4rem;}
+.diff-badge.easy{background:rgba(0,255,136,.15);color:var(--green);}
+.diff-badge.medium{background:rgba(255,221,0,.15);color:var(--yellow);}
+.diff-badge.hard{background:rgba(255,34,68,.15);color:var(--red);}
 @keyframes correctPulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
 @keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .opt-letter{font-family:var(--display);font-weight:900;font-size:1.4rem;color:var(--cyan);min-width:32px;}
@@ -1133,6 +1147,16 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <button class="lang-sel-btn" onclick="pickLang('gen',this)">🌍 UNIVERSAL</button>
     </div>
 
+    <!-- Difficulty selector -->
+    <div class="reveal" style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.1em;margin-bottom:.7rem;">// SELECT DIFFICULTY</div>
+      <div class="diff-selector">
+        <button class="diff-btn easy active" id="diff-easy" onclick="setDifficulty('easy')">⭐ EASY <span class="diff-badge easy">10Q · 4 CHOICES</span></button>
+        <button class="diff-btn medium" id="diff-medium" onclick="setDifficulty('medium')">⚡ MEDIUM <span class="diff-badge medium">15Q · BONUS XP</span></button>
+        <button class="diff-btn hard" id="diff-hard" onclick="setDifficulty('hard')">💀 HARD <span class="diff-badge hard">20Q · TIMED</span></button>
+      </div>
+    </div>
+
     <!-- Mode selector -->
     <div class="game-modes reveal" id="gameModes">
       <div class="mode-card" onclick="startGame('quiz')">
@@ -1927,27 +1951,50 @@ const SD={
 let gLang='asl', gMode='', gQ=[], gIdx=0, gLives=3, gScore=0, gStreak=0, gXP=0, gAnswered=false, learnedSet=new Set();
 const TOTAL_Q=10, XP_PER_Q=10, XP_LEVEL=100;
 
-/* ═══ SIGN DISPLAY ═══ */
+/* ═══ DIFFICULTY SYSTEM ═══ */
+let gDifficulty = 'easy';
+const DIFF_CONFIG = {
+  easy:   { questions: 10, timeLimit: 0,  xpMult: 1,   optCount: 4, label:'EASY',   color:'var(--green)' },
+  medium: { questions: 15, timeLimit: 0,  xpMult: 1.5, optCount: 4, label:'MEDIUM', color:'var(--yellow)' },
+  hard:   { questions: 20, timeLimit: 5,  xpMult: 2,   optCount: 4, label:'HARD',   color:'var(--red)' }
+};
+
+function setDifficulty(diff){
+  gDifficulty = diff;
+  ['easy','medium','hard'].forEach(d => {
+    const btn = document.getElementById(`diff-${d}`);
+    if(btn) btn.className = `diff-btn ${d}${d===diff?' active':''}`;
+  });
+}
+
+function getDiffQ(){ return DIFF_CONFIG[gDifficulty].questions; }
+function getDiffTime(){ return DIFF_CONFIG[gDifficulty].timeLimit; }
+function getDiffXP(base){ return Math.round(base * DIFF_CONFIG[gDifficulty].xpMult); }
+
+/* ═══ SIGN DISPLAY — EMOJI BASED ═══ */
 function getSignSVG(letter){
   const l = letter.toUpperCase().charAt(0);
   const data = SD[gLang];
-  const item = data?.alpha?.find(a => a.l.toUpperCase().charAt(0) === l);
-  return `<span style="font-size:3rem">${item?.e || '✋'}</span>`;
+  const item = data?.alpha.find(a => a.l.toUpperCase().charAt(0) === l);
+  const emoji = item?.e || '🤚';
+  return `<span style="font-size:2.8rem;display:block;text-align:center;">${emoji}</span>`;
 }
 
 function signDisplay(letter, hint){
   const l = letter.toUpperCase().charAt(0);
   const data = SD[gLang];
-  const item = data?.alpha?.find(a => a.l.toUpperCase().charAt(0) === l);
-  const emoji = item?.e || '✋';
+  const item = data?.alpha.find(a => a.l.toUpperCase().charAt(0) === l);
+  const emoji = item?.e || '🤚';
   const desc  = item?.w || '';
+  const diffColor = DIFF_CONFIG[gDifficulty]?.color || 'var(--cyan)';
   return `<div class="sign-svg-wrap">
-    <div class="sign-svg-card" style="padding:1rem 1.5rem;">
-      <span class="big-emoji">${emoji}</span>
+    <div class="sign-svg-card" style="padding:1.2rem 2rem;position:relative;">
+      <span class="big-emoji" style="font-size:5.5rem;">${emoji}</span>
+      <div style="position:absolute;top:.4rem;right:.6rem;font-family:var(--mono);font-size:.5rem;color:${diffColor};letter-spacing:.08em;">${DIFF_CONFIG[gDifficulty]?.label||''}</div>
     </div>
     <div class="sign-label">${l}</div>
-    ${hint ? `<div class="sign-hint">${hint}</div>` : ''}
-    ${desc ? `<div class="sign-hint" style="color:var(--cyan);margin-top:.3rem;">// ${desc}</div>` : ''}
+    <div style="font-family:var(--mono);font-size:.62rem;color:var(--cyan);margin-top:.2rem;text-align:center;max-width:200px;">// ${desc}</div>
+    ${hint ? `<div class="sign-hint" style="margin-top:.3rem;">${hint}</div>` : ''}
   </div>`;
 }
 
@@ -2069,18 +2116,19 @@ function pickLang(l,btn){
 }
 
 function buildQuestions(mode){
-  const data=SD[gLang];
-  const pool=shuffle(data.alpha).slice(0,TOTAL_Q);
+  const data = SD[gLang];
+  const numQ = getDiffQ();
+  const pool = shuffle(data.alpha).slice(0, numQ);
   if(mode==='quiz'||mode==='reverse'||mode==='speed'){
     return pool.map(item=>{
-      const wrongs=shuffle(data.alpha.filter(x=>x.l!==item.l)).slice(0,3);
-      const opts=shuffle([item,...wrongs]);
-      return{item,opts,mode};
+      const wrongs = shuffle(data.alpha.filter(x=>x.l!==item.l)).slice(0,3);
+      const opts   = shuffle([item,...wrongs]);
+      return {item, opts, mode};
     });
   } else if(mode==='type'){
-    return pool.map(item=>({item,mode}));
+    return pool.map(item=>({item, mode}));
   } else if(mode==='sentence'){
-    return Array(TOTAL_Q).fill(null).map(()=>({mode:'sentence'}));
+    return Array(Math.min(numQ,10)).fill(null).map(()=>({mode:'sentence'}));
   }
   return [];
 }
@@ -2088,13 +2136,24 @@ function buildQuestions(mode){
 function startGame(mode){
   if(mode==='study'){showStudy();return;}
   clearSpeedTimer();
-  gMode=mode; gQ=buildQuestions(mode); gIdx=0; gLives=3; gScore=0; gStreak=0; gAnswered=false;
-  if(mode==='sentence'){ buildSentenceQuestion(); }
+  // Hard mode forces speed timer on all question types
+  const effectiveMode = (gDifficulty==='hard' && mode==='quiz') ? 'speed' : mode;
+  gMode=effectiveMode; gQ=buildQuestions(effectiveMode); gIdx=0; gLives=3; gScore=0; gStreak=0; gAnswered=false;
+  if(effectiveMode==='sentence'){ buildSentenceQuestion(); }
   document.getElementById('gameModes').style.display='none';
   document.getElementById('gameHUD').style.display='flex';
   document.getElementById('gameArena').style.display='block';
   document.getElementById('studyArea').style.display='none';
   document.getElementById('hudLang').textContent=SD[gLang].label;
+  // Show difficulty badge in HUD
+  const cfg = DIFF_CONFIG[gDifficulty];
+  const existingBadge = document.getElementById('hudDiffBadge');
+  if(existingBadge) existingBadge.remove();
+  const badge = document.createElement('div');
+  badge.id = 'hudDiffBadge';
+  badge.style.cssText = `font-family:var(--mono);font-size:.55rem;padding:.2rem .55rem;border:1px solid ${cfg.color};color:${cfg.color};letter-spacing:.08em;`;
+  badge.textContent = cfg.label;
+  document.getElementById('gameHUD').appendChild(badge);
   updateHUD(); renderQuestion();
 }
 
@@ -2224,8 +2283,8 @@ function submitType(correct){
 }
 
 function handleCorrect(el){
-  const pts=10+(gStreak>=3?5:0)+(gStreak>=5?5:0);
-  gScore+=pts; gStreak++; gXP+=XP_PER_Q;
+  const pts = getDiffXP(10+(gStreak>=3?5:0)+(gStreak>=5?5:0));
+  gScore+=pts; gStreak++; gXP+=getDiffXP(XP_PER_Q);
   learnedSet.add(gQ[gIdx].item.l);
   showFeedback(true, gStreak>=3?`🔥 ${gStreak} STREAK! +${pts} PTS`:'CORRECT!', gQ[gIdx].item.w);
   spawnScorePop(`+${pts}`, el);
@@ -2234,9 +2293,23 @@ function handleCorrect(el){
 function handleWrong(){
   gLives=Math.max(0,gLives-1);
   gStreak=0;
-  showFeedback(false,'INCORRECT','The correct answer was: '+gQ[gIdx].item.w);
+  const correctItem = gQ[gIdx]?.item;
+  const emoji = correctItem?.e || '✋';
+  const letter = correctItem?.l || '';
+  const desc = correctItem?.w || '';
+  showFeedback(false,'INCORRECT',`Correct: ${letter} — ${desc}`);
+  // Show correct answer reveal card below options
+  const arena = document.getElementById('arenaContent');
+  if(arena){
+    const old = arena.querySelector('.correct-reveal');
+    if(old) old.remove();
+    const reveal = document.createElement('div');
+    reveal.className = 'correct-reveal';
+    reveal.innerHTML = `<span class="reveal-emoji">${emoji}</span><strong style="color:var(--green);font-family:var(--display);font-size:1.1rem;letter-spacing:.1em;">${letter}</strong><div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-top:.3rem;">// ${desc}</div>`;
+    arena.appendChild(reveal);
+  }
   updateHUD();
-  if(gLives===0){setTimeout(()=>showResult(),1200);}
+  if(gLives===0){setTimeout(()=>showResult(),1400);}
 }
 
 function showFeedback(correct,text,sub){
